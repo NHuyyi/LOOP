@@ -1,0 +1,117 @@
+.container {
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 20px;
+  text-align: left;
+}
+
+.searchBox {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+  padding: 10px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #e0c3fc, #8ec5fc);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.searchBox input {
+  flex: 1;
+  padding: 10px;
+  border-radius: 8px;
+  border: none;
+  outline: none;
+}
+
+.searchBox button {
+  padding: 10px 16px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  background: linear-gradient(90deg, #a18cd1, #38ef7d);
+  color: white;
+  font-weight: bold;
+  transition: 0.3s;
+}
+
+.searchBox button:hover {
+  opacity: 0.9;
+}
+
+.card {
+  background: var(--bg-primary);
+  padding: 16px;
+  border-radius: 16px;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.card h2 {
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+
+  border-bottom: #a18cd1 3px solid;
+}
+
+.card p {
+  text-align: center;
+}
+
+.friendsList {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background-color: aliceblue;
+  padding: 10px;
+  border-radius: 12px;
+}
+
+.userCard {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #f9f9ff;
+  padding: 12px;
+  border-radius: 12px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.requestTabs {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.SentrequestList {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background: #fff5f5;
+  padding: 12px;
+  border-radius: 12px;
+  box-shadow: 0 2px 6px rgba(255, 0, 0, 0.1);
+}
+
+.requestSection {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background: #f5fff8;
+  padding: 12px;
+  border-radius: 12px;
+  box-shadow: 0 2px 6px rgba(0, 128, 0, 0.1);
+}
+
+.SentrequestList h3 {
+  background: linear-gradient(90deg, #ff6b6b, #f06595);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-weight: bold;
+}
+
+.requestSection h3 {
+  background: linear-gradient(90deg, #38ef7d, #11998e);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-weight: bold;
+}

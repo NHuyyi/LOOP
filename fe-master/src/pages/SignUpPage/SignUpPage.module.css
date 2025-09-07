@@ -1,0 +1,56 @@
+.custom-container {
+  display: grid;
+  grid-template-columns: 45% 15% 40%;
+  min-height: 100vh;
+  background: linear-gradient(145deg, #daabff, #abffda);
+}
+
+.custom-half {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
+.custom-half-action {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  margin: 50% 0;
+}
+
+.image-logo {
+  display: inline-block;
+  padding: 1rem; /* khoảng cách giữa logo và nền phụ */
+  background: rgba(255, 255, 255, 0.6); /*nền trắng mờ */
+  border-radius: 1rem; /* bo góc */
+  box-shadow: 0 0.25rem 1rem rgba(90, 40, 160, 0.15),
+    /* shadow ngoài tím nhạt, blur vừa phải */ 0 0.2rem 0.5rem
+      rgba(0, 0, 0, 0.08),
+    /* shadow ngoài đen nhẹ */ inset 0 1px 0.3rem rgba(90, 40, 160, 0.1); /* shadow trong tím nhạt, nhẹ hơn */
+  margin-top: 1rem;
+}
+
+.app-logo {
+  width: 100%;
+  max-width: 500px;
+  border-radius: 12px;
+}
+
+.login-btn {
+  background: linear-gradient(135deg, #daabff, #a770ef);
+  color: #fff;
+}
+
+.google-btn {
+  background: #fff;
+  color: #444;
+  border: 1px solid #ddd;
+}
+
+.facebook-btn {
+  background: #fff;
+  color: #1877f2;
+  border: 1px solid #1877f2;
+}

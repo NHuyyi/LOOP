@@ -1,0 +1,123 @@
+/* quy định css chung của toàn app */
+
+.App {
+  text-align: center;
+  margin: 0;
+  padding: 0;
+  position: relative;
+}
+:root {
+  --bg-primary: linear-gradient(145deg, #daabff, #abffda);
+}
+
+/* tiêu đề chung của toàn app */
+.app-title {
+  font-size: 2rem;
+  color: #a259ff;
+  font-weight: bold;
+}
+
+/* nút chung của toàn app */
+.app-btn {
+  padding: 0.8rem 1.5rem;
+  background: linear-gradient(135deg, #daabff, #a770ef);
+  color: #fff;
+  border: none;
+  border-radius: 0.8rem;
+  cursor: pointer;
+  box-shadow: 0 0.8rem 1.2rem rgba(0, 0, 0, 0.264);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: bold;
+}
+
+.app-btn:hover {
+  filter: brightness(1.1); /* sáng hơn */
+  transform: translateY(-2px);
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.15);
+}
+
+.app-icon {
+  height: 2.3rem;
+  width: 2.3rem;
+  margin-right: 0.5rem;
+}
+
+input {
+  display: block;
+  width: 100%;
+  padding: 0.4rem 0.75rem;
+  font-size: 1.8rem;
+  font-weight: 400;
+  line-height: 2;
+  color: var(--bs-body-color);
+  appearance: none;
+  background-color: var(--bs-body-bg);
+  background-clip: padding-box;
+  border: var(--bs-border-width) solid var(--bs-border-color);
+  border-radius: var(--bs-border-radius);
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+input:focus {
+  outline: none !important;
+  border-color: transparent;
+}
+
+.app-message {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  min-width: 280px;
+  max-width: 400px;
+  padding: 12px 20px;
+  border-radius: 8px;
+  text-align: center;
+  font-size: 15px;
+  font-weight: 600;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+  z-index: 9999;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.app-message__err {
+  background-color: #ffe0e0;
+  color: #d93025;
+  border: 1px solid #d93025;
+}
+
+.app-message__ok {
+  background-color: #e0ffe6;
+  color: #2e7d32;
+  border: 1px solid #2e7d32;
+}
+
+@keyframes fadeIn {
+  from {
+    transform: translate(-50%, -10px);
+  }
+  to {
+    transform: translate(-50%, 0);
+  }
+}
+
+.fade-out {
+  animation: fadeOut 0.5s forwards;
+}
+
+@keyframes fadeOut {
+  from {
+    transform: translate(-50%, 0);
+  }
+  to {
+    transform: translate(-50%, -10px);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}

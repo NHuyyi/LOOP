@@ -1,0 +1,45 @@
+.app-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background: var(--bg-primary);
+}
+
+.app-desc {
+  font-size: 1.3rem;
+}
+
+.custom-form {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 2rem;
+}
+
+.custom-input {
+  width: 40px;
+  height: 50px;
+  text-align: center;
+  font-size: 24px;
+  border: none;
+  border-bottom: 2px solid #000;
+  outline: none;
+  background: transparent;
+  border-radius: 0;
+  margin-right: 12px;
+}
+
+.custom-input:last-child {
+  margin-right: 0; /* bỏ margin ô cuối */
+}
+
+.custom-input:focus {
+  border-bottom: 0.2rem solid #952993;
+}
+
+.submit-btn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 2rem;
+}

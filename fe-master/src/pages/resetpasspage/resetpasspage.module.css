@@ -1,0 +1,43 @@
+.app-container {
+  background: var(--bg-primary);
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.reset-container {
+  width: 100%;
+  max-width: 25rem;
+  padding: 1.88rem;
+  background: #fff;
+  border-radius: 0.75rem;
+  box-shadow: 0 0.25rem 0.7rem rgba(0, 0, 0, 0.1);
+}
+
+.input-group {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  padding-bottom: 0.4rem;
+}
+
+.input-group label {
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  color: #444;
+}
+
+.input-group input {
+  padding: 0.7rem;
+  margin-bottom: 1rem;
+  border: 1px solid #ddd;
+  border-radius: 0.4rem;
+}
+
+.show-btn {
+  background: transparent;
+  border: none;
+  position: absolute;
+  bottom: 0rem;
+  right: 0.75rem;
+}
