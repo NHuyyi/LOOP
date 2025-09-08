@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from "react-redux";
 import socket from "../socker";
 import { getUserbyId } from "../services/User/getUserbyId";
 import { setUser } from "../redux/userSlice";
+import { updateReaction } from "../redux/reactionSlide";
 
 function SocketManager() {
   const currentUser = useSelector((state) => state.user.user);
@@ -60,12 +61,25 @@ function SocketManager() {
           setUser({ user: updatedUser, token: localStorage.getItem("token") })
         );
       });
+      socket.on(
+        "reactionUpdated",
+        ({ postId, reactionCounts, totalReactions }) => {
+          console.log(
+            "📩 Reaction update:",
+            postId,
+            reactionCounts,
+            totalReactions
+          );
+          dispatch(updateReaction({ postId, reactionCounts, totalReactions }));
+        }
+      );
     }
 
     return () => {
       socket.off("friendRemoved");
       socket.off("friendRequestReceived");
       socket.off("friendRequestAccepted");
+      socket.off("reactionUpdated");
     };
   }, [currentUser, dispatch]);
 

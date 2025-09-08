@@ -2,11 +2,13 @@ import { useState } from "react";
 import styles from "./PostCard.module.css";
 import classNames from "classnames/bind";
 import PostReaction from "../PostReaction/PostReaction";
+import ReactionCounts from "../reactioncount/reactioncount";
 
 const cx = classNames.bind(styles);
 
 function PostCard({ post, currentUserId }) {
   const [showComments, setShowComments] = useState(false);
+  const [refreshKey, setRefreshKey] = useState(0); // 👈 thêm state
 
   const reactions = post.reactions || [];
   const comments = post.comments || [];
@@ -44,7 +46,9 @@ function PostCard({ post, currentUserId }) {
       {post.content && <p className={cx("postContent")}>{post.content}</p>}
 
       {/* Reaction count */}
-      <div className={cx("reactionCount")}></div>
+      <div className={cx("reactionCount")}>
+        <ReactionCounts key={refreshKey} postId={post._id} />
+      </div>
 
       {/* Action bar */}
       <div className={cx("actionBar")}>
@@ -54,6 +58,7 @@ function PostCard({ post, currentUserId }) {
           reactionType={
             reactions.find((r) => r.user === currentUserId)?.type || ""
           }
+          onReacted={() => setRefreshKey((k) => k + 1)} // 👈 callback
         />
         <button
           onClick={() => setShowComments(!showComments)}

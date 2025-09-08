@@ -18,7 +18,7 @@ const Post = new mongoose.Schema(
         user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
         type: {
           type: String,
-          enum: ["none", "like", "love", "haha", "wow", "sad", "angry"], // reaction có sẵn
+          enum: ["like", "love", "haha", "wow", "sad", "angry"], // reaction có sẵn
           required: true,
         },
       },

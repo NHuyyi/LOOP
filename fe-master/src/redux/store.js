@@ -1,8 +1,12 @@
 import { configureStore } from "@reduxjs/toolkit";
 import userReducer from "./userSlice";
+import reactionReducer from "./reactionSlide";
+import commentRecuder from "./commentSlide";
 
 export const store = configureStore({
   reducer: {
     user: userReducer,
+    reactions: reactionReducer,
+    comments: commentRecuder,
   },
 });

@@ -1,5 +1,6 @@
 const PostModel = require("../../model/Post.Model");
-
+const { getIO, getOnlineUsers } = require("../../config/socker");
+const calculateCounts = require("../../utils/reaction");
 exports.addReaction = async (req, res) => {
   try {
     const { postId, userId, reactionType } = req.body; // FE gửi postId + userId + reactionType
@@ -20,12 +21,32 @@ exports.addReaction = async (req, res) => {
 
     if (existingReactionIndex !== -1) {
       // Cập nhật loại phản ứng nếu đã tồn tại
-      post.reactions[existingReactionIndex].type = reactionType;
+      const existingType = post.reactions[existingReactionIndex].type;
+      if (existingType === reactionType) {
+        // 👉 Nếu user click lại cùng 1 reaction => xóa reaction
+        post.reactions.splice(existingReactionIndex, 1);
+      } else {
+        // 👉 Nếu khác loại => update reaction
+        post.reactions[existingReactionIndex].type = reactionType;
+      }
     } else {
       // Thêm phản ứng mới
       post.reactions.push({ user: userId, type: reactionType });
     }
     await post.save();
+    const { counts, total } = calculateCounts(post.reactions);
+
+    const io = getIO();
+    const onlineUsers = getOnlineUsers();
+
+    // Gửi event cho tất cả user online (hoặc lọc user liên quan)
+    Object.values(onlineUsers).forEach((socketId) => {
+      io.to(socketId).emit("reactionUpdated", {
+        postId,
+        reactionCounts: counts,
+        totalReactions: total,
+      });
+    });
     res.json({ success: true, data: post });
   } catch (err) {
     console.error("Lỗi:", err.message);

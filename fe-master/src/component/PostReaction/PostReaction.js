@@ -14,7 +14,12 @@ import {
 
 const cx = classNames.bind(styles);
 
-function PostReaction({ postId, userID, reactionType: initialReaction }) {
+function PostReaction({
+  postId,
+  userID,
+  reactionType: initialReaction,
+  onReacted,
+}) {
   const [currentReaction, setCurrentReaction] = useState(
     initialReaction || null
   );
@@ -72,8 +77,14 @@ function PostReaction({ postId, userID, reactionType: initialReaction }) {
       const res = await addreaction(postId, userID, type);
 
       if (res.success) {
-        setCurrentReaction(type); // update UI
-        setShowMenu(false); // đóng menu sau khi chọn
+        // nếu user vừa bấm lại cùng loại reaction => xóa
+        if (currentReaction === type) {
+          setCurrentReaction(null);
+        } else {
+          setCurrentReaction(type);
+        }
+        setShowMenu(false);
+        onReacted?.();
       } else {
         alert(res.message || "Thêm phản ứng thất bại, vui lòng thử lại.");
       }
@@ -109,6 +120,16 @@ function PostReaction({ postId, userID, reactionType: initialReaction }) {
   } else {
     currentReactionObj = reactions.find((r) => r.type === currentReaction);
   }
+
+  const handleMainClick = () => {
+    // Nếu chưa có reaction thì mặc định là "like"
+    if (!currentReaction) {
+      handleReaction("like");
+    } else {
+      // Nếu đã có reaction thì click lại vào nút chính => toggle (xoá reaction)
+      handleReaction(currentReaction);
+    }
+  };
   return (
     <div
       className={cx("reaction-wrapper")}
@@ -119,6 +140,7 @@ function PostReaction({ postId, userID, reactionType: initialReaction }) {
       <button
         className={cx("main-button")}
         style={{ color: currentReactionObj.color }}
+        onClick={handleMainClick}
       >
         {currentReactionObj.icon}
         <span style={{ color: currentReactionObj.color }}>

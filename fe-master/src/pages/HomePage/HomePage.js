@@ -5,6 +5,8 @@ import PostCard from "../../component/postItem/PostCard";
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { useGetPost } from "../../hooks/getpost";
+import { useDispatch } from "react-redux";
+import { updateReaction } from "../../redux/reactionSlide";
 
 const cx = classNames.bind(styles);
 
@@ -22,6 +24,25 @@ function HomePage() {
     currentUser?.friends || [],
     currentUser?._id
   );
+
+  // lưu vào redux
+  const dispatch = useDispatch();
+
+  // Khi posts thay đổi, đẩy dữ liệu reaction ban đầu vào Redux
+  useEffect(() => {
+    if (posts.length > 0) {
+      console.log("posts", posts);
+      posts.forEach((post) => {
+        dispatch(
+          updateReaction({
+            postId: post._id,
+            reactionCounts: post.reactionCounts || {}, // nếu API trả sẵn
+            totalReactions: post.totalReactions || 0,
+          })
+        );
+      });
+    }
+  }, [posts, dispatch]);
 
   useEffect(() => {
     if (message) {
