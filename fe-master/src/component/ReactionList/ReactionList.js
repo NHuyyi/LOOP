@@ -62,7 +62,7 @@ function ReactionList({ reactions, onClose }) {
               className={cx("tab", { active: activeTab === type })}
               onClick={() => setActiveTab(type)}
             >
-              {reactionIcons[type] || "❓"} ({grouped[type].length})
+              {reactionIcons[type]} ({grouped[type].length})
             </button>
           ))}
         </div>
@@ -80,9 +80,7 @@ function ReactionList({ reactions, onClose }) {
                   className={cx("avatar")}
                 />
                 <span className={cx("name")}>{r.name}</span>
-                <span className={cx("emoji")}>
-                  {reactionIcons[r.type] || "❓"}
-                </span>
+                <span className={cx("emoji")}>{reactionIcons[r.type]}</span>
               </div>
             ))
           )}

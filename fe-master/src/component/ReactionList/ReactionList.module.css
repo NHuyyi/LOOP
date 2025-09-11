@@ -72,9 +72,20 @@
 }
 
 .tab.active {
-  background: #e7f3ff;
   color: #1877f2;
   font-weight: 600;
+  position: relative;
+  z-index: 0;
+}
+
+.tab.active::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: var(--bg-primary);
+  opacity: 0.4; /* chỉnh độ mờ chỉ riêng background */
+  z-index: -1;
 }
 
 .body {
