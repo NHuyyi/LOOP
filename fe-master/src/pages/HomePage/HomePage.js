@@ -7,6 +7,7 @@ import { useSelector } from "react-redux";
 import { useGetPost } from "../../hooks/getpost";
 import { useDispatch } from "react-redux";
 import { updateReaction } from "../../redux/reactionSlide";
+import countreaction from "../../services/Post/countreaction";
 
 const cx = classNames.bind(styles);
 
@@ -30,18 +31,18 @@ function HomePage() {
 
   // Khi posts thay đổi, đẩy dữ liệu reaction ban đầu vào Redux
   useEffect(() => {
-    if (posts.length > 0) {
-      console.log("posts", posts);
-      posts.forEach((post) => {
+    posts.forEach(async (post) => {
+      const res = await countreaction(post._id);
+      if (res.success) {
         dispatch(
           updateReaction({
             postId: post._id,
-            reactionCounts: post.reactionCounts || {}, // nếu API trả sẵn
-            totalReactions: post.totalReactions || 0,
+            reactionCounts: res.data.reactionCounts,
+            totalReactions: res.data.totalReactions,
           })
         );
-      });
-    }
+      }
+    });
   }, [posts, dispatch]);
 
   useEffect(() => {

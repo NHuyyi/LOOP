@@ -11,7 +11,6 @@ function PostCard({ post, currentUserId }) {
   const [refreshKey, setRefreshKey] = useState(0); // 👈 thêm state
 
   const reactions = post.reactions || [];
-  const comments = post.comments || [];
 
   return (
     <div className={cx("postCard")}>
@@ -47,7 +46,12 @@ function PostCard({ post, currentUserId }) {
 
       {/* Reaction count */}
       <div className={cx("reactionCount")}>
-        <ReactionCounts key={refreshKey} postId={post._id} />
+        <ReactionCounts
+          key={refreshKey}
+          postId={post._id}
+          currentUserId={currentUserId}
+          postAuthorId={post.author._id}
+        />
       </div>
 
       {/* Action bar */}
@@ -67,34 +71,6 @@ function PostCard({ post, currentUserId }) {
           💬 Bình luận
         </button>
       </div>
-
-      {/* Comments */}
-      {showComments && (
-        <div className={cx("comments")}>
-          {comments.length === 0 ? (
-            <p className="text-sm text-gray-500">Chưa có bình luận nào</p>
-          ) : (
-            comments.map((c, idx) => (
-              <div key={idx} className={cx("commentItem")}>
-                <img
-                  src={c.user?.avatar || "https://via.placeholder.com/30"}
-                  alt="comment-avatar"
-                  className={cx("commentAvatar")}
-                />
-                <div className={cx("commentBox")}>
-                  <p className={cx("commentAuthor")}>
-                    {c.user?.name || "User"}
-                  </p>
-                  <p className={cx("commentText")}>{c.text}</p>
-                  <p className={cx("commentDate")}>
-                    {new Date(c.createdAt).toLocaleString()}
-                  </p>
-                </div>
-              </div>
-            ))
-          )}
-        </div>
-      )}
     </div>
   );
 }

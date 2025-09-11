@@ -1,5 +1,4 @@
-import { useEffect, useState } from "react";
-import countreaction from "../../services/Post/countreaction";
+import { useState } from "react";
 import classNames from "classnames/bind";
 import styles from "./reactionCounts.module.css";
 import {
@@ -10,14 +9,17 @@ import {
   FaSadTear,
   FaAngry,
 } from "react-icons/fa";
-import { useSelector, useDispatch } from "react-redux";
-import { updateReaction } from "../../redux/reactionSlide";
+import { useSelector } from "react-redux";
+import { getReactionList } from "../../services/Post/getReactionList";
+import ReactionList from "../ReactionList/ReactionList";
 
 const cx = classNames.bind(styles);
 
-function ReactionCounts({ postId }) {
-  const [reactionCounts, setReactionCounts] = useState({});
-  const [totalReactions, setTotalReactions] = useState(0);
+function ReactionCounts({ postId, postAuthorId, currentUserId }) {
+  const reactionData = useSelector((state) => state.reactions[postId]);
+  const [showPopup, setShowPopup] = useState(false);
+  const [reactionList, setReactionList] = useState([]);
+  const [error, setError] = useState("");
 
   const icons = {
     like: <FaThumbsUp color="#1877F2" size={16} />,
@@ -28,51 +30,61 @@ function ReactionCounts({ postId }) {
     angry: <FaAngry color="#E9710F" size={16} />,
   };
 
-  // redux của reaction
-  const reactionData = useSelector((state) => state.reactions[postId]);
-  console.log("reactionData:", reactionData);
-  const dispatch = useDispatch();
-  useEffect(() => {
-    // Nếu redux đã có data thì set vào local state luôn
-    if (reactionData) {
-      setReactionCounts(reactionData.reactionCounts);
-      setTotalReactions(reactionData.totalReactions);
-    } else {
-      // Nếu redux chưa có thì gọi API lần đầu
-      const fetchCounts = async () => {
-        const res = await countreaction(postId);
-        if (res.success) {
-          dispatch(
-            updateReaction({
-              postId,
-              reactionCounts: res.data.reactionCounts,
-              totalReactions: res.data.totalReactions,
-            })
-          );
-        } else {
-          console.error("Lỗi khi đếm reaction:", res.message);
-        }
-      };
-      fetchCounts();
-    }
-  }, [reactionData, postId, dispatch]);
+  if (!reactionData) return null;
 
-  const topReactions = Object.entries(reactionCounts)
+  const topReactions = Object.entries(reactionData.reactionCounts || {})
     .filter(([_, count]) => count > 0)
     .sort((a, b) => b[1] - a[1])
     .slice(0, 3);
 
+  const handleClick = async () => {
+    if (currentUserId !== postAuthorId) return; // ❌ không phải tác giả thì thôi
+    try {
+      setError("");
+      const token = localStorage.getItem("token");
+
+      const res = await getReactionList(postId, token);
+      if (res.success) {
+        setReactionList(res.data);
+        setShowPopup(true);
+      } else {
+        setError(res.error || "Không lấy được danh sách reaction");
+      }
+    } catch (err) {
+      setError("Có lỗi xảy ra, vui lòng thử lại");
+    }
+  };
+
   return (
-    <div className={cx("summary")}>
-      <div className={cx("icons")}>
-        {topReactions.map(([type]) => (
-          <span key={type} className={cx("icon")}>
-            {icons[type]}
-          </span>
-        ))}
+    <>
+      <div
+        className={cx("summary")}
+        onClick={handleClick}
+        style={{
+          cursor: currentUserId === postAuthorId ? "pointer" : "default",
+        }}
+      >
+        <div className={cx("icons")}>
+          {topReactions.map(([type]) => (
+            <span key={type} className={cx("icon")}>
+              {icons[type]}
+            </span>
+          ))}
+        </div>
+        <span className={cx("total")}>
+          {formatNumber(reactionData.totalReactions)}
+        </span>
       </div>
-      <span className={cx("total")}>{formatNumber(totalReactions)}</span>
-    </div>
+
+      {showPopup && (
+        <ReactionList
+          reactions={reactionList}
+          onClose={() => setShowPopup(false)}
+        />
+      )}
+
+      {error && <p className="text-red-500">{error}</p>}
+    </>
   );
 }
 
