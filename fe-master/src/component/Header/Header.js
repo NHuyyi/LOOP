@@ -17,9 +17,9 @@ function Header() {
     <header className={cx("header")}>
       <Link to="/home" className={cx("logo")}>
         <img src={logo} alt="avatar" className={cx("logo-image")} />
-        LOOP
+        <span>LOOP</span>
       </Link>
-
+    
       <nav className={cx("nav")}>
         <NavLink
           to="/home"

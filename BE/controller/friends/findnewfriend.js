@@ -7,7 +7,7 @@ exports.findnewfriend = async (req, res) => {
     if (!friendCode || !userId) {
       return res
         .status(400)
-        .json({ message: "Thiếu thiếu thông tin", success: false });
+        .json({ message: "Thiếu thông tin", success: false });
     }
     const user = await User.findById(userId);
     if (friendCode === user.friendCode) {

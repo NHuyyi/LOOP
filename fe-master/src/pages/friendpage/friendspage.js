@@ -90,7 +90,7 @@ function FriendsPage() {
                 />
               ))
             ) : (
-              <p>Trống</p>
+              <p>Không có lời mời nào được gửi</p>
             )}
           </div>
 
@@ -106,7 +106,7 @@ function FriendsPage() {
                 />
               ))
             ) : (
-              <p>Trống</p>
+              <p>Hộp thư rỗng rồi, kết bạn ngay thôi!</p>
             )}
           </div>
         </div>

@@ -4,6 +4,9 @@
   padding: 20px;
   text-align: left;
 }
+.container p{
+  font-size: 1rem;
+}
 
 .searchBox {
   display: flex;
