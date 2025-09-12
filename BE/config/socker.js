@@ -15,6 +15,9 @@ function initSocket(server) {
   io.on("connection", (socket) => {
     socket.on("register", (userId) => {
       onlineUsers[userId] = socket.id;
+
+      // phát cho tất cả client danh sách user online
+      io.emit("update-online-users", Object.keys(onlineUsers));
     });
 
     socket.on("disconnect", () => {
@@ -24,6 +27,8 @@ function initSocket(server) {
           break;
         }
       }
+      // phát lại danh sách user online sau khi xóa
+      io.emit("update-online-users", Object.keys(onlineUsers));
     });
   });
 }

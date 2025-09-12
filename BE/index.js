@@ -37,3 +37,4 @@ app.use("/api/users", UserRoute);
 app.use("/api/posts", PostRoute);
 app.use("/api/friends", FriendRoute);
 // Xuất io & onlineUsers để các controller (removeFriend, sendRequest, …) dùng
+module.exports = { getIO, getOnlineUsers };

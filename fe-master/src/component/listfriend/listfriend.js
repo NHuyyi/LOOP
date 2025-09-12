@@ -4,7 +4,7 @@ import styles from "./FriendsList.module.css";
 import classNames from "classnames/bind";
 import { getUserbyId } from "../../services/User/getUserbyId";
 import { UserRoundX } from "lucide-react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setUser } from "../../redux/userSlice";
 import { removeFriend } from "../../services/Friends/removefriend";
 
@@ -15,6 +15,8 @@ function FriendsList({ currentUserId, id }) {
   const [loading, setLoading] = useState(true);
 
   const dispatch = useDispatch();
+  const onlineUsers = useSelector((state) => state.online); // lấy danh sách userId đang online
+  const isOnline = onlineUsers.includes(id);
 
   useEffect(() => {
     const fetchFriend = async () => {
@@ -43,16 +45,21 @@ function FriendsList({ currentUserId, id }) {
 
   return (
     <div className={cx("friendItem")}>
-      <img
-        src={friend.avatar || "/default-avatar.png"}
-        alt={friend.name}
-        className={cx("avatar")}
-      />
+      <div className={cx("avatarWrapper")}>
+        <img
+          src={friend.avatar || "/default-avatar.png"}
+          alt={friend.name}
+          className={cx("avatar", { offline: !isOnline })}
+        />
+        {/* chấm trạng thái */}
+        <span className={cx("statusDot", isOnline ? "online" : "offline")} />
+      </div>
 
       <div className={cx("info")}>
         <span className={cx("name")}>{friend.name || friend.username}</span>
         <div className={cx("friendCode")}>Mã: {friend.friendCode}</div>
       </div>
+
       <button className={cx("removeButton")} onClick={handleRemoveFriend}>
         <UserRoundX />
       </button>

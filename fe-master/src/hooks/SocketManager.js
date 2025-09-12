@@ -4,6 +4,7 @@ import socket from "../socker";
 import { getUserbyId } from "../services/User/getUserbyId";
 import { setUser } from "../redux/userSlice";
 import { updateReaction } from "../redux/reactionSlide";
+import { setOnlineUsers } from "../redux/onlineSlice";
 
 function SocketManager() {
   const currentUser = useSelector((state) => state.user.user);
@@ -61,6 +62,7 @@ function SocketManager() {
           setUser({ user: updatedUser, token: localStorage.getItem("token") })
         );
       });
+
       socket.on(
         "reactionUpdated",
         ({ postId, reactionCounts, totalReactions }) => {
@@ -73,6 +75,10 @@ function SocketManager() {
           dispatch(updateReaction({ postId, reactionCounts, totalReactions }));
         }
       );
+
+      socket.on("update-online-users", (onlineUserIds) => {
+        dispatch(setOnlineUsers(onlineUserIds));
+      });
     }
 
     return () => {
@@ -80,6 +86,7 @@ function SocketManager() {
       socket.off("friendRequestReceived");
       socket.off("friendRequestAccepted");
       socket.off("reactionUpdated");
+      socket.off("update-online-users");
     };
   }, [currentUser, dispatch]);
 
