@@ -47,9 +47,6 @@ function Reset() {
     try {
       setLoading(true); // bật trạng thái loading
       const data = await resetpassword(email, password, comfimPassword);
-      console.log("email:", email);
-      console.log("password:", password);
-      console.log("comfimPassword:", comfimPassword);
       setMessage(data.message);
       setSuccess(data.success);
       if (data.success === true) navigate("/");

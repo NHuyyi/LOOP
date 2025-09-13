@@ -10,7 +10,7 @@ import {
   FaAngry,
 } from "react-icons/fa";
 import { useSelector } from "react-redux";
-import { getReactionList } from "../../services/Post/getReactionList";
+import { getReactionList } from "../../services/Post/reaction/getReactionList";
 import ReactionList from "../ReactionList/ReactionList";
 
 const cx = classNames.bind(styles);

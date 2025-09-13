@@ -3,6 +3,7 @@ import styles from "./PostCard.module.css";
 import classNames from "classnames/bind";
 import PostReaction from "../PostReaction/PostReaction";
 import ReactionCounts from "../reactioncount/reactioncount";
+import AddComment from "../addComment/addComment";
 
 const cx = classNames.bind(styles);
 
@@ -71,6 +72,7 @@ function PostCard({ post, currentUserId }) {
           💬 Bình luận
         </button>
       </div>
+      <AddComment postId={post._id} />
     </div>
   );
 }

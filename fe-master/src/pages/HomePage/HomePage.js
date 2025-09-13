@@ -7,7 +7,7 @@ import { useSelector } from "react-redux";
 import { useGetPost } from "../../hooks/getpost";
 import { useDispatch } from "react-redux";
 import { updateReaction } from "../../redux/reactionSlide";
-import countreaction from "../../services/Post/countreaction";
+import countreaction from "../../services/Post/reaction/countreaction";
 
 const cx = classNames.bind(styles);
 

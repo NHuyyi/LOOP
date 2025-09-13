@@ -1,6 +1,6 @@
-const PostModel = require("../../model/Post.Model");
-const { getIO, getOnlineUsers } = require("../../config/socker");
-const calculateCounts = require("../../utils/reaction");
+const PostModel = require("../../../model/Post.Model");
+const { getIO, getOnlineUsers } = require("../../../config/socker");
+const calculateCounts = require("../../../utils/reaction");
 exports.addReaction = async (req, res) => {
   try {
     const { postId, userId, reactionType } = req.body; // FE gửi postId + userId + reactionType

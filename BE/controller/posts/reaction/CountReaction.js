@@ -1,5 +1,5 @@
-const PostModel = require("../../model/Post.Model");
-const calculateCounts = require("../../utils/reaction");
+const PostModel = require("../../../model/Post.Model");
+const calculateCounts = require("../../../utils/reaction");
 
 exports.countReactions = async (req, res) => {
   try {

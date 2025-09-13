@@ -1,5 +1,5 @@
 // controllers/GetReactionList.js
-const PostModel = require("../../model/Post.Model");
+const PostModel = require("../../../model/Post.Model");
 
 exports.getReactionList = async (req, res) => {
   try {

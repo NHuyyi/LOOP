@@ -4,17 +4,16 @@ import styles from "./FriendsList.module.css";
 import classNames from "classnames/bind";
 import { getUserbyId } from "../../services/User/getUserbyId";
 import { UserRoundX } from "lucide-react";
-import { useDispatch, useSelector } from "react-redux";
-import { setUser } from "../../redux/userSlice";
-import { removeFriend } from "../../services/Friends/removefriend";
+import { useSelector } from "react-redux";
+import Removefriend from "../removefriend/removefriend";
 
 const cx = classNames.bind(styles);
 
 function FriendsList({ currentUserId, id }) {
   const [friend, setFriend] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [open, setOpen] = useState(false);
 
-  const dispatch = useDispatch();
   const onlineUsers = useSelector((state) => state.online); // lấy danh sách userId đang online
   const isOnline = onlineUsers.includes(id);
 
@@ -33,15 +32,16 @@ function FriendsList({ currentUserId, id }) {
     if (id) fetchFriend();
   }, [id]);
 
-  const handleRemoveFriend = async () => {
-    await removeFriend(currentUserId, id);
-    const updatedUser = await getUserbyId(currentUserId);
-    dispatch(
-      setUser({ user: updatedUser, token: localStorage.getItem("token") })
-    );
-  };
-
   if (loading) return <div className={cx("spinner-border text-light")}></div>;
+  if (open)
+    return (
+      <Removefriend
+        currentUserId={currentUserId}
+        id={id}
+        name={friend.name}
+        onClose={() => setOpen(false)}
+      />
+    );
 
   return (
     <div className={cx("friendItem")}>
@@ -60,7 +60,7 @@ function FriendsList({ currentUserId, id }) {
         <div className={cx("friendCode")}>Mã: {friend.friendCode}</div>
       </div>
 
-      <button className={cx("removeButton")} onClick={handleRemoveFriend}>
+      <button className={cx("removeButton")} onClick={() => setOpen(true)}>
         <UserRoundX />
       </button>
     </div>

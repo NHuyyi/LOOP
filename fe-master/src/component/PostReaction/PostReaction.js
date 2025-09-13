@@ -1,7 +1,7 @@
 import { useState, useRef } from "react";
 import classNames from "classnames/bind";
 import styles from "./PostReaction.module.css";
-import addreaction from "../../services/Post/addreaction";
+import addreaction from "../../services/Post/reaction/addreaction";
 
 import {
   FaThumbsUp,
