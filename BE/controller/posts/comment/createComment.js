@@ -1,4 +1,5 @@
 const PostModel = require("../../../model/Post.Model");
+const UserModel = require("../../../model/User.Model");
 const { getIO, getOnlineUsers } = require("../../../config/socker");
 
 exports.createComment = async (req, res) => {
@@ -7,44 +8,53 @@ exports.createComment = async (req, res) => {
     const userId = req.user.id;
 
     if (!postId || !text || !userId) {
-      return res
-        .status(400)
-        .json({ error: "Thong tin bị thiếu vui lòng kiểm tra lại" });
-    }
-    const post = await PostModel.findById(postId);
-    if (!post) {
-      return res.status(400).json({ error: "không tìm thất bài viết" });
+      return res.status(400).json({ error: "Thông tin bị thiếu" });
     }
 
-    const newcomment = {
-      user: userId,
-      text,
-    };
+    const post = await PostModel.findById(postId).populate(
+      "comments.user",
+      "name avatar friends"
+    );
 
-    post.comments.push(newcomment);
+    if (!post)
+      return res.status(404).json({ error: "Không tìm thấy bài viết" });
+
+    post.comments.push({ user: userId, text });
     await post.save();
+    await post.populate("comments.user", "name avatar friends");
 
-    // dùng populate để trả vể tên và ảnh đại diện của người gửi
-    await post.populate("comments.user", "name avatar");
+    const allComments = post.comments.map((c) => ({
+      userId: c.user._id,
+      name: c.user.name,
+      avatar: c.user.avatar,
+      text: c.text,
+      createdAt: c.createdAt,
+    }));
+
+    const commenter = await UserModel.findById(userId).select("friends");
+    const allowedUsers = commenter.friends.map((f) => String(f));
+    allowedUsers.push(String(userId));
 
     const io = getIO();
     const onlineUsers = getOnlineUsers();
 
-    // Gửi event cho tất cả user online (hoặc lọc user liên quan)
-    Object.values(onlineUsers).forEach((socketId) => {
-      io.to(socketId).emit("createComments", {
-        postId,
-        comments: post.comments,
-      });
+    Object.entries(onlineUsers).forEach(([uid, socketId]) => {
+      if (allowedUsers.includes(uid)) {
+        io.to(socketId).emit("createComments", {
+          postId,
+          comments: allComments,
+          commentsCount: allComments.length,
+        });
+      }
     });
+
     res.status(201).json({
-      comments: post.comments,
-      message: "Thêm bình luận thành công",
+      success: true,
+      comments: allComments,
+      commentsCount: allComments.length,
     });
   } catch (err) {
-    console.error(err); // in chi tiết ra console BE
-    res.status(500).json({
-      error: err.message,
-    });
+    console.error(err);
+    res.status(500).json({ error: err.message });
   }
 };

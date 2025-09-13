@@ -1,0 +1,64 @@
+/* Removefriend.module.css */
+
+.container-remove {
+  position: fixed; /* Nổi trên mọi nội dung */
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%); /* căn giữa */
+  background-color: #fff;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  z-index: 1001; /* phải cao hơn overlay */
+  width: 90%;
+  max-width: 400px;
+  text-align: center;
+  animation: fadeInScale 0.2s ease-out;
+}
+
+@keyframes fadeInScale {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.8);
+  }
+  100% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+.container-remove span {
+  display: block;
+  margin-bottom: 1.5rem;
+  font-size: 1rem;
+  color: #333;
+}
+
+.submitbutton,
+.cancelbutton {
+  padding: 0.6rem 1.2rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 500;
+  margin: 0 0.5rem;
+  transition: background 0.2s;
+}
+
+.submitbutton {
+  background-color: #e74c3c;
+  color: #fff;
+}
+
+.submitbutton:hover {
+  background-color: #c0392b;
+}
+
+.cancelbutton {
+  background-color: #bdc3c7;
+  color: #2c3e50;
+}
+
+.cancelbutton:hover {
+  background-color: #95a5a6;
+}

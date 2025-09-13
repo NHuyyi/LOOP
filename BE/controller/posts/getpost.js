@@ -13,10 +13,15 @@ exports.getNewsFeed = async (req, res) => {
 
     const posts = await PostModel.find({ author: { $in: ids } })
       .populate("author", "name avatar")
-      .populate("comments.user", "name avatar")
-      .sort({ createdAt: -1 });
+      .sort({ createdAt: -1 })
+      .lean();
 
-    res.json({ success: true, data: posts });
+    const postsWithCount = posts.map((p) => ({
+      ...p,
+      commentCount: Array.isArray(p.comments) ? p.comments.length : 0,
+    }));
+
+    res.json({ success: true, data: postsWithCount }); // trả đúng dữ liệu
   } catch (err) {
     console.error("Lỗi:", err.message);
     res.status(500).json({ error: err.message });

@@ -1,15 +1,21 @@
 import { useState } from "react";
+import { useSelector } from "react-redux";
 import styles from "./PostCard.module.css";
 import classNames from "classnames/bind";
 import PostReaction from "../PostReaction/PostReaction";
 import ReactionCounts from "../reactioncount/reactioncount";
-import AddComment from "../addComment/addComment";
+import CommentList from "../commentlist/Commentlist";
+import { CircleX } from "lucide-react";
 
 const cx = classNames.bind(styles);
 
 function PostCard({ post, currentUserId }) {
   const [showComments, setShowComments] = useState(false);
-  const [refreshKey, setRefreshKey] = useState(0); // 👈 thêm state
+  const [refreshKey, setRefreshKey] = useState(0);
+
+  // Lấy danh sách comment từ Redux store
+  const comments = useSelector((state) => state.comments[post._id] || []);
+  const commentCount = comments.length;
 
   const reactions = post.reactions || [];
 
@@ -59,20 +65,34 @@ function PostCard({ post, currentUserId }) {
       <div className={cx("actionBar")}>
         <PostReaction
           postId={post._id}
-          userID={currentUserId} // Giả sử bạn có userID của người dùng hiện tại
+          userID={currentUserId}
           reactionType={
             reactions.find((r) => r.user === currentUserId)?.type || ""
           }
-          onReacted={() => setRefreshKey((k) => k + 1)} // 👈 callback
+          onReacted={() => setRefreshKey((k) => k + 1)}
         />
         <button
           onClick={() => setShowComments(!showComments)}
           className={cx("actionButton")}
         >
-          💬 Bình luận
+          {commentCount} 💬
         </button>
       </div>
-      <AddComment postId={post._id} />
+
+      {/* Modal hiển thị CommentList */}
+      {showComments && (
+        <div className={cx("modalOverlay")}>
+          <div className={cx("modalContent")}>
+            <button
+              onClick={() => setShowComments(false)}
+              className={cx("closeButton")}
+            >
+              <CircleX />
+            </button>
+            <CommentList postId={post._id} />
+          </div>
+        </div>
+      )}
     </div>
   );
 }

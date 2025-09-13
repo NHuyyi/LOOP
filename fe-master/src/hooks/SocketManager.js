@@ -5,6 +5,7 @@ import { getUserbyId } from "../services/User/getUserbyId";
 import { setUser } from "../redux/userSlice";
 import { updateReaction } from "../redux/reactionSlide";
 import { setOnlineUsers } from "../redux/onlineSlice";
+import { addComment, setComments } from "../redux/commentSlide";
 
 function SocketManager() {
   const currentUser = useSelector((state) => state.user.user);
@@ -79,6 +80,23 @@ function SocketManager() {
       socket.on("update-online-users", (onlineUserIds) => {
         dispatch(setOnlineUsers(onlineUserIds));
       });
+
+      socket.on("createComments", (payload) => {
+        // payload có thể { postId, comments: [...] } hoặc { postId, comment: {...} }
+        const postId = payload?.postId;
+        if (!postId) return;
+
+        if (Array.isArray(payload.comments)) {
+          dispatch(setComments({ postId, comments: payload.comments }));
+          return;
+        }
+        if (payload.comment) {
+          dispatch(addComment({ postId, comment: payload.comment }));
+          return;
+        }
+
+        console.warn("createComments payload unexpected:", payload);
+      });
     }
 
     return () => {
@@ -87,6 +105,7 @@ function SocketManager() {
       socket.off("friendRequestAccepted");
       socket.off("reactionUpdated");
       socket.off("update-online-users");
+      socket.off("createComments");
     };
   }, [currentUser, dispatch]);
 

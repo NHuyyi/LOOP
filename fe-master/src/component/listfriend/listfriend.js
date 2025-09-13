@@ -33,15 +33,6 @@ function FriendsList({ currentUserId, id }) {
   }, [id]);
 
   if (loading) return <div className={cx("spinner-border text-light")}></div>;
-  if (open)
-    return (
-      <Removefriend
-        currentUserId={currentUserId}
-        id={id}
-        name={friend.name}
-        onClose={() => setOpen(false)}
-      />
-    );
 
   return (
     <div className={cx("friendItem")}>
@@ -63,6 +54,17 @@ function FriendsList({ currentUserId, id }) {
       <button className={cx("removeButton")} onClick={() => setOpen(true)}>
         <UserRoundX />
       </button>
+      {open && (
+        <>
+          <div className={cx("overlay")} onClick={() => setOpen(false)}></div>
+          <Removefriend
+            currentUserId={currentUserId}
+            id={id}
+            name={friend.name}
+            onClose={() => setOpen(false)}
+          />
+        </>
+      )}
     </div>
   );
 }

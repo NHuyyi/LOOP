@@ -6,12 +6,12 @@
   padding: 0.6rem 1rem;
   border-radius: 0.75rem;
   cursor: pointer;
+  position: relative;
   transition: background 0.2s ease-in-out, transform 0.15s;
 }
 
 .friendItem:hover {
   background: #f9f9f9;
-  transform: translateY(-1px);
 }
 
 .avatar {
@@ -59,4 +59,15 @@
 
 .removeButton:hover {
   background: #ffcccc;
+}
+
+/* Overlay modal */
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
 }
