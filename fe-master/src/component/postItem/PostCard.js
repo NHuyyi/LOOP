@@ -15,10 +15,12 @@ function PostCard({ post, currentUserId }) {
 
   // Lấy danh sách comment từ Redux store
   const comments = useSelector((state) => state.comments[post._id] || []);
-  const commentCount = comments.length;
+  const commentCount =
+    comments.length > 0 ? comments.length : post.commentCount || 0;
+
+  let commentlength = commentCount;
 
   const reactions = post.reactions || [];
-
   return (
     <div className={cx("postCard")}>
       {/* Author */}
@@ -75,13 +77,16 @@ function PostCard({ post, currentUserId }) {
           onClick={() => setShowComments(!showComments)}
           className={cx("actionButton")}
         >
-          {commentCount} 💬
+          {commentlength} 💬
         </button>
       </div>
 
       {/* Modal hiển thị CommentList */}
       {showComments && (
-        <div className={cx("modalOverlay")}>
+        <div
+          className={cx("modalOverlay")}
+          onClick={() => setShowComments(false)}
+        >
           <div className={cx("modalContent")}>
             <button
               onClick={() => setShowComments(false)}

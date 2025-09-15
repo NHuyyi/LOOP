@@ -13,13 +13,23 @@ exports.getNewsFeed = async (req, res) => {
 
     const posts = await PostModel.find({ author: { $in: ids } })
       .populate("author", "name avatar")
+      .populate("comments.user", "friends")
       .sort({ createdAt: -1 })
       .lean();
 
-    const postsWithCount = posts.map((p) => ({
-      ...p,
-      commentCount: Array.isArray(p.comments) ? p.comments.length : 0,
-    }));
+    const postsWithCount = posts.map((p) => {
+      const visibleComments = (p.comments || []).filter((c) => {
+        if (!c.user) return false;
+        if (String(c.user._id) === String(userId)) return true;
+        return c.user.friends.map(String).includes(String(userId));
+      });
+
+      const { comments, ...rest } = p;
+      return {
+        ...rest,
+        commentCount: visibleComments.length,
+      };
+    });
 
     res.json({ success: true, data: postsWithCount }); // trả đúng dữ liệu
   } catch (err) {
