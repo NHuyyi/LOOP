@@ -8,10 +8,20 @@ export const getCommentList = async (postId, token) => {
       },
     });
 
-    const data = await res.json(); // 👈 lấy dữ liệu JSON
-    return data; // { success, data: [ { userId, name, avatar, type } ] }
+    const data = await res.json();
+
+    if (!res.ok) {
+      return {
+        success: false,
+        status: res.status,
+        error: data.error || "Lấy danh sách comment thất bại",
+      };
+    }
+
+    // BE trả về { success, count, data }
+    return data;
   } catch (error) {
-    console.error("Lỗi khi gọi getReactionList:", error);
+    console.error("Lỗi khi gọi getCommentList:", error);
     return { success: false, error: error.message };
   }
 };

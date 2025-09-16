@@ -5,7 +5,11 @@ import { getUserbyId } from "../services/User/getUserbyId";
 import { setUser } from "../redux/userSlice";
 import { updateReaction } from "../redux/reactionSlide";
 import { setOnlineUsers } from "../redux/onlineSlice";
-import { addComment, setComments } from "../redux/commentSlide";
+import {
+  addComment,
+  setComments,
+  updateCommentReaction,
+} from "../redux/commentSlide";
 
 function SocketManager() {
   const currentUser = useSelector((state) => state.user.user);
@@ -97,6 +101,27 @@ function SocketManager() {
 
         console.warn("createComments payload unexpected:", payload);
       });
+
+      socket.on(
+        "UpdateReactComment",
+        ({ postId, commentId, reactionCounts, totalReactions }) => {
+          console.log(
+            "📩 Reaction update:",
+            postId,
+            commentId,
+            reactionCounts,
+            totalReactions
+          );
+          dispatch(
+            updateCommentReaction({
+              postId,
+              commentId,
+              reactionCounts,
+              totalReactions,
+            })
+          );
+        }
+      );
     }
 
     return () => {

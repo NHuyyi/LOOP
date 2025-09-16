@@ -14,6 +14,7 @@ const { createComment } = require("../controller/posts/comment/createComment");
 const {
   getCommentsList,
 } = require("../controller/posts/comment/getCommentList");
+const { reactComment } = require("../controller/posts/comment/reactcomment");
 const Authorization = require("../middleware/Authorization");
 
 router.post("/uploadImage", Authorization, upload.single("image"), uploadImage);
@@ -24,5 +25,5 @@ router.post("/countReactions", Authorization, countReactions);
 router.get("/:postId/reactions/list", Authorization, getReactionList);
 router.post("/createComments", Authorization, createComment);
 router.get("/:postId/comments/list", Authorization, getCommentsList);
-
+router.post("/reactcomment", Authorization, reactComment);
 module.exports = router;

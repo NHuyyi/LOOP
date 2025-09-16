@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
-import FormSignUp from "../../component/FormSignUp/FormSignUp";
+import FormSignUp from "../../component/user/FormSignUp/FormSignUp";
 import styles from "./SignUpPage.module.css";
 import classNames from "classnames/bind";
 import logo from "../../img/logo.png";
-import FormLogin from "../../component/FormLogin/FormLogin";
+import FormLogin from "../../component/user/FormLogin/FormLogin";
 const cx = classNames.bind(styles);
 
 function SignUpPage() {

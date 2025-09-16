@@ -1,7 +1,7 @@
 import styles from "./HomePage.module.css";
 import classNames from "classnames/bind";
-import CreatePost from "../../component/creatpost/creatpost";
-import PostCard from "../../component/postItem/PostCard";
+import CreatePost from "../../component/post/creatpost/creatpost";
+import PostCard from "../../component/post/postItem/PostCard";
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { useGetPost } from "../../hooks/getpost";

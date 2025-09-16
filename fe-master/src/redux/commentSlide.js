@@ -14,6 +14,18 @@ const commentSlice = createSlice({
       const { postId, comments } = action.payload;
       state[postId] = Array.isArray(comments) ? comments : [];
     },
+    updateCommentReaction: (state, action) => {
+      const { postId, commentId, reactionCounts, totalReactions } =
+        action.payload;
+      const comments = state[postId];
+      if (!Array.isArray(comments)) return;
+
+      const comment = comments.find((c) => c._id === commentId);
+      if (comment) {
+        comment.reactionCounts = reactionCounts;
+        comment.totalReactions = totalReactions;
+      }
+    },
     clearCommentsForPost: (state, action) => {
       const postId = action.payload;
       delete state[postId];
@@ -21,8 +33,12 @@ const commentSlice = createSlice({
   },
 });
 
-export const { addComment, setComments, clearCommentsForPost } =
-  commentSlice.actions;
+export const {
+  addComment,
+  setComments,
+  clearCommentsForPost,
+  updateCommentReaction,
+} = commentSlice.actions;
 export default commentSlice.reducer;
 
 // selector helper

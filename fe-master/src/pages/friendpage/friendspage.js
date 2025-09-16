@@ -3,10 +3,10 @@ import classNames from "classnames/bind";
 import { useSelector } from "react-redux";
 import { useState } from "react";
 import { findnewfriend } from "../../services/Friends/findnewfriend";
-import AddFriends from "../../component/addfriends/addfriends";
-import FriendsList from "../../component/listfriend/listfriend";
-import SentRequestList from "../../component/sentrequestlist/sentrequestlist";
-import FriendsRequestList from "../../component/friendsrequest/friendrequest";
+import AddFriends from "../../component/friends/addfriends/addfriends";
+import FriendsList from "../../component/friends/listfriend/listfriend";
+import SentRequestList from "../../component/friends/sentrequestlist/sentrequestlist";
+import FriendsRequestList from "../../component/friends/friendsrequest/friendrequest";
 
 const cx = classNames.bind(styles);
 

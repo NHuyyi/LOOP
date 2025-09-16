@@ -11,6 +11,7 @@
     "bootstrap": "^5.3.7",
     "classnames": "^2.5.1",
     "cloudinary": "^2.7.0",
+    "dayjs": "^1.11.18",
     "express": "^5.1.0",
     "lucide-react": "^0.541.0",
     "multer": "^2.0.2",
