@@ -1,18 +1,11 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getCommentList } from "../../../services/Post/comments/getCommentList";
 import { setComments } from "../../../redux/commentSlide";
+import AddComment from "../addComment/addComment";
+import CommentItem from "../commentItem/CommentItem";
 import classNames from "classnames/bind";
 import styles from "./commentList.module.css";
-import AddComment from "../addComment/addComment";
-import dayjs from "dayjs";
-import relativeTime from "dayjs/plugin/relativeTime";
-import "dayjs/locale/vi"; // import ngôn ngữ tiếng Việt
-import ReactComment from "../reactcomment/reactcomment";
-import ReactCommentSummary from "../ReacCommentSummary/ReactCommentSummary";
-
-dayjs.extend(relativeTime);
-dayjs.locale("vi"); // thiết lập ngôn ngữ mặc định là tiếng Việt
 
 const cx = classNames.bind(styles);
 
@@ -20,9 +13,14 @@ function CommentList({ postId, userID, AuthorId }) {
   const dispatch = useDispatch();
   const token = localStorage.getItem("token");
   const lastCommentRef = useRef(null);
+
   const comments = useSelector((state) =>
     Array.isArray(state.comments?.[postId]) ? state.comments[postId] : []
   );
+  console.log("comment", comments);
+
+  const [replyTarget, setReplyTaget] = useState(null);
+
   useEffect(() => {
     const fetchComments = async () => {
       try {
@@ -43,59 +41,25 @@ function CommentList({ postId, userID, AuthorId }) {
     }
   }, [comments]);
 
-  const sortedComments = comments
-    .slice()
-    .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
   return (
     <div className={cx("commentWrapper")}>
       <div className={cx("scrollArea")}>
         <div className={cx("commentsContainer")}>
-          {sortedComments.length === 0 ? (
+          {comments.length === 0 ? (
             <p className={cx("noComments")}>💬 Chưa có bình luận nào</p>
           ) : (
-            sortedComments.map((c, idx) => {
-              const isLast = idx === 0; // vì đang sắp xếp từ mới đến cũ
+            comments.map((c, idx) => {
+              const isLast = idx === 0;
               return (
                 <div key={c._id} ref={isLast ? lastCommentRef : null}>
-                  <div className={cx("commentItem")}>
-                    <img src={c.avatar} alt={c.name} className={cx("avatar")} />
-                    <div className={cx("content")}>
-                      <div className={cx("bubble")}>
-                        <p className={cx("name")}>{c.name}</p>
-                        <p className={cx("text")}>{c.text}</p>
-                      </div>
-                      <div className={cx("meta")}>
-                        <span className={cx("time")}>
-                          {dayjs(c.createdAt).fromNow()}
-                        </span>
-
-                        <span className={cx("action")}>
-                          <ReactComment
-                            postId={postId}
-                            userId={userID}
-                            commentId={c._id}
-                            reactionType={
-                              Array.isArray(c.reactions)
-                                ? c.reactions.find((r) => r.user === userID)
-                                    ?.type || ""
-                                : ""
-                            }
-                          />
-                        </span>
-                        <span className={cx("action")}>Trả lời</span>
-                        <span className={cx("actions")}>
-                          <ReactCommentSummary
-                            reactionCounts={c.reactionCounts}
-                            postId={postId}
-                            commentID={c._id}
-                            userID={userID}
-                            AuthorId={AuthorId}
-                            commentuser={c.userId}
-                          />
-                        </span>
-                      </div>
-                    </div>
-                  </div>
+                  <CommentItem
+                    comment={c}
+                    postId={postId}
+                    userID={userID}
+                    AuthorId={AuthorId}
+                    setReplyTaget={setReplyTaget}
+                    level={0} // comment gốc = level 0
+                  />
                 </div>
               );
             })
@@ -104,7 +68,12 @@ function CommentList({ postId, userID, AuthorId }) {
       </div>
 
       <div className={cx("addCommentWrapper")}>
-        <AddComment postId={postId} />
+        <AddComment
+          postId={postId}
+          parentId={replyTarget?._id || null}
+          replytoname={replyTarget?.name || ""}
+          setReplyTaget={setReplyTaget}
+        />
       </div>
     </div>
   );

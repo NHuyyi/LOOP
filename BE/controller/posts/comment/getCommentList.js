@@ -5,9 +5,8 @@ const calculateCounts = require("../../../utils/reaction");
 exports.getCommentsList = async (req, res) => {
   try {
     const { postId } = req.params;
-    const userId = req.user.id; // lấy từ middleware Authorization
+    const userId = req.user.id;
 
-    // Lấy post + populate user trong comments (để có name, avatar, friends)
     const post = await PostModel.findById(postId)
       .populate("comments.user", "name avatar friends")
       .lean();
@@ -21,7 +20,7 @@ exports.getCommentsList = async (req, res) => {
 
     const comments = Array.isArray(post.comments) ? post.comments : [];
 
-    // Hàm kiểm tra quyền xem comment
+    // Hàm kiểm tra quyền xem
     const canView = (c) => {
       if (!c.user) return false;
       if (String(c.user._id) === String(userId)) return true;
@@ -31,59 +30,52 @@ exports.getCommentsList = async (req, res) => {
       return friends.includes(String(userId));
     };
 
-    // Gom con theo parentId
-    const childrenMap = new Map();
+    const map = new Map();
+    const roots = [];
+
+    // Chỉ 1 vòng duyệt: normalize + build map
     for (const c of comments) {
-      const pid = c.parentId ? String(c.parentId) : "root";
-      if (!childrenMap.has(pid)) childrenMap.set(pid, []);
-      childrenMap.get(pid).push(c);
-    }
+      if (!canView(c)) continue;
 
-    // Bắt đầu từ comment gốc (parentId = null)
-    const roots = childrenMap.get("root") || [];
-
-    // BFS để duyệt — chỉ thêm con nếu cha visible
-    const visible = [];
-    const queue = [...roots];
-
-    while (queue.length) {
-      const node = queue.shift();
-
-      if (!canView(node)) {
-        // nếu cha không visible → bỏ luôn cả nhánh con
-        continue;
-      }
-
-      visible.push(node);
-
-      // duyệt con của node này
-      const kids = childrenMap.get(String(node._id)) || [];
-      for (const ch of kids) {
-        queue.push(ch);
-      }
-    }
-
-    // Chuẩn hoá dữ liệu trả về (mảng phẳng, có parentId)
-    const data = visible.map((c) => {
       const { counts, total } = calculateCounts(c.reactions || []);
-      return {
+
+      const normalized = {
         _id: c._id,
         userId: c.user._id,
         name: c.user.name,
         avatar: c.user.avatar,
         text: c.text,
-        parentId: c.parentId || null,
+        parentId: c.parentId ? String(c.parentId) : null,
         reactions: c.reactions || [],
         reactionCounts: counts,
         totalReactions: total,
         createdAt: c.createdAt,
+        replies: [],
       };
-    });
+
+      map.set(String(c._id), normalized);
+    }
+
+    // Nối parent–child
+    for (const c of map.values()) {
+      if (c.parentId && map.has(c.parentId)) {
+        map.get(c.parentId).replies.push(c);
+      } else {
+        roots.push(c);
+      }
+    }
+
+    // Sắp xếp replies theo thời gian nếu cần
+    const sortReplies = (arr) => {
+      arr.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
+      arr.forEach((c) => sortReplies(c.replies));
+    };
+    sortReplies(roots);
 
     return res.json({
       success: true,
-      count: data.length,
-      data,
+      count: map.size,
+      data: roots,
     });
   } catch (err) {
     console.error("Lỗi getCommentsList:", err);

@@ -139,12 +139,13 @@
   overflow-y: auto;
   border-radius: 0.75rem;
   padding: 1.25rem;
+  padding-top: 2rem;
   position: relative;
 }
 
 .closeButton {
   position: absolute;
-  top: 0.625rem;
+  top: -0.45rem;
   right: 0.75rem;
   background: transparent;
   border: none;

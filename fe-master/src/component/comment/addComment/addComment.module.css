@@ -8,19 +8,17 @@
   background: #f8f9fa;
 }
 
-.custom-input {
-  flex: 1;
-  padding: 0.625rem 0.875rem;
-  border: 0.0625rem solid #ddd;
-  border-radius: 0.5rem;
-  font-size: 0.875rem;
+.editableInput {
+  min-height: 40px;
+  max-width: 100%;
+  width: 100%;
+  border: 1px solid #ccc;
+  padding: 8px;
+  font-size: 15px;
+  border-radius: 6px;
   outline: none;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
-}
-
-.custom-input:focus {
-  border-color: #1877f2;
-  box-shadow: 0 0 0 0.125rem rgba(24, 119, 242, 0.15);
+  white-space: pre-wrap;
+  text-align: start;
 }
 
 .custom-button {

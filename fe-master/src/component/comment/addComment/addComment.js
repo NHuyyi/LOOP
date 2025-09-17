@@ -1,68 +1,98 @@
 import createComment from "../../../services/Post/comments/createComments";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useDispatch } from "react-redux";
-import { setComments, addComment } from "../../../redux/commentSlide";
+import { addComment } from "../../../redux/commentSlide"; // 👈 đổi sang addComment
 import classNames from "classnames/bind";
 import styles from "./addComment.module.css";
 
 const cx = classNames.bind(styles);
 
-function AddComment({ postId }) {
-  const [text, setText] = useState("");
+function AddComment({ postId, parentId, replytoname, setReplyTaget }) {
+  const editorRef = useRef(null);
   const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
 
+  // Đặt caret cuối
+  const placeCaretAtEnd = (el) => {
+    const range = document.createRange();
+    const sel = window.getSelection();
+    range.selectNodeContents(el);
+    range.collapse(false);
+    sel.removeAllRanges();
+    sel.addRange(range);
+  };
+
+  // Khi thay đổi reply target → chèn @Tên
+  useEffect(() => {
+    if (editorRef.current) {
+      if (replytoname) {
+        editorRef.current.innerHTML = `<span style="color:#1877F2;" contenteditable="false">@${replytoname}</span>&nbsp;`;
+        placeCaretAtEnd(editorRef.current);
+      } else {
+        editorRef.current.innerHTML = "";
+      }
+    }
+  }, [replytoname, parentId]);
+
+  // Reset reply target nếu bị clear
+  useEffect(() => {
+    if (!replytoname && setReplyTaget) {
+      setReplyTaget(null);
+    }
+  }, [replytoname, setReplyTaget]);
+
+  // Lấy text từ contentEditable
+  const getPlainText = () => {
+    if (!editorRef.current) return "";
+    return editorRef.current.innerText.trim();
+  };
+
   const handleClick = async (e) => {
     e.preventDefault();
-    if (!text.trim()) return;
+    const text = getPlainText();
+    if (!text) return;
+
     try {
       const token = localStorage.getItem("token");
       setLoading(true);
-      const res = await createComment(postId, text, token);
 
-      // FE xử lý nhiều kiểu response: comments array (toàn bộ), hoặc single comment
-      if (res) {
-        if (Array.isArray(res.comments)) {
-          dispatch(setComments({ postId, comments: res.comments }));
-        } else if (res.comment) {
-          dispatch(addComment({ postId, comment: res.comment }));
-        } else if (Array.isArray(res.data)) {
-          dispatch(setComments({ postId, comments: res.data }));
-        } else {
-          // fallback: tạo object local tạm (nếu BE không trả đầy đủ)
-          const tempComment = {
-            userId: "me",
-            name: "Bạn",
-            avatar: null,
-            text,
-            createdAt: new Date().toISOString(),
-          };
-          dispatch(addComment({ postId, comment: tempComment }));
-        }
+      const res = await createComment(postId, text, token, parentId);
+
+      // BE trả về { success, comment }
+      if (res && res.comment) {
+        dispatch(addComment({ postId, comment: res.comment }));
+      } else {
+        console.warn("Phản hồi API không hợp lệ:", res);
       }
     } catch (error) {
       console.error("createComment error:", error);
     } finally {
       setLoading(false);
-      setText("");
+      if (editorRef.current) {
+        if (replytoname) {
+          editorRef.current.innerHTML = `<span style="color:#1877F2;" contenteditable="false">@${replytoname}</span>&nbsp;`;
+          placeCaretAtEnd(editorRef.current);
+        } else {
+          editorRef.current.innerHTML = "";
+        }
+      }
+      if (setReplyTaget) setReplyTaget(null);
     }
   };
 
   return (
     <div className={cx("Comment-input")}>
-      <input
-        type="text"
-        name="Comment"
-        value={text}
-        onChange={(e) => setText(e.target.value)}
-        className={cx("custom-input")}
-        placeholder="Viết bình luận..."
-      />
+      <div
+        ref={editorRef}
+        contentEditable
+        className={cx("editableInput")}
+        suppressContentEditableWarning={true}
+      ></div>
       <button
         type="button"
         className={cx("custom-button")}
         onClick={handleClick}
-        disabled={loading || !text.trim()}
+        disabled={loading}
       >
         {loading ? <div className={cx("spinner-border text-light")} /> : "Gửi"}
       </button>

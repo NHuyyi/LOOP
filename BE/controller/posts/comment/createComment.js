@@ -4,7 +4,7 @@ const { getIO, getOnlineUsers } = require("../../../config/socker");
 
 exports.createComment = async (req, res) => {
   try {
-    const { postId, text, parentId } = req.body; // ⚡ thêm parentId
+    const { postId, text, parentId } = req.body;
     const userId = req.user.id;
 
     if (!postId || !text || !userId) {
@@ -16,7 +16,7 @@ exports.createComment = async (req, res) => {
       return res.status(404).json({ error: "Không tìm thấy bài viết" });
     }
 
-    // thêm comment hoặc reply
+    // Tạo comment mới
     const newComment = {
       user: userId,
       text,
@@ -25,21 +25,36 @@ exports.createComment = async (req, res) => {
     post.comments.push(newComment);
     await post.save();
 
-    // populate lại để lấy info user
-    await post.populate("comments.user", "name avatar friends");
+    // Lấy lại comment vừa thêm với populate user
+    const populated = await PostModel.findById(postId)
+      .populate("comments.user", "name avatar friends")
+      .lean();
 
-    // map lại comments (phẳng)
-    const allComments = post.comments.map((c) => ({
-      _id: c._id,
-      userId: c.user._id,
-      name: c.user.name,
-      avatar: c.user.avatar,
-      text: c.text,
-      parentId: c.parentId,
-      createdAt: c.createdAt,
-    }));
+    const created = populated.comments.find(
+      (c) =>
+        String(c.user._id) === String(userId) &&
+        c.text === text &&
+        String(c.parentId || "") === String(parentId || "")
+    );
 
-    // lọc người được phép nhận socket event
+    if (!created) {
+      return res.status(500).json({ error: "Không tìm thấy comment vừa tạo" });
+    }
+
+    const responseComment = {
+      _id: created._id,
+      userId: created.user._id,
+      name: created.user.name,
+      avatar: created.user.avatar,
+      text: created.text,
+      parentId: created.parentId,
+      createdAt: created.createdAt,
+      replies: [],
+      reactionCounts: {},
+      totalReactions: 0,
+    };
+
+    // 🔥 Gửi socket cho bạn bè và chính người tạo
     const commenter = await UserModel.findById(userId).select("friends");
     const allowedUsers = commenter.friends.map((f) => String(f));
     allowedUsers.push(String(userId));
@@ -51,16 +66,14 @@ exports.createComment = async (req, res) => {
       if (allowedUsers.includes(uid)) {
         io.to(socketId).emit("createComments", {
           postId,
-          comments: allComments,
-          commentsCount: allComments.length,
+          comment: responseComment, // chỉ gửi 1 comment mới
         });
       }
     });
 
-    res.status(201).json({
+    return res.status(201).json({
       success: true,
-      comments: allComments,
-      commentsCount: allComments.length,
+      comment: responseComment, // FE sẽ dispatch addComment
     });
   } catch (err) {
     console.error("createComment error:", err);

@@ -1,0 +1,46 @@
+.commentWrapper {
+  margin-top: 10px;
+  margin-bottom: 8px;
+  text-align: start;
+}
+
+.commentItem {
+  display: flex;
+  align-items: flex-start;
+}
+
+.avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  margin-right: 8px; /* giữ khoảng cách vừa phải */
+  object-fit: cover;
+}
+
+.content {
+  flex: 1;
+}
+
+.bubble {
+  background: #f0f2f5;
+  padding: 6px 10px;
+  border-radius: 16px;
+  display: inline-block;
+  max-width: 450px;
+}
+
+.name {
+  font-weight: 600;
+  font-size: 13px;
+  margin: 0;
+}
+
+.text {
+  font-size: 13px;
+  margin: 2px 0 0 0;
+  word-break: break-word;
+}
+
+.replies {
+  margin-top: 6px;
+}
