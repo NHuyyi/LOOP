@@ -28,6 +28,6 @@
 .form input {
   padding: 0.7rem;
   margin-bottom: 1rem;
-  border: 1px solid #ddd;
+  border: 0.0625rem solid #ddd;
   border-radius: 0.4rem;
 }

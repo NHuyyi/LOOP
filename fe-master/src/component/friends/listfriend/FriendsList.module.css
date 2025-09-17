@@ -19,7 +19,7 @@
   height: 2.75rem;
   border-radius: 50%;
   object-fit: cover;
-  border: 2px solid #eee;
+  border: 0.125rem solid #eee;
 }
 
 .avatar.offline {

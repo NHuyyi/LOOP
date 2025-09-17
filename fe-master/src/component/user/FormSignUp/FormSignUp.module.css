@@ -15,7 +15,7 @@
 
 .input-group .form-label {
   opacity: 0;
-  transform: translateY(10px);
+  transform: translateY(0.625rem);
   transition: all 0.2s;
   position: absolute;
   left: 0.5rem;

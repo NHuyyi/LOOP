@@ -97,7 +97,11 @@ function PostCard({ post, currentUserId }) {
             >
               <CircleX />
             </button>
-            <CommentList postId={post._id} userID={currentUserId} />
+            <CommentList
+              postId={post._id}
+              userID={currentUserId}
+              AuthorId={post.author._id}
+            />
           </div>
         </div>
       )}

@@ -97,8 +97,8 @@
 .actionBar {
   display: flex;
   justify-content: space-around;
-  border-top: 1px solid #e5e7eb;
-  border-bottom: 1px solid #e5e7eb;
+  border-top: 0.0625rem solid #e5e7eb;
+  border-bottom: 0.0625rem solid #e5e7eb;
   padding: 0.5rem 0;
   margin-bottom: 0.5rem;
 }
@@ -134,21 +134,21 @@
 }
 
 .modalContent {
-  width: 500px;
+  width: 31.25rem;
   max-height: 80vh;
   overflow-y: auto;
-  border-radius: 12px;
-  padding: 20px;
+  border-radius: 0.75rem;
+  padding: 1.25rem;
   position: relative;
 }
 
 .closeButton {
   position: absolute;
-  top: 10px;
-  right: 12px;
+  top: 0.625rem;
+  right: 0.75rem;
   background: transparent;
   border: none;
-  font-size: 20px;
+  font-size: 1.25rem;
   cursor: pointer;
   color: #fff;
 }

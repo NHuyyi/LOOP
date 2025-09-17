@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import classNames from "classnames/bind";
 import styles from "./ReactComment.module.css";
 import reactComment from "../../../services/Post/comments/reactcomment";
@@ -18,11 +18,13 @@ function ReactComment({
   userId,
   commentId,
   reactionType: initialReaction,
-  onReacted,
 }) {
   const [currentReaction, setCurrentReaction] = useState(
     initialReaction || null
   );
+  useEffect(() => {
+    setCurrentReaction(initialReaction || null);
+  }, [initialReaction]);
   const [showMenu, setShowMenu] = useState(false);
   // ref để lưu timer đóng menu
   const closeTimer = useRef(null);
@@ -77,7 +79,6 @@ function ReactComment({
           setCurrentReaction(type);
         }
         setShowMenu(false);
-        onReacted?.();
       } else {
         alert(res.message || "Thêm phản ứng thất bại, vui lòng thử lại.");
       }

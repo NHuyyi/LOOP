@@ -1,5 +1,6 @@
 // controller/post/getCommentsList.js
 const PostModel = require("../../../model/Post.Model");
+const calculateCounts = require("../../../utils/reaction");
 
 exports.getCommentsList = async (req, res) => {
   try {
@@ -63,16 +64,21 @@ exports.getCommentsList = async (req, res) => {
     }
 
     // Chuẩn hoá dữ liệu trả về (mảng phẳng, có parentId)
-    const data = visible.map((c) => ({
-      _id: c._id,
-      userId: c.user._id,
-      name: c.user.name,
-      avatar: c.user.avatar,
-      text: c.text,
-      parentId: c.parentId || null,
-      reactions: c.reactions || [],
-      createdAt: c.createdAt,
-    }));
+    const data = visible.map((c) => {
+      const { counts, total } = calculateCounts(c.reactions || []);
+      return {
+        _id: c._id,
+        userId: c.user._id,
+        name: c.user.name,
+        avatar: c.user.avatar,
+        text: c.text,
+        parentId: c.parentId || null,
+        reactions: c.reactions || [],
+        reactionCounts: counts,
+        totalReactions: total,
+        createdAt: c.createdAt,
+      };
+    });
 
     return res.json({
       success: true,

@@ -1,0 +1,22 @@
+.reaction-summary {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  margin-top: 0.25rem;
+}
+
+.icons {
+  display: flex;
+  gap: 0.125rem;
+}
+
+.icon {
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+}
+
+.total {
+  font-size: 0.875rem;
+  color: #333;
+}

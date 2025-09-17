@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getCommentList } from "../../../services/Post/comments/getCommentList";
 import { setComments } from "../../../redux/commentSlide";
@@ -9,17 +9,17 @@ import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import "dayjs/locale/vi"; // import ngôn ngữ tiếng Việt
 import ReactComment from "../reactcomment/reactcomment";
+import ReactCommentSummary from "../ReacCommentSummary/ReactCommentSummary";
 
 dayjs.extend(relativeTime);
 dayjs.locale("vi"); // thiết lập ngôn ngữ mặc định là tiếng Việt
 
 const cx = classNames.bind(styles);
 
-function CommentList({ postId, userID }) {
+function CommentList({ postId, userID, AuthorId }) {
   const dispatch = useDispatch();
   const token = localStorage.getItem("token");
   const lastCommentRef = useRef(null);
-  const [refreshKey, setRefreshKey] = useState(0);
   const comments = useSelector((state) =>
     Array.isArray(state.comments?.[postId]) ? state.comments[postId] : []
   );
@@ -35,7 +35,7 @@ function CommentList({ postId, userID }) {
       }
     };
     fetchComments();
-  }, [postId, token, dispatch, refreshKey]);
+  }, [postId, token, dispatch]);
 
   useEffect(() => {
     if (lastCommentRef.current) {
@@ -68,6 +68,7 @@ function CommentList({ postId, userID }) {
                         <span className={cx("time")}>
                           {dayjs(c.createdAt).fromNow()}
                         </span>
+
                         <span className={cx("action")}>
                           <ReactComment
                             postId={postId}
@@ -79,11 +80,19 @@ function CommentList({ postId, userID }) {
                                     ?.type || ""
                                 : ""
                             }
-                            onReacted={() => setRefreshKey((k) => k + 1)}
                           />
                         </span>
                         <span className={cx("action")}>Trả lời</span>
-                        <span className={cx("action")}>Chia sẻ</span>
+                        <span className={cx("actions")}>
+                          <ReactCommentSummary
+                            reactionCounts={c.reactionCounts}
+                            postId={postId}
+                            commentID={c._id}
+                            userID={userID}
+                            AuthorId={AuthorId}
+                            commentuser={c.userId}
+                          />
+                        </span>
                       </div>
                     </div>
                   </div>
