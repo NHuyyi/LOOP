@@ -17,10 +17,9 @@ function CommentList({ postId, userID, AuthorId }) {
   const comments = useSelector((state) =>
     Array.isArray(state.comments?.[postId]) ? state.comments[postId] : []
   );
-  console.log("comment", comments);
 
   const [replyTarget, setReplyTaget] = useState(null);
-
+  const [newestCommentId, setNewestCommentId] = useState(null);
   useEffect(() => {
     const fetchComments = async () => {
       try {
@@ -37,9 +36,12 @@ function CommentList({ postId, userID, AuthorId }) {
 
   useEffect(() => {
     if (lastCommentRef.current) {
-      lastCommentRef.current.scrollIntoView({ behavior: "smooth" });
+      lastCommentRef.current.scrollIntoView({
+        behavior: "smooth",
+        block: "center",
+      });
     }
-  }, [comments]);
+  }, [newestCommentId]);
 
   return (
     <div className={cx("commentWrapper")}>
@@ -48,10 +50,12 @@ function CommentList({ postId, userID, AuthorId }) {
           {comments.length === 0 ? (
             <p className={cx("noComments")}>💬 Chưa có bình luận nào</p>
           ) : (
-            comments.map((c, idx) => {
-              const isLast = idx === 0;
+            comments.map((c) => {
               return (
-                <div key={c._id} ref={isLast ? lastCommentRef : null}>
+                <div
+                  key={c._id}
+                  ref={c._id === newestCommentId ? lastCommentRef : null}
+                >
                   <CommentItem
                     comment={c}
                     postId={postId}
@@ -59,6 +63,8 @@ function CommentList({ postId, userID, AuthorId }) {
                     AuthorId={AuthorId}
                     setReplyTaget={setReplyTaget}
                     level={0} // comment gốc = level 0
+                    newestCommentId={newestCommentId} // 👈 truyền xuống
+                    lastCommentRef={lastCommentRef} // 👈 truyền ref
                   />
                 </div>
               );
@@ -73,6 +79,7 @@ function CommentList({ postId, userID, AuthorId }) {
           parentId={replyTarget?._id || null}
           replytoname={replyTarget?.name || ""}
           setReplyTaget={setReplyTaget}
+          onCommentCreated={(id) => setNewestCommentId(id)} // 👈 callback khi tạo comment xong
         />
       </div>
     </div>

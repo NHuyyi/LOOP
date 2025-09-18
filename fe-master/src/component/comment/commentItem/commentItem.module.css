@@ -1,19 +1,19 @@
 .commentWrapper {
-  margin-top: 10px;
-  margin-bottom: 8px;
+  margin-top: 8px;
+  margin-bottom: 6px;
   text-align: start;
 }
 
 .commentItem {
   display: flex;
   align-items: flex-start;
+  gap: 8px;
 }
 
 .avatar {
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  margin-right: 8px; /* giữ khoảng cách vừa phải */
   object-fit: cover;
 }
 
@@ -22,25 +22,41 @@
 }
 
 .bubble {
-  background: #f0f2f5;
-  padding: 6px 10px;
-  border-radius: 16px;
+  background-color: #f0f2f5;
+  padding: 8px 12px;
+  border-radius: 18px;
   display: inline-block;
-  max-width: 450px;
+  max-width: 100%;
+  word-break: break-word;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
 }
 
 .name {
   font-weight: 600;
-  font-size: 13px;
+  font-size: 14px;
   margin: 0;
+  color: #050505;
 }
 
 .text {
-  font-size: 13px;
+  font-size: 14px;
   margin: 2px 0 0 0;
-  word-break: break-word;
+  color: #1c1e21;
 }
 
 .replies {
   margin-top: 6px;
+}
+
+.replyToggle {
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 13px;
+  padding: 4px 0;
+  cursor: pointer;
+}
+
+.replyToggle:hover {
+  text-decoration: underline;
 }
