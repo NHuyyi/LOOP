@@ -4,6 +4,7 @@ import classNames from "classnames/bind";
 import { deleteComment } from "../../../redux/commentSlide";
 import { useDispatch } from "react-redux";
 import styles from "./deleteCommentButton.module.css";
+import { FaTrash } from "react-icons/fa";
 
 const cx = classNames.bind(styles);
 
@@ -29,7 +30,7 @@ function DeleteCommentButton({ postId, commentId, token }) {
         className={cx("action", "delete")}
         onClick={() => setShowConfirm(true)}
       >
-        Xóa
+        <FaTrash />
       </span>
 
       {showConfirm && (

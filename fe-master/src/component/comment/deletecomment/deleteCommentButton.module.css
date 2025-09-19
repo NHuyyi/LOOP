@@ -1,6 +1,6 @@
 .action.delete {
   cursor: pointer;
-  color: #e74c3c;
+  color: #fff;
   font-weight: 500;
   transition: color 0.2s;
 }
