@@ -60,3 +60,19 @@
 .replyToggle:hover {
   text-decoration: underline;
 }
+
+.bubble.deleted {
+  background-color: #e4e6eb; /* màu xám nhạt */
+  color: #65676b; /* text mờ */
+  font-style: italic;
+}
+
+.deletedText {
+  margin: 0;
+  font-style: italic;
+  color: #65676b;
+}
+
+.avatar.deleted {
+  opacity: 0.5; /* làm mờ avatar nếu muốn */
+}

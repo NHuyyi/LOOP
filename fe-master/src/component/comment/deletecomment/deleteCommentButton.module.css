@@ -1,0 +1,85 @@
+.action.delete {
+  cursor: pointer;
+  color: #e74c3c;
+  font-weight: 500;
+  transition: color 0.2s;
+}
+
+.action.delete:hover {
+  color: #c0392b;
+}
+
+/* overlay mờ nền */
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.4);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+/* popup confirm */
+.confirm-dialog {
+  background-color: #fff;
+  padding: 20px 24px;
+  border-radius: 8px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  min-width: 280px;
+  text-align: center;
+  font-size: 14px;
+}
+
+.buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.buttons button {
+  padding: 6px 14px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 13px;
+  transition: background-color 0.2s;
+}
+
+.buttons button:first-child {
+  background-color: #ecf0f1;
+  color: #333;
+}
+
+.buttons button:first-child:hover {
+  background-color: #dcdcdc;
+}
+
+.buttons button:last-child {
+  background-color: #e74c3c;
+  color: #fff;
+}
+
+.buttons button:last-child:hover {
+  background-color: #c0392b;
+}
+
+.spinner-border {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.6);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+  display: inline-block;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

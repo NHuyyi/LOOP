@@ -6,10 +6,11 @@ import { setUser } from "../redux/userSlice";
 import { updateReaction } from "../redux/reactionSlide";
 import { setOnlineUsers } from "../redux/onlineSlice";
 import {
-  addComment,
   setComments,
   updateCommentReaction,
+  deleteComment,
 } from "../redux/commentSlide";
+import { getCommentList } from "../services/Post/comments/getCommentList";
 
 function SocketManager() {
   const currentUser = useSelector((state) => state.user.user);
@@ -85,21 +86,12 @@ function SocketManager() {
         dispatch(setOnlineUsers(onlineUserIds));
       });
 
-      socket.on("createComments", (payload) => {
-        // payload có thể { postId, comments: [...] } hoặc { postId, comment: {...} }
-        const postId = payload?.postId;
-        if (!postId) return;
-
-        if (Array.isArray(payload.comments)) {
-          dispatch(setComments({ postId, comments: payload.comments }));
-          return;
+      socket.on("createComments", async (payload) => {
+        const token = localStorage.getItem("token");
+        const res = await getCommentList(payload.postId, token);
+        if (res?.data) {
+          dispatch(setComments({ postId: payload.postId, comments: res.data }));
         }
-        if (payload.comment) {
-          dispatch(addComment({ postId, comment: payload.comment }));
-          return;
-        }
-
-        console.warn("createComments payload unexpected:", payload);
       });
 
       socket.on(
@@ -122,6 +114,12 @@ function SocketManager() {
           );
         }
       );
+      socket.on("Deletecomment", ({ postid, comment }) => {
+        console.log("📩 Comment bị xóa mềm:", comment);
+
+        // dispatch trực tiếp reducer deleteComment
+        dispatch(deleteComment({ postId: postid, commentId: comment._id }));
+      });
     }
 
     return () => {
@@ -131,6 +129,7 @@ function SocketManager() {
       socket.off("reactionUpdated");
       socket.off("update-online-users");
       socket.off("createComments");
+      socket.off("Deletecomment");
     };
   }, [currentUser, dispatch]);
 

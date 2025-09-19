@@ -4,7 +4,7 @@ import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import "dayjs/locale/vi";
 import CommentActions from "../commentActions/commentActions";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 dayjs.extend(relativeTime);
 dayjs.locale("vi");
@@ -20,8 +20,25 @@ function CommentItem({
   level = 0,
   newestCommentId,
   lastCommentRef,
+  token,
+  onDeleted,
 }) {
   const [showReplies, setShowReplies] = useState(false);
+
+  useEffect(() => {
+    if (comment.replies?.some((r) => r._id === newestCommentId)) {
+      setShowReplies(true);
+    }
+  }, [comment.replies, newestCommentId]);
+
+  useEffect(() => {
+    if (comment._id === newestCommentId && lastCommentRef?.current) {
+      lastCommentRef.current.scrollIntoView({
+        behavior: "smooth",
+        block: "center",
+      });
+    }
+  }, [comment._id, newestCommentId, lastCommentRef]);
 
   return (
     <div
@@ -35,11 +52,21 @@ function CommentItem({
           paddingLeft: Math.min(level, 2) > 0 ? "12px" : "0",
         }}
       >
-        <img src={comment.avatar} alt={comment.name} className={cx("avatar")} />
+        <img
+          src={comment.avatar}
+          alt={comment.name}
+          className={cx("avatar", { deleted: comment.isDeleted })}
+        />
         <div className={cx("content")}>
-          <div className={cx("bubble")}>
-            <p className={cx("name")}>{comment.name}</p>
-            <p className={cx("text")}>{comment.text}</p>
+          <div className={cx("bubble", { deleted: comment.isDeleted })}>
+            {!comment.isDeleted ? (
+              <>
+                <p className={cx("name")}>{comment.name}</p>
+                <p className={cx("text")}>{comment.text}</p>
+              </>
+            ) : (
+              <p className={cx("deletedText")}>Bình luận đã bị xóa</p>
+            )}
           </div>
 
           <CommentActions
@@ -48,9 +75,10 @@ function CommentItem({
             userID={userID}
             AuthorId={AuthorId}
             setReplyTaget={setReplyTaget}
+            token={token}
+            onDeleted={onDeleted}
           />
 
-          {/* Hiển thị nút mở replies nếu có */}
           {comment.replies?.length > 0 && !showReplies && (
             <button
               className={cx("replyToggle")}
@@ -62,7 +90,6 @@ function CommentItem({
         </div>
       </div>
 
-      {/* Hiển thị replies nếu đã mở */}
       {showReplies && comment.replies?.length > 0 && (
         <div className={cx("replies")}>
           {comment.replies.map((reply) => (
@@ -76,6 +103,8 @@ function CommentItem({
               level={level + 1}
               newestCommentId={newestCommentId}
               lastCommentRef={lastCommentRef}
+              token={token}
+              onDeleted={onDeleted}
             />
           ))}
         </div>

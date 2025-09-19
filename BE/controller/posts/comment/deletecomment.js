@@ -36,8 +36,7 @@ exports.deleteComment = async (req, res) => {
       });
     }
 
-    comment.text = "Bình luận đã bị xóa";
-    await post.save();
+    (comment.isDeleted = true), await post.save();
     const responseComment = {
       _id: comment._id,
       text: comment.text,

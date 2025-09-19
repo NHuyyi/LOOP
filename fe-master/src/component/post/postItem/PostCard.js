@@ -15,11 +15,18 @@ function PostCard({ post, currentUserId }) {
 
   // Lấy danh sách comment từ Redux store
   const comments = useSelector((state) => state.comments[post._id] || []);
+
+  // Nếu đã mở commentList thì dùng dữ liệu redux để đếm chính xác
   const countComments = (arr) =>
-    arr.reduce((acc, c) => acc + 1 + countComments(c.replies || []), 0);
+    arr.reduce(
+      (acc, c) => acc + (c.isDeleted ? 0 : 1) + countComments(c.replies || []),
+      0
+    );
 
   const commentCount =
-    comments.length > 0 ? countComments(comments) : post.commentCount || 0;
+    comments.length > 0
+      ? countComments(comments) // realtime khi đã load
+      : post.commentCount || 0; // mặc định lấy từ BE
 
   let commentlength = commentCount;
 

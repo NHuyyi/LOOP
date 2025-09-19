@@ -33,7 +33,7 @@ exports.getCommentsList = async (req, res) => {
     const map = new Map();
     const roots = [];
 
-    // Chỉ 1 vòng duyệt: normalize + build map
+    // Normalize + filter
     for (const c of comments) {
       if (!canView(c)) continue;
 
@@ -51,12 +51,22 @@ exports.getCommentsList = async (req, res) => {
         totalReactions: total,
         createdAt: c.createdAt,
         replies: [],
+        isDeleted: !!c.isDeleted,
       };
 
-      map.set(String(c._id), normalized);
+      // chỉ thêm nếu parent null hoặc parent đã tồn tại trong map
+      if (!normalized.parentId || map.has(normalized.parentId)) {
+        map.set(String(c._id), normalized);
+      }
     }
 
-    // Nối parent–child
+    // Hàm sắp xếp replies theo thời gian
+    const sortReplies = (arr) => {
+      arr.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
+      arr.forEach((c) => sortReplies(c.replies));
+    };
+
+    // Build tree
     for (const c of map.values()) {
       if (c.parentId && map.has(c.parentId)) {
         map.get(c.parentId).replies.push(c);
@@ -64,18 +74,16 @@ exports.getCommentsList = async (req, res) => {
         roots.push(c);
       }
     }
-
-    // Sắp xếp replies theo thời gian nếu cần
-    const sortReplies = (arr) => {
-      arr.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
-      arr.forEach((c) => sortReplies(c.replies));
-    };
+    // Tính số lượng comment chưa bị xóa
+    const visibleComments = comments.filter((c) => canView(c) && !c.isDeleted);
+    const countVisible = visibleComments.length;
     sortReplies(roots);
 
     return res.json({
       success: true,
       count: map.size,
       data: roots,
+      count: countVisible,
     });
   } catch (err) {
     console.error("Lỗi getCommentsList:", err);

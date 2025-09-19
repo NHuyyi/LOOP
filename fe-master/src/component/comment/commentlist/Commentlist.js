@@ -65,6 +65,7 @@ function CommentList({ postId, userID, AuthorId }) {
                     level={0} // comment gốc = level 0
                     newestCommentId={newestCommentId} // 👈 truyền xuống
                     lastCommentRef={lastCommentRef} // 👈 truyền ref
+                    token={token}
                   />
                 </div>
               );

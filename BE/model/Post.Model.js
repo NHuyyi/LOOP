@@ -16,6 +16,7 @@ const CommentSchema = new mongoose.Schema({
   reactions: [ReactionSchema],
   parentId: { type: mongoose.Schema.Types.ObjectId, default: null }, // null = comment gốc
   createdAt: { type: Date, default: Date.now },
+  isDeleted: { type: Boolean, default: false },
 });
 
 const PostSchema = new mongoose.Schema(

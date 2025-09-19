@@ -3,10 +3,29 @@ import styles from "./commentActions.module.css";
 import ReactComment from "../reactcomment/reactcomment";
 import ReactCommentSummary from "../ReacCommentSummary/ReactCommentSummary";
 import dayjs from "dayjs";
+import DeleteCommentButton from "../deletecomment/deletecomment";
 
 const cx = classNames.bind(styles);
 
-function CommentActions({ comment, postId, userID, AuthorId, setReplyTaget }) {
+function CommentActions({
+  comment,
+  postId,
+  userID,
+  AuthorId,
+  setReplyTaget,
+  token,
+  onDeleted,
+}) {
+  const isOwner = comment.user === userID || AuthorId === userID;
+
+  if (comment.isDeleted) {
+    return (
+      <div className={cx("meta")}>
+        <span className={cx("time")}>{dayjs(comment.createdAt).fromNow()}</span>
+      </div>
+    );
+  }
+
   return (
     <div className={cx("meta")}>
       <span className={cx("time")}>{dayjs(comment.createdAt).fromNow()}</span>
@@ -35,6 +54,15 @@ function CommentActions({ comment, postId, userID, AuthorId, setReplyTaget }) {
       >
         Trả lời
       </span>
+
+      {isOwner && (
+        <DeleteCommentButton
+          postId={postId}
+          commentId={comment._id}
+          token={token}
+          onDeleted={onDeleted}
+        />
+      )}
 
       <span className={cx("actions")}>
         <ReactCommentSummary
