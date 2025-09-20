@@ -9,13 +9,13 @@
 }
 
 .editableInput {
-  min-height: 40px;
+  min-height: 2.5rem; /* 40px */
   max-width: 100%;
   width: 100%;
-  border: 1px solid #ccc;
-  padding: 8px;
-  font-size: 15px;
-  border-radius: 6px;
+  border: 0.0625rem solid #ccc; /* 1px */
+  padding: 0.5rem; /* 8px */
+  font-size: 0.9375rem; /* 15px */
+  border-radius: 0.375rem; /* 6px */
   outline: none;
   white-space: pre-wrap;
   text-align: start;
@@ -43,9 +43,9 @@
 
 /* Spinner cho trạng thái loading */
 .spinner-border {
-  width: 1.125rem;
-  height: 1.125rem;
-  border: 0.125rem solid #fff;
+  width: 1.125rem;        /* 18px */
+  height: 1.125rem;       /* 18px */
+  border: 0.125rem solid #fff;           /* 2px */
   border-top: 0.125rem solid transparent;
   border-radius: 50%;
   animation: spin 0.8s linear infinite;

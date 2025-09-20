@@ -1,11 +1,11 @@
 /* quy định css chung của toàn app */
-
 .App {
   text-align: center;
   margin: 0;
   padding: 0;
   position: relative;
 }
+
 :root {
   --bg-primary: linear-gradient(145deg, #daabff, #abffda);
 }
@@ -25,7 +25,7 @@
   border: none;
   border-radius: 0.8rem;
   cursor: pointer;
-  box-shadow: 0 0.8rem 1.2rem rgba(0, 0, 0, 0.264);
+  box-shadow: 0 0.8rem 1.2rem rgba(0, 0, 0, 0.264); /* 12.8px 19.2px */
   display: flex;
   justify-content: center;
   align-items: center;
@@ -33,9 +33,9 @@
 }
 
 .app-btn:hover {
-  filter: brightness(1.1); /* sáng hơn */
-  transform: translateY(-2px);
-  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.15);
+  filter: brightness(1.1);
+  transform: translateY(-0.125rem); /* 2px */
+  box-shadow: 0 0.375rem 0.875rem rgba(0, 0, 0, 0.15); /* 6px 14px */
 }
 
 .app-icon {
@@ -67,17 +67,17 @@ input:focus {
 
 .app-message {
   position: fixed;
-  top: 20px;
+  top: 1.25rem;         /* 20px */
   left: 50%;
   transform: translateX(-50%);
-  min-width: 280px;
-  max-width: 400px;
-  padding: 12px 20px;
-  border-radius: 8px;
+  min-width: 17.5rem;   /* 280px */
+  max-width: 25rem;     /* 400px */
+  padding: 0.75rem 1.25rem; /* 12px 20px */
+  border-radius: 0.5rem;    /* 8px */
   text-align: center;
-  font-size: 15px;
+  font-size: 0.9375rem; /* 15px */
   font-weight: 600;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 0.25rem 0.625rem rgba(0, 0, 0, 0.15); /* 4px 10px */
   z-index: 9999;
   animation: fadeIn 0.3s ease-in-out;
 }
@@ -85,18 +85,18 @@ input:focus {
 .app-message__err {
   background-color: #ffe0e0;
   color: #d93025;
-  border: 1px solid #d93025;
+  border: 0.0625rem solid #d93025; /* 1px */
 }
 
 .app-message__ok {
   background-color: #e0ffe6;
   color: #2e7d32;
-  border: 1px solid #2e7d32;
+  border: 0.0625rem solid #2e7d32; /* 1px */
 }
 
 @keyframes fadeIn {
   from {
-    transform: translate(-50%, -10px);
+    transform: translate(-50%, -0.625rem); /* -10px */
   }
   to {
     transform: translate(-50%, 0);
@@ -112,7 +112,7 @@ input:focus {
     transform: translate(-50%, 0);
   }
   to {
-    transform: translate(-50%, -10px);
+    transform: translate(-50%, -0.625rem); /* -10px */
   }
 }
 
