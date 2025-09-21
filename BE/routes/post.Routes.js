@@ -19,6 +19,7 @@ const {
   getReactComentList,
 } = require("../controller/posts/comment/reactCommentList");
 const { deleteComment } = require("../controller/posts/comment/deletecomment");
+const { updateComment } = require("../controller/posts/comment/updatecomment");
 const Authorization = require("../middleware/Authorization");
 
 router.post("/uploadImage", Authorization, upload.single("image"), uploadImage);
@@ -36,4 +37,5 @@ router.get(
   getReactComentList
 );
 router.post("/delete/comments", Authorization, deleteComment);
+router.post("update/comments", Authorization, updateComment);
 module.exports = router;
