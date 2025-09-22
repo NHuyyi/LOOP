@@ -1,0 +1,17 @@
+/* commentActions.module.css */
+
+/* Nút action chung */
+.action {
+  font-size: 14px;
+  color: #fff;
+  cursor: pointer;
+  margin-left: 8px;
+  user-select: none;
+  transition: color 0.2s ease;
+}
+
+/* Hover đổi màu xanh */
+.action:hover {
+  color: #1877f2;
+  text-decoration: underline;
+}
