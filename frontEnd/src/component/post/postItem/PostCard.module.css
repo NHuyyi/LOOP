@@ -127,6 +127,8 @@
   width: 100vw;
   height: 100vh;
   background: rgba(0, 0, 0, 0.5); /* mờ nền */
+  backdrop-filter: blur(0.3rem); /* Làm mờ nền phía sau */
+  -webkit-backdrop-filter: blur(0.3rem); /* Hỗ trợ trình duyệt Safari */
   display: flex;
   justify-content: center;
   align-items: center;
