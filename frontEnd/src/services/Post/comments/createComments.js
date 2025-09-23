@@ -1,6 +1,6 @@
 const API_URL = process.env.REACT_APP_API_URL || "http://localhost:3001/api";
 
-const createComment = async (postId, text, token, parentId = null) => {
+const createComment = async (postId, htmlContent, token, parentId = null) => {
   try {
     const res = await fetch(`${API_URL}/posts/createComments`, {
       method: "POST",
@@ -8,7 +8,11 @@ const createComment = async (postId, text, token, parentId = null) => {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
-      body: JSON.stringify({ postId, text, parentId }), // ⚡ thêm parentId
+      body: JSON.stringify({
+        postId,
+        text: htmlContent, // ⚠️ gửi nội dung HTML vào trường text
+        parentId,
+      }),
     });
 
     const data = await res.json();

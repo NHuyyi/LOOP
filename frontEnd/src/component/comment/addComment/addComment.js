@@ -1,7 +1,7 @@
 import createComment from "../../../services/Post/comments/createComments";
 import { useState, useEffect, useRef } from "react";
 import { useDispatch } from "react-redux";
-import { setComments } from "../../../redux/commentSlide"; // 👈 đổi lại setComments
+import { setComments } from "../../../redux/commentSlide";
 import { getCommentList } from "../../../services/Post/comments/getCommentList";
 import updateComment from "../../../services/Post/comments/updatecomment";
 import classNames from "classnames/bind";
@@ -33,14 +33,14 @@ function AddComment({
     sel.addRange(range);
   };
 
-  // gắn tên người dùng khi trả lời
+  // Gắn @Tên khi trả lời hoặc hiện nội dung khi chỉnh sửa
   useEffect(() => {
     if (editorRef.current) {
       if (replytoname && !editCommentId) {
-        editorRef.current.innerHTML = `<span style="color:#1877F2;" contenteditable="false">@${replytoname}</span>&nbsp;`;
+        editorRef.current.innerHTML = `<a href="#" class="${cx("mention")}" contenteditable="false">@${replytoname}</a>&nbsp;`;
+
         placeCaretAtEnd(editorRef.current);
       } else if (editCommentId && initialText) {
-        // Nếu đang edit thì hiển thị text cũ
         editorRef.current.innerText = initialText;
         placeCaretAtEnd(editorRef.current);
       } else {
@@ -49,42 +49,45 @@ function AddComment({
     }
   }, [replytoname, parentId, editCommentId, initialText]);
 
+  // Clear replyTaget nếu không còn đang reply
   useEffect(() => {
     if (!replytoname && setReplyTaget && !editCommentId) {
       setReplyTaget(null);
     }
   }, [replytoname, setReplyTaget, editCommentId]);
 
-  const getPlainText = () => {
+  // ✅ Lấy HTML nội dung thay vì plain text
+  const getHtmlContent = () => {
     if (!editorRef.current) return "";
-    return editorRef.current.innerText.trim();
+    return editorRef.current.innerHTML.trim();
   };
 
+  // ✅ Gửi hoặc cập nhật bình luận
   const handleClick = async (e) => {
     e.preventDefault();
-    const text = getPlainText();
-    if (!text) return;
+    const html = getHtmlContent();
+    const plain = editorRef.current.innerText.trim();
+    if (!plain) return; // Chặn gửi nội dung rỗng
 
     const token = localStorage.getItem("token");
     setLoading(true);
     try {
       let res;
+
       if (editCommentId) {
-        // 👇 Update comment
-        res = await updateComment(postId, editCommentId, text, token);
+        // ⚠️ Nếu bạn muốn hỗ trợ HTML khi chỉnh sửa, cần sửa cả updateComment (chưa xử lý ở đây)
+        res = await updateComment(postId, editCommentId, plain, token);
       } else {
-        // 👇 Create comment
-        res = await createComment(postId, text, token, parentId);
+        res = await createComment(postId, html, token, parentId);
       }
 
       if (res && res.success) {
-        // ✅ fetch lại toàn bộ comment từ BE để đồng bộ
         const res2 = await getCommentList(postId, token);
         if (res2 && Array.isArray(res2.data)) {
           dispatch(setComments({ postId, comments: res2.data }));
         }
         if (!editCommentId) {
-          onCommentCreated && onCommentCreated(res.comment._id);
+          onCommentCreated?.(res.comment._id);
         }
         if (editCommentId && onEditDone) {
           onEditDone();

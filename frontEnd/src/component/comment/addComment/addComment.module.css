@@ -43,9 +43,9 @@
 
 /* Spinner cho trạng thái loading */
 .spinner-border {
-  width: 1.125rem;        /* 18px */
-  height: 1.125rem;       /* 18px */
-  border: 0.125rem solid #fff;           /* 2px */
+  width: 1.125rem; /* 18px */
+  height: 1.125rem; /* 18px */
+  border: 0.125rem solid #fff; /* 2px */
   border-top: 0.125rem solid transparent;
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
@@ -55,4 +55,10 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+.mention {
+  color: #1877f2;
+  font-weight: 500;
+  pointer-events: none;
 }

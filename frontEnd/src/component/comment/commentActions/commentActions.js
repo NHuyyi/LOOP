@@ -18,7 +18,8 @@ function CommentActions({
   token,
   onDeleted,
 }) {
-  const isOwner = comment.user === userID || AuthorId === userID;
+  const isOwner = comment.userId === userID || AuthorId === userID;
+  const isOwned = comment.userId === userID;
 
   if (comment.isDeleted) {
     return (
@@ -57,12 +58,16 @@ function CommentActions({
         Trả lời
       </span>
 
-      {isOwner && (
+      {isOwned && (
         <>
           <EditCommentButton
             comment={comment}
             onEdit={(editTarget) => setEditTarget(editTarget)}
           />
+        </>
+      )}
+      {isOwner && (
+        <>
           <DeleteCommentButton
             postId={postId}
             commentId={comment._id}

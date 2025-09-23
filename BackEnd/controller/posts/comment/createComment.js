@@ -1,13 +1,14 @@
 const PostModel = require("../../../model/Post.Model");
 const UserModel = require("../../../model/User.Model");
 const { getIO, getOnlineUsers } = require("../../../config/socker");
+const sanitizeHtml = require("sanitize-html"); // ⚠️ cần cài nếu dùng: npm install sanitize-html
 
 exports.createComment = async (req, res) => {
   try {
-    const { postId, text, parentId } = req.body;
+    const { postId, text: rawText, parentId } = req.body;
     const userId = req.user.id;
 
-    if (!postId || !text || !userId) {
+    if (!postId || !rawText || !userId) {
       return res.status(400).json({ error: "Thiếu thông tin" });
     }
 
@@ -16,12 +17,28 @@ exports.createComment = async (req, res) => {
       return res.status(404).json({ error: "Không tìm thấy bài viết" });
     }
 
+    // ✅ Làm sạch nội dung HTML comment (chống XSS)
+    const cleanText = sanitizeHtml(rawText, {
+      allowedTags: ["b", "i", "em", "strong", "a", "span", "u", "br"],
+      allowedAttributes: {
+        span: ["class", "style"],
+        a: ["href"],
+      },
+      allowedStyles: {
+        "*": {
+          // Cho phép màu sắc inline như: style="color:#1877F2;"
+          color: [/^#[0-9A-Fa-f]{3,6}$/, /^rgb/, /^rgba/],
+        },
+      },
+    });
+
     // Tạo comment mới
     const newComment = {
       user: userId,
-      text,
+      text: cleanText, // Lưu HTML
       parentId: parentId || null,
     };
+
     post.comments.push(newComment);
     await post.save();
 
@@ -33,7 +50,7 @@ exports.createComment = async (req, res) => {
     const created = populated.comments.find(
       (c) =>
         String(c.user._id) === String(userId) &&
-        c.text === text &&
+        c.text === cleanText &&
         String(c.parentId || "") === String(parentId || "")
     );
 
@@ -46,7 +63,7 @@ exports.createComment = async (req, res) => {
       userId: created.user._id,
       name: created.user.name,
       avatar: created.user.avatar,
-      text: created.text,
+      text: created.text, // text này là HTML
       parentId: created.parentId,
       createdAt: created.createdAt,
       replies: [],
@@ -66,14 +83,14 @@ exports.createComment = async (req, res) => {
       if (allowedUsers.includes(uid)) {
         io.to(socketId).emit("createComments", {
           postId,
-          comment: responseComment, // chỉ gửi 1 comment mới
+          comment: responseComment,
         });
       }
     });
 
     return res.status(201).json({
       success: true,
-      comment: responseComment, // FE sẽ dispatch addComment
+      comment: responseComment,
     });
   } catch (err) {
     console.error("createComment error:", err);

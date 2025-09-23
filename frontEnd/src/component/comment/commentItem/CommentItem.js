@@ -63,7 +63,12 @@ function CommentItem({
             {!comment.isDeleted ? (
               <>
                 <p className={cx("name")}>{comment.name}</p>
-                <p className={cx("text")}>{comment.text}</p>
+
+                {/* ✅ Render nội dung HTML ở đây */}
+                <div
+                  className={cx("text")}
+                  dangerouslySetInnerHTML={{ __html: comment.text }}
+                ></div>
               </>
             ) : (
               <p className={cx("deletedText")}>Bình luận đã bị xóa</p>
