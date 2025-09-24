@@ -3,11 +3,11 @@ import classNames from "classnames/bind";
 import CreatePost from "../../component/post/creatpost/creatpost";
 import PostCard from "../../component/post/postItem/PostCard";
 import { useState, useEffect } from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { useGetPost } from "../../hooks/getpost";
-import { useDispatch } from "react-redux";
 import { updateReaction } from "../../redux/reactionSlide";
 import countreaction from "../../services/Post/reaction/countreaction";
+import { setPosts } from "../../redux/postSlice";
 
 const cx = classNames.bind(styles);
 
@@ -20,14 +20,21 @@ function HomePage() {
   const stateUser = useSelector((state) => state.user);
   const currentUser = stateUser?.user;
 
+  // Lấy posts từ redux thay vì local state
+  const posts = useSelector((state) => state.posts.posts);
+  const dispatch = useDispatch();
+
   // Gọi hook lấy danh sách bài viết
-  const { posts, loading } = useGetPost(
+  const { posts: fetchedPosts, loading } = useGetPost(
     currentUser?.friends || [],
     currentUser?._id
   );
-
-  // lưu vào redux
-  const dispatch = useDispatch();
+  // Đẩy dữ liệu từ API vào redux
+  useEffect(() => {
+    if (fetchedPosts && fetchedPosts.length > 0) {
+      dispatch(setPosts(fetchedPosts));
+    }
+  }, [fetchedPosts, dispatch]);
 
   // Khi posts thay đổi, đẩy dữ liệu reaction ban đầu vào Redux
   useEffect(() => {

@@ -12,6 +12,8 @@ import {
   updateComment,
 } from "../redux/commentSlide";
 import { getCommentList } from "../services/Post/comments/getCommentList";
+import getpost from "../services/Post/getpost";
+import { setPosts, deletePost } from "../redux/postSlice";
 
 function SocketManager() {
   const currentUser = useSelector((state) => state.user.user);
@@ -109,6 +111,16 @@ function SocketManager() {
           );
         }
       });
+      socket.on("createPost", async (payload) => {
+        const res = await getpost(payload.friendIds, payload.userId);
+        if (res?.success && res.data) {
+          dispatch(setPosts(res.data)); // đồng bộ lại toàn bộ feed
+        }
+      });
+      socket.on("Deletepost", ({ postid }) => {
+        // dispatch trực tiếp reducer deletePost
+        dispatch(deletePost({ postId: postid }));
+      });
     }
 
     return () => {
@@ -119,6 +131,8 @@ function SocketManager() {
       socket.off("update-online-users");
       socket.off("createComments");
       socket.off("Deletecomment");
+      socket.off("createPost");
+      socket.off("Deletepost");
     };
   }, [currentUser, dispatch]);
 

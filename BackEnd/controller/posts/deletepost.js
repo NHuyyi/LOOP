@@ -1,6 +1,6 @@
-const PostModel = require("../../../model/Post.Model");
-const UserModel = require("../../../model/User.Model");
-const { getIO, getOnlineUsers } = require("../../../config/socker");
+const PostModel = require("../../model/Post.Model");
+const UserModel = require("../../model/User.Model");
+const { getIO, getOnlineUsers } = require("../../config/socker");
 
 exports.deletePost = async (req, res) => {
   try {

@@ -7,6 +7,7 @@ import ReactionCounts from "../reactioncount/reactioncount";
 import CommentList from "../../comment/commentlist/Commentlist";
 import { CircleX } from "lucide-react";
 import { makeSelectCommentsByPostId } from "../../../redux/selectors"; // 👈 import selector
+import PostMenu from "../postmenu/postmenu";
 
 const cx = classNames.bind(styles);
 
@@ -35,23 +36,30 @@ function PostCard({ post, currentUserId }) {
   return (
     <div className={cx("postCard")}>
       {/* Author */}
-      <div className={cx("author")}>
-        <div className={cx("authorInfo")}>
-          <img
-            src={
-              post.author?.avatar ||
-              "https://res.cloudinary.com/dpym64zg9/image/upload/v1755614090/raw_cq4nqn.png"
-            }
-            alt="avatar"
-            className={cx("authorAvatar")}
-          />
-          <div>
-            <p className={cx("authorName")}>{post.author?.name || "ẩn danh"}</p>
+      <div className={cx("postHeader")}>
+        <div className={cx("author")}>
+          <div className={cx("authorInfo")}>
+            <img
+              src={
+                post.author?.avatar ||
+                "https://res.cloudinary.com/dpym64zg9/image/upload/v1755614090/raw_cq4nqn.png"
+              }
+              alt="avatar"
+              className={cx("authorAvatar")}
+            />
+            <div>
+              <p className={cx("authorName")}>
+                {post.author?.name || "ẩn danh"}
+              </p>
+            </div>
           </div>
+          <p className={cx("authorDate")}>
+            {new Date(post.createdAt).toLocaleString()}
+          </p>
         </div>
-        <p className={cx("authorDate")}>
-          {new Date(post.createdAt).toLocaleString()}
-        </p>
+        <div className={cx("PostMenu")}>
+          <PostMenu postId={post._id} />
+        </div>
       </div>
 
       {/* Image */}
