@@ -31,7 +31,11 @@ function CommentActions({
 
   return (
     <div className={cx("meta")}>
-      <span className={cx("time")}>{dayjs(comment.createdAt).fromNow()}</span>
+      <span className={cx("time")}>
+        {comment.isEdited && comment.editedAt
+          ? dayjs(comment.editedAt).fromNow()
+          : dayjs(comment.createdAt).fromNow()}{" "}
+      </span>
 
       <span className={cx("action")}>
         <ReactComment

@@ -52,6 +52,8 @@ exports.getCommentsList = async (req, res) => {
         createdAt: c.createdAt,
         replies: [],
         isDeleted: !!c.isDeleted,
+        editedAt: c.editedAt || null,
+        isEdited: !!c.isEdited,
       };
 
       // chỉ thêm nếu parent null hoặc parent đã tồn tại trong map

@@ -40,7 +40,7 @@ function CommentItem({
       });
     }
   }, [comment._id, newestCommentId, lastCommentRef]);
-
+  console.log(comment);
   return (
     <div
       className={cx("commentWrapper")}
@@ -62,7 +62,12 @@ function CommentItem({
           <div className={cx("bubble", { deleted: comment.isDeleted })}>
             {!comment.isDeleted ? (
               <>
-                <p className={cx("name")}>{comment.name}</p>
+                <p className={cx("name")}>
+                  {comment.name}
+                  {comment.isEdited && (
+                    <span className={cx("editedTag")}>· đã chỉnh sửa</span>
+                  )}
+                </p>
 
                 {/* ✅ Render nội dung HTML ở đây */}
                 <div

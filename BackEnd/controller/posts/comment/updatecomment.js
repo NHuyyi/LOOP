@@ -29,6 +29,8 @@ exports.updateComment = async (req, res) => {
 
     // cập nhật nội dung
     comment.text = newtext;
+    comment.isEdited = true;
+    comment.editedAt = new Date();
     await post.save();
 
     // 🔥 Gửi socket cho bạn bè và chính người tạo

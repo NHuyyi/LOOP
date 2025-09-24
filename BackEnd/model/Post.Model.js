@@ -17,6 +17,8 @@ const CommentSchema = new mongoose.Schema({
   parentId: { type: mongoose.Schema.Types.ObjectId, default: null }, // null = comment gốc
   createdAt: { type: Date, default: Date.now },
   isDeleted: { type: Boolean, default: false },
+  editedAt: { type: Date },
+  isEdited: { type: Boolean, default: false },
 });
 
 const PostSchema = new mongoose.Schema(
@@ -30,6 +32,9 @@ const PostSchema = new mongoose.Schema(
     },
     reactions: [ReactionSchema], // reaction cho post
     comments: [CommentSchema], // tất cả comment + reply (dùng parentId để phân cấp)
+    isDeleted: { type: Boolean, default: false },
+    editedAt: { type: Date },
+    isEdited: { type: Boolean, default: false },
   },
   { timestamps: true }
 );
