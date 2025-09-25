@@ -57,10 +57,6 @@
 
 /* Item trong menu */
 .menu-item {
-  display: flex;
-  gap: 0.5rem;
-  justify-content: start;
-  align-items: center;
   background: transparent;
   border: none;
   color: #000;

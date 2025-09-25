@@ -1,0 +1,89 @@
+.action {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: start;
+  align-items: center;
+}
+
+/* Overlay phủ toàn màn hình */
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.5); /* nền đen mờ */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+/* Hộp thoại confirm */
+.confirm-dialog {
+  background: #fff;
+  padding: 20px 24px;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+  max-width: 360px;
+  width: 90%;
+  text-align: center;
+  animation: scaleIn 0.2s ease;
+}
+
+.confirm-dialog span {
+  display: block;
+  font-size: 16px;
+  font-weight: 500;
+  margin-bottom: 16px;
+  color: #333;
+}
+
+/* Nhóm nút */
+.buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+/* Nút Hủy */
+.buttons button:first-of-type {
+  background: #e0e0e0;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background 0.2s ease;
+}
+
+.buttons button:first-of-type:hover {
+  background: #bdbdbd;
+}
+
+/* Nút Xóa */
+.buttons button:last-of-type {
+  background: #e53935;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 8px;
+  color: #fff;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background 0.2s ease;
+}
+
+.buttons button:last-of-type:hover {
+  background: #b71c1c;
+}
+
+@keyframes scaleIn {
+  from {
+    transform: scale(0.9);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}

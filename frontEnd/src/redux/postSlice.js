@@ -22,12 +22,12 @@ const postSlice = createSlice({
         post.updatedAt = new Date().toISOString();
       }
     },
-    deletePost: (state, action) => {
+    DeletePosts: (state, action) => {
       const postId = action.payload;
       state.posts = state.posts.filter((p) => p._id !== postId);
     },
   },
 });
 
-export const { setPosts, addPost, updatePost, deletePost } = postSlice.actions;
+export const { setPosts, addPost, updatePost, DeletePosts } = postSlice.actions;
 export default postSlice.reducer;

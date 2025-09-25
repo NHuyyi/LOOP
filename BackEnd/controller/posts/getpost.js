@@ -10,7 +10,10 @@ exports.getNewsFeed = async (req, res) => {
 
     let ids = [userId, ...(friendIds || [])];
 
-    const posts = await PostModel.find({ author: { $in: ids } })
+    const posts = await PostModel.find({
+      author: { $in: ids },
+      isDeleted: { $ne: true }, // loại bỏ post bị xóa
+    })
       .populate("author", "name avatar")
       .populate("comments.user", "_id friends")
       .sort({ createdAt: -1 })

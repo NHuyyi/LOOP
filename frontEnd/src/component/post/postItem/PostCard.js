@@ -57,9 +57,7 @@ function PostCard({ post, currentUserId }) {
             {new Date(post.createdAt).toLocaleString()}
           </p>
         </div>
-        <div className={cx("PostMenu")}>
-          <PostMenu postId={post._id} />
-        </div>
+        {post.author?._id === currentUserId && <PostMenu postId={post._id} />}
       </div>
 
       {/* Image */}

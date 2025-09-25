@@ -13,7 +13,7 @@ import {
 } from "../redux/commentSlide";
 import { getCommentList } from "../services/Post/comments/getCommentList";
 import getpost from "../services/Post/getpost";
-import { setPosts, deletePost } from "../redux/postSlice";
+import { setPosts, DeletePosts } from "../redux/postSlice";
 
 function SocketManager() {
   const currentUser = useSelector((state) => state.user.user);
@@ -119,7 +119,7 @@ function SocketManager() {
       });
       socket.on("Deletepost", ({ postid }) => {
         // dispatch trực tiếp reducer deletePost
-        dispatch(deletePost({ postId: postid }));
+        dispatch(DeletePosts({ postId: postid }));
       });
     }
 
