@@ -14,12 +14,13 @@ const postSlice = createSlice({
       state.posts.unshift(action.payload); // thêm bài mới vào đầu
     },
     updatePost: (state, action) => {
-      const updatedPost = action.payload; // object post trả về từ BE
+      const updatedPost = action.payload;
       const index = state.posts.findIndex((p) => p._id === updatedPost._id);
       if (index !== -1) {
         state.posts[index] = {
           ...state.posts[index],
-          ...updatedPost, // merge dữ liệu mới
+          ...updatedPost,
+          author: updatedPost.author || state.posts[index].author, // giữ lại tác giả cũ nếu BE không trả về
         };
       }
     },

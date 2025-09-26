@@ -12,6 +12,7 @@ const cx = classNames.bind(styles);
 function EditPost({ postId, currentContent, token, setMessage, setSuccess }) {
   const [loading, setLoading] = useState(false);
   const [showEdit, setShowEdit] = useState(false);
+
   const [newContent, setNewContent] = useState(currentContent);
   const dispatch = useDispatch();
 

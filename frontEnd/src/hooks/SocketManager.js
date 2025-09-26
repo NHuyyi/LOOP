@@ -123,11 +123,15 @@ function SocketManager() {
       });
 
       socket.on("postEdited", ({ post }) => {
-        dispatch(
-          updatePost({
-            post,
-          })
-        );
+        dispatch(updatePost({ post }));
+      });
+
+      socket.on("postVisibilityChanged", async ({ post }) => {
+        // Lấy lại danh sách post mới
+        const res = await getpost(currentUser.friends, currentUser._id);
+        if (res?.success && res.data) {
+          dispatch(setPosts(res.data));
+        }
       });
     }
 
@@ -142,6 +146,7 @@ function SocketManager() {
       socket.off("createPost");
       socket.off("Deletepost");
       socket.off("postEdited");
+      socket.off("postVisibilityChanged");
     };
   }, [currentUser, dispatch]);
 

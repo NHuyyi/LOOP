@@ -35,6 +35,13 @@ const PostSchema = new mongoose.Schema(
     isDeleted: { type: Boolean, default: false },
     editedAt: { type: Date },
     isEdited: { type: Boolean, default: false },
+    visibility: {
+      type: String,
+      enum: ["friends", "private", "custom"],
+      default: "friends",
+    },
+    // Danh sách người bị chặn xem (khi custom)
+    denyList: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
   },
   { timestamps: true }
 );

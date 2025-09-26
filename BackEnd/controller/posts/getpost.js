@@ -10,36 +10,54 @@ exports.getNewsFeed = async (req, res) => {
 
     let ids = [userId, ...(friendIds || [])];
 
-    const posts = await PostModel.find({
+    // lấy tất cả post của chính user + bạn bè
+    let posts = await PostModel.find({
       author: { $in: ids },
-      isDeleted: { $ne: true }, // loại bỏ post bị xóa
+      isDeleted: { $ne: true },
     })
       .populate("author", "name avatar")
       .populate("comments.user", "_id friends")
       .sort({ createdAt: -1 })
       .lean();
 
+    // lọc post theo visibility
+    posts = posts.filter((p) => {
+      if (p.visibility === "friends") {
+        // bạn bè + chính chủ
+        return (
+          ids.includes(String(p.author._id)) ||
+          String(p.author._id) === String(userId)
+        );
+      }
+      if (p.visibility === "private") {
+        // chỉ chính chủ thấy
+        return String(p.author._id) === String(userId);
+      }
+      if (p.visibility === "custom") {
+        // nếu user nằm trong denyList => không hiển thị
+        return !p.denyList?.map(String).includes(String(userId));
+      }
+      return true; // fallback (nếu sau này thêm "public")
+    });
+
+    // tính lại số lượng comment hiển thị
     const postsWithCount = posts.map((p) => {
       const allComments = p.comments || [];
       const hiddenIds = new Set();
 
-      // duyệt comment để xác định comment ẩn
       allComments.forEach((c) => {
-        if (String(c.user._id) === String(userId)) {
-          return; // chính chủ luôn hiển thị
-        }
+        if (String(c.user._id) === String(userId)) return; // chính chủ luôn thấy
 
         const isFriend = (c.user.friends || [])
           .map(String)
           .includes(String(userId));
 
-        // Nếu không phải bạn bè -> ẩn
         if (!isFriend) {
           hiddenIds.add(String(c._id));
           return;
         }
 
-        // Nếu parent bị ẩn -> ẩn luôn
+        // nếu cha bị ẩn thì con cũng ẩn
         if (c.parentId && hiddenIds.has(String(c.parentId))) {
           hiddenIds.add(String(c._id));
         }
@@ -49,11 +67,10 @@ exports.getNewsFeed = async (req, res) => {
         (c) => !hiddenIds.has(String(c._id)) && !c.isDeleted
       );
 
-      // Tính số lượng comment chưa bị xóa
-      const countVisible = visibleComments.length;
       return {
         ...p,
-        commentCount: countVisible,
+        commentCount: visibleComments.length,
+        visibility: p.visibility, // 👈 trả ra FE
       };
     });
 

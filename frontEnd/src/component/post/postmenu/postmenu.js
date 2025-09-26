@@ -3,7 +3,8 @@ import styles from "./postmenu.module.css";
 import classNames from "classnames/bind";
 import DeletePost from "../../post/deletepost/deletepost";
 import EditPost from "../../post/editpost/editpost";
-import { FaCog, FaGlobeAmericas } from "react-icons/fa";
+import ChangeVisibility from "../visibilityPost/visibilityPost";
+import { FaCog } from "react-icons/fa";
 
 const cx = classNames.bind(styles);
 
@@ -21,7 +22,8 @@ function PostMenu({ post }) {
         menuRef.current &&
         !menuRef.current.contains(e.target) &&
         !e.target.closest(".edit-dialog") && // không đóng khi click trong edit modal
-        !e.target.closest(".confirm-dialog") // không đóng khi click trong delete modal
+        !e.target.closest(".confirm-dialog") && // không đóng khi click trong delete modal
+        !e.target.closest(".options-dialog") // không đóng khi click trong visibility modal
       ) {
         setOpen(false);
       }
@@ -76,10 +78,13 @@ function PostMenu({ post }) {
             <DeletePost postId={post._id} token={token} />
           </div>
 
-          <button className={cx("menu-item")} onClick={() => setOpen(false)}>
-            <FaGlobeAmericas />
-            <span> Chế độ công khai</span>
-          </button>
+          <div className={cx("menu-item")}>
+            <ChangeVisibility
+              postId={post._id}
+              visibility={post.visibility}
+              token={token}
+            />
+          </div>
         </div>
       )}
       {message && (

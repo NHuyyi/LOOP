@@ -40,7 +40,6 @@ function CommentItem({
       });
     }
   }, [comment._id, newestCommentId, lastCommentRef]);
-  console.log(comment);
   return (
     <div
       className={cx("commentWrapper")}

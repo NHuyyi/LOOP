@@ -1,0 +1,58 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+}
+
+.options-dialog {
+  background: #fff;
+  border-radius: 12px;
+  padding: 20px;
+  width: 320px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+h3 {
+  margin-bottom: 16px;
+  font-size: 16px;
+  font-weight: 600;
+  text-align: center;
+}
+
+.option-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.option-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 15px;
+  cursor: pointer;
+  padding: 8px 12px;
+  border-radius: 8px;
+  transition: background 0.2s;
+}
+
+.option-item:hover {
+  background: #f3f3f3;
+}
+
+.option-item input {
+  accent-color: #007bff; /* màu xanh cho radio */
+  appearance: radio !important;
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+}
+
+.option-item span {
+  flex: 1;
+  cursor: pointer;
+}
