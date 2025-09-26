@@ -13,7 +13,7 @@ import {
 } from "../redux/commentSlide";
 import { getCommentList } from "../services/Post/comments/getCommentList";
 import getpost from "../services/Post/getpost";
-import { setPosts, DeletePosts } from "../redux/postSlice";
+import { setPosts, DeletePosts, updatePost } from "../redux/postSlice";
 
 function SocketManager() {
   const currentUser = useSelector((state) => state.user.user);
@@ -121,6 +121,14 @@ function SocketManager() {
         // dispatch trực tiếp reducer deletePost
         dispatch(DeletePosts({ postId: postid }));
       });
+
+      socket.on("postEdited", ({ post }) => {
+        dispatch(
+          updatePost({
+            post,
+          })
+        );
+      });
     }
 
     return () => {
@@ -133,6 +141,7 @@ function SocketManager() {
       socket.off("Deletecomment");
       socket.off("createPost");
       socket.off("Deletepost");
+      socket.off("postEdited");
     };
   }, [currentUser, dispatch]);
 

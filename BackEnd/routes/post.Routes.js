@@ -21,6 +21,7 @@ const {
 const { deleteComment } = require("../controller/posts/comment/deletecomment");
 const { updateComment } = require("../controller/posts/comment/updatecomment");
 const { deletePost } = require("../controller/posts/deletepost");
+const { editPost } = require("../controller/posts/editpost");
 const Authorization = require("../middleware/Authorization");
 
 router.post("/uploadImage", Authorization, upload.single("image"), uploadImage);
@@ -40,4 +41,5 @@ router.get(
 router.post("/delete/comments", Authorization, deleteComment);
 router.post("/update/comments", Authorization, updateComment);
 router.post("/delete/post", Authorization, deletePost);
+router.post("/edit/post", Authorization, editPost);
 module.exports = router;

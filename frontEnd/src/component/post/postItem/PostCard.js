@@ -50,14 +50,19 @@ function PostCard({ post, currentUserId }) {
             <div>
               <p className={cx("authorName")}>
                 {post.author?.name || "ẩn danh"}
+                {post.isEdited && (
+                  <span className={cx("editedTag")}>- đã chỉnh sửa</span>
+                )}
               </p>
             </div>
           </div>
           <p className={cx("authorDate")}>
-            {new Date(post.createdAt).toLocaleString()}
+            {post.isEdited && post.editedAt
+              ? new Date(post.editedAt).toLocaleString()
+              : new Date(post.createdAt).toLocaleString()}{" "}
           </p>
         </div>
-        {post.author?._id === currentUserId && <PostMenu postId={post._id} />}
+        {post.author?._id === currentUserId && <PostMenu post={post} />}
       </div>
 
       {/* Image */}

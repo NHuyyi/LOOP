@@ -2,24 +2,54 @@ import { useState, useRef, useEffect } from "react";
 import styles from "./postmenu.module.css";
 import classNames from "classnames/bind";
 import DeletePost from "../../post/deletepost/deletepost";
-import { FaCog, FaPen, FaGlobeAmericas } from "react-icons/fa";
+import EditPost from "../../post/editpost/editpost";
+import { FaCog, FaGlobeAmericas } from "react-icons/fa";
 
 const cx = classNames.bind(styles);
 
-function PostMenu({ postId }) {
+function PostMenu({ post }) {
   const [open, setOpen] = useState(false);
   const menuRef = useRef();
+  const [message, setMessage] = useState("");
+  const [success, setSuccess] = useState(" ");
+  const [fadeOut, setFadeOut] = useState(false);
   const token = localStorage.getItem("token");
   // Đóng menu khi click ra ngoài
   useEffect(() => {
     const handleClickOutside = (e) => {
-      if (menuRef.current && !menuRef.current.contains(e.target)) {
+      if (
+        menuRef.current &&
+        !menuRef.current.contains(e.target) &&
+        !e.target.closest(".edit-dialog") && // không đóng khi click trong edit modal
+        !e.target.closest(".confirm-dialog") // không đóng khi click trong delete modal
+      ) {
         setOpen(false);
       }
     };
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
+
+  // 👇 tự động xóa message sau 5s
+  useEffect(() => {
+    if (message) {
+      // Sau 4.5s bắt đầu fade out
+      const timer = setTimeout(() => {
+        setFadeOut(true);
+      }, 2500);
+
+      // Sau 5s thì xóa message
+      const removeTimer = setTimeout(() => {
+        setMessage("");
+        setFadeOut(false);
+      }, 3000);
+
+      return () => {
+        clearTimeout(timer);
+        clearTimeout(removeTimer);
+      };
+    }
+  }, [message]);
 
   return (
     <div className={cx("post-menu-wrapper")} ref={menuRef}>
@@ -32,24 +62,36 @@ function PostMenu({ postId }) {
 
       {open && (
         <div className={cx("menu-dropdown", { show: open })}>
-          <button
-            className={cx("menu-item")}
-            onClick={() => {
-              setOpen(false);
-            }}
-          >
-            <FaPen />
-            <span> Sửa bài viết</span>
-          </button>
+          <div className={cx("menu-item")}>
+            <EditPost
+              postId={post._id}
+              currentContent={post.content}
+              token={token}
+              setMessage={setMessage}
+              setSuccess={setSuccess}
+            />
+          </div>
 
           <div className={cx("menu-item")}>
-            <DeletePost postId={postId} token={token} />
+            <DeletePost postId={post._id} token={token} />
           </div>
 
           <button className={cx("menu-item")} onClick={() => setOpen(false)}>
             <FaGlobeAmericas />
             <span> Chế độ công khai</span>
           </button>
+        </div>
+      )}
+      {message && (
+        <div
+          className={`${cx("app-message")}  
+                      ${
+                        success === false
+                          ? cx("app-message__err")
+                          : cx("app-message__ok")
+                      } ${fadeOut ? cx("fade-out") : ""}`}
+        >
+          {message}
         </div>
       )}
     </div>

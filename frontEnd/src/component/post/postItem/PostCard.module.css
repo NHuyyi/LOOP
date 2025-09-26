@@ -166,3 +166,10 @@
   cursor: pointer;
   color: #fff;
 }
+
+.editedTag {
+  font-size: 0.875rem;
+  color: #6b7280; /* text-gray-500 */
+  margin-left: 0.5rem;
+  font-weight: 400;
+}

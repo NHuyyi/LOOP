@@ -13,6 +13,7 @@ function DeletePost({ postId, token }) {
   const [loading, setLoading] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
   const dispatch = useDispatch();
+
   const handleDelete = async () => {
     setLoading(true);
     const result = await deletePost(postId, token);
@@ -36,7 +37,7 @@ function DeletePost({ postId, token }) {
       {showConfirm &&
         createPortal(
           <div className={cx("overlay")}>
-            <div className={cx("confirm-dialog")}>
+            <div className={`${cx("confirm-dialog")} confirm-dialog`}>
               <span>Bạn có chắc muốn xóa bài viết này?</span>
               <div className={cx("buttons")}>
                 <button onClick={() => setShowConfirm(false)}>Hủy</button>

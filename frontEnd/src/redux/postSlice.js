@@ -14,14 +14,16 @@ const postSlice = createSlice({
       state.posts.unshift(action.payload); // thêm bài mới vào đầu
     },
     updatePost: (state, action) => {
-      const { postId, content, image } = action.payload;
-      const post = state.posts.find((p) => p._id === postId);
-      if (post) {
-        if (content !== undefined) post.content = content;
-        if (image !== undefined) post.image = image;
-        post.updatedAt = new Date().toISOString();
+      const updatedPost = action.payload; // object post trả về từ BE
+      const index = state.posts.findIndex((p) => p._id === updatedPost._id);
+      if (index !== -1) {
+        state.posts[index] = {
+          ...state.posts[index],
+          ...updatedPost, // merge dữ liệu mới
+        };
       }
     },
+
     DeletePosts: (state, action) => {
       const postId = action.payload;
       state.posts = state.posts.filter((p) => p._id !== postId);
