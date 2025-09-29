@@ -23,7 +23,6 @@ function HomePage() {
   // Lấy posts từ redux thay vì local state
   const posts = useSelector((state) => state.posts.posts);
   const dispatch = useDispatch();
-
   // Gọi hook lấy danh sách bài viết
   const { posts: fetchedPosts, loading } = useGetPost(
     currentUser?.friends || [],
@@ -83,6 +82,7 @@ function HomePage() {
                 key={post._id}
                 post={post}
                 currentUserId={currentUser?._id}
+                friendList={currentUser?.friends || []}
               />
             ))}
           </div>

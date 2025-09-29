@@ -11,7 +11,7 @@ import PostMenu from "../postmenu/postmenu";
 
 const cx = classNames.bind(styles);
 
-function PostCard({ post, currentUserId }) {
+function PostCard({ post, currentUserId, friendList = [] }) {
   const [showComments, setShowComments] = useState(false);
   const [refreshKey, setRefreshKey] = useState(0);
 
@@ -62,7 +62,9 @@ function PostCard({ post, currentUserId }) {
               : new Date(post.createdAt).toLocaleString()}{" "}
           </p>
         </div>
-        {post.author?._id === currentUserId && <PostMenu post={post} />}
+        {post.author?._id === currentUserId && (
+          <PostMenu post={post} friendList={friendList} />
+        )}
       </div>
 
       {/* Image */}

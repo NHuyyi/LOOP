@@ -13,7 +13,10 @@ exports.verifyOTP = async (req, res) => {
     }
 
     // tìm người dùng theo email
-    const user = await UserModel.findOne({ email });
+    const user = await UserModel.findOne({ email }).populate(
+      "friends",
+      "name avatar"
+    );
     if (!user) {
       return res
         .status(404)

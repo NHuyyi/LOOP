@@ -8,7 +8,7 @@ import { FaCog } from "react-icons/fa";
 
 const cx = classNames.bind(styles);
 
-function PostMenu({ post }) {
+function PostMenu({ post, friendList = [] }) {
   const [open, setOpen] = useState(false);
   const menuRef = useRef();
   const [message, setMessage] = useState("");
@@ -23,7 +23,8 @@ function PostMenu({ post }) {
         !menuRef.current.contains(e.target) &&
         !e.target.closest(".edit-dialog") && // không đóng khi click trong edit modal
         !e.target.closest(".confirm-dialog") && // không đóng khi click trong delete modal
-        !e.target.closest(".options-dialog") // không đóng khi click trong visibility modal
+        !e.target.closest(".options-dialog") && // không đóng khi click trong visibility modal
+        !e.target.closest(".custom-visibility-modal") // không đóng khi click trong visibility custom modal
       ) {
         setOpen(false);
       }
@@ -82,6 +83,7 @@ function PostMenu({ post }) {
             <ChangeVisibility
               postId={post._id}
               visibility={post.visibility}
+              friendList={friendList}
               token={token}
             />
           </div>

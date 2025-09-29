@@ -13,7 +13,10 @@ exports.Login = async (req, res) => {
       });
     }
 
-    const user = await UserModel.findOne({ email });
+    const user = await UserModel.findOne({ email }).populate(
+      "friends",
+      "name avatar"
+    );
 
     if (!user) {
       return res.status(400).json({
