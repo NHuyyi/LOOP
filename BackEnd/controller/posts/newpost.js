@@ -1,6 +1,7 @@
 // controllers/postController.js
 const PostModel = require("../../model/Post.Model");
-const UserModel = require("../../model/User.Model"); // để lấy danh sách bạn bè
+const UserModel = require("../../model/User.Model");
+const { getIO, getOnlineUsers } = require("../../config/socker"); // lấy thêm onlineUsers
 
 exports.NewPost = async (req, res) => {
   try {
@@ -16,22 +17,20 @@ exports.NewPost = async (req, res) => {
     let finalVisibility = visibility || "friends";
     let finalDenyList = [];
 
-    // Trường hợp custom
+    // Custom
     if (finalVisibility === "custom") {
       if (Array.isArray(denyList) && denyList.length > 0) {
         finalDenyList = denyList;
       } else {
-        // nếu denyList rỗng thì mặc định thành "friends"
         finalVisibility = "friends";
       }
     }
 
-    // Trường hợp private
+    // Private
     if (finalVisibility === "private") {
-      // lấy danh sách bạn bè của author
       const user = await UserModel.findById(author).select("friends");
       if (user && user.friends) {
-        finalDenyList = user.friends; // chặn toàn bộ bạn bè
+        finalDenyList = user.friends.map((f) => f.toString()); // chặn toàn bộ bạn bè
       }
     }
 
@@ -42,8 +41,46 @@ exports.NewPost = async (req, res) => {
       visibility: finalVisibility,
       denyList: finalDenyList,
     });
-
     await newPost.save();
+    await newPost.populate("author", "name avatar");
+
+    // 🔥 Emit realtime theo từng chế độ
+    const io = getIO();
+    const onlineUsers = getOnlineUsers();
+
+    // Luôn emit cho author nếu online
+    if (onlineUsers[author.toString()]) {
+      io.to(onlineUsers[author.toString()]).emit("createPost", {
+        post: newPost,
+      });
+      console.log("Emit cho chính author:", author.toString());
+    }
+
+    const user = await UserModel.findById(author).select("friends");
+
+    if (finalVisibility === "friends") {
+      // Emit cho tất cả bạn bè nếu đang online
+      user?.friends?.forEach((friendId) => {
+        const socketId = onlineUsers[friendId.toString()];
+        if (socketId) {
+          io.to(socketId).emit("createPost", { post: newPost });
+          console.log("Emit friends createPost đến", friendId.toString());
+        }
+      });
+    } else if (finalVisibility === "custom") {
+      // Emit cho bạn bè ngoại trừ denyList
+      user?.friends?.forEach((friendId) => {
+        if (!finalDenyList.includes(friendId.toString())) {
+          const socketId = onlineUsers[friendId.toString()];
+          if (socketId) {
+            io.to(socketId).emit("createPost", { post: newPost });
+            console.log("Emit custom createPost đến", friendId.toString());
+          }
+        }
+      });
+    } else if (finalVisibility === "private") {
+      console.log("Private → chỉ emit cho author");
+    }
 
     return res.status(201).json({
       message: "Tạo bài viết thành công",

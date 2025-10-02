@@ -13,7 +13,7 @@ import {
 } from "../redux/commentSlide";
 import { getCommentList } from "../services/Post/comments/getCommentList";
 import getpost from "../services/Post/getpost";
-import { setPosts, DeletePosts, updatePost } from "../redux/postSlice";
+import { setPosts, DeletePosts, addPost, updatePost } from "../redux/postSlice";
 
 function SocketManager() {
   const currentUser = useSelector((state) => state.user.user);
@@ -111,12 +111,11 @@ function SocketManager() {
           );
         }
       });
-      socket.on("createPost", async (payload) => {
-        const res = await getpost(payload.friendIds, payload.userId);
-        if (res?.success && res.data) {
-          dispatch(setPosts(res.data)); // đồng bộ lại toàn bộ feed
-        }
+      socket.on("createPost", ({ post }) => {
+        console.log("Socket nhận createPost:", post);
+        dispatch(addPost(post));
       });
+
       socket.on("Deletepost", ({ postid }) => {
         // dispatch trực tiếp reducer deletePost
         dispatch(DeletePosts({ postId: postid }));

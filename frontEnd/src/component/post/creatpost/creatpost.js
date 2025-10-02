@@ -1,10 +1,12 @@
 import { useState } from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import uploadImage from "../../../services/Post/uploadImage";
 import newpost from "../../../services/Post/newpost";
 import styles from "./creatpost.module.css";
 import classNames from "classnames/bind";
 import VisibilityCreatePost from "../visibilitycreatpost/visibilitycreatpost";
+import { setPosts } from "../../../redux/postSlice";
+import getpost from "../../../services/Post/getpost";
 
 const cx = classNames.bind(styles);
 
@@ -13,9 +15,9 @@ function CreatePost({ setMessage, setSuccess, friendList = [] }) {
   const [preview, setPreview] = useState(null); // để preview ảnh
   const [loading, setLoading] = useState(false);
   const [content, setContent] = useState(""); // nội dung bài viết
-  const [visibility, setVisibility] = useState("friends"); // sửa lại đúng tên
-
+  const [visibility, setVisibility] = useState("friends");
   const [denyList, setDenyList] = useState([]); // danh sách người bị chặn xem (khi custom)
+  const dispatch = useDispatch();
 
   const stateUser = useSelector((state) => state.user);
   const currentUser = stateUser?.user;
@@ -52,7 +54,16 @@ function CreatePost({ setMessage, setSuccess, friendList = [] }) {
         visibility,
         denyList
       );
-
+      if (post.success) {
+        const postList = await getpost(friendList, author);
+        console.log(
+          "Đã cập nhật lại danh sách bài viết sau khi tạo mới.",
+          postList
+        );
+        if (postList && Array.isArray(postList.data)) {
+          dispatch(setPosts(postList.data));
+        }
+      }
       setMessage(post.message);
       setSuccess(post.success);
 
@@ -60,6 +71,8 @@ function CreatePost({ setMessage, setSuccess, friendList = [] }) {
       setImage(null);
       setPreview(null);
       setContent("");
+      setVisibility("friends");
+      setDenyList([]);
     } catch (error) {
       setMessage(error.message);
       setSuccess(false);
@@ -114,6 +127,7 @@ function CreatePost({ setMessage, setSuccess, friendList = [] }) {
       />
       {/* Chế độ công khai */}
       <VisibilityCreatePost
+        visibility={visibility}
         setVisibility={setVisibility}
         setDenyList={setDenyList}
         friendList={friendList}

@@ -1,16 +1,24 @@
 // controller/postController.js
 const PostModel = require("../../model/Post.Model");
+const UserModel = require("../../model/User.Model");
 
 exports.getNewsFeed = async (req, res) => {
   try {
-    const { friendIds, userId } = req.body;
+    const { userId } = req.body;
     if (!userId) {
       return res.status(400).json({ error: "Cần truyền userId" });
     }
 
-    let ids = [userId, ...(friendIds || [])];
+    // 🔹 Lấy danh sách bạn bè từ DB
+    const user = await UserModel.findById(userId).populate("friends", "_id");
+    if (!user) {
+      return res.status(404).json({ error: "User không tồn tại" });
+    }
 
-    // lấy tất cả post của chính user + bạn bè
+    const friendIds = user.friends.map((f) => String(f._id));
+    const ids = [String(userId), ...friendIds];
+
+    // 🔹 Lấy post của chính user + bạn bè
     let posts = await PostModel.find({
       author: { $in: ids },
       isDeleted: { $ne: true },
@@ -20,33 +28,27 @@ exports.getNewsFeed = async (req, res) => {
       .sort({ createdAt: -1 })
       .lean();
 
-    // lọc post theo visibility
+    // 🔹 Lọc theo visibility
     posts = posts.filter((p) => {
       if (p.visibility === "friends") {
-        // bạn bè + chính chủ
-        return (
-          ids.includes(String(p.author._id)) ||
-          String(p.author._id) === String(userId)
-        );
+        return ids.includes(String(p.author._id));
       }
       if (p.visibility === "private") {
-        // chỉ chính chủ thấy
         return String(p.author._id) === String(userId);
       }
       if (p.visibility === "custom") {
-        // nếu user nằm trong denyList => không hiển thị
         return !p.denyList?.map(String).includes(String(userId));
       }
-      return true; // fallback (nếu sau này thêm "public")
+      return true; // public
     });
 
-    // tính lại số lượng comment hiển thị
+    // 🔹 Tính số comment hiển thị
     const postsWithCount = posts.map((p) => {
       const allComments = p.comments || [];
       const hiddenIds = new Set();
 
       allComments.forEach((c) => {
-        if (String(c.user._id) === String(userId)) return; // chính chủ luôn thấy
+        if (String(c.user._id) === String(userId)) return; // chính chủ thấy
 
         const isFriend = (c.user.friends || [])
           .map(String)
@@ -70,7 +72,7 @@ exports.getNewsFeed = async (req, res) => {
       return {
         ...p,
         commentCount: visibleComments.length,
-        visibility: p.visibility, // 👈 trả ra FE
+        visibility: p.visibility,
       };
     });
 

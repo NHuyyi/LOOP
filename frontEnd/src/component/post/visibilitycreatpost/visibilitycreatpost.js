@@ -8,13 +8,13 @@ import CustomVisibilityModal from "../CustomVisibility/CustomVisibility";
 const cx = classNames.bind(styles);
 
 function VisibilityCreatePost({
+  visibility,
   setVisibility,
   setDenyList,
   denyList,
   friendList = [],
 }) {
   const [showOptions, setShowOptions] = useState(false);
-  const [selectedVisibility, setSelectedVisibility] = useState("friends");
   const [showCustomModal, setShowCustomModal] = useState(false);
   const handleSelectVisibility = (option) => {
     if (option === "custom") {
@@ -22,7 +22,6 @@ function VisibilityCreatePost({
       setShowOptions(false);
       setShowCustomModal(true);
     } else {
-      setSelectedVisibility(option);
       setVisibility(option);
       setDenyList([]); // reset nếu không phải custom
       setShowOptions(false);
@@ -51,7 +50,7 @@ function VisibilityCreatePost({
                 <li
                   className={cx(
                     "option-item",
-                    selectedVisibility === "friends" ? "selected" : ""
+                    visibility === "friends" ? "selected" : ""
                   )}
                   onClick={() => handleSelectVisibility("friends")}
                 >
@@ -60,7 +59,7 @@ function VisibilityCreatePost({
                 <li
                   className={cx(
                     "option-item",
-                    selectedVisibility === "private" ? "selected" : ""
+                    visibility === "private" ? "selected" : ""
                   )}
                   onClick={() => handleSelectVisibility("private")}
                 >
@@ -69,7 +68,7 @@ function VisibilityCreatePost({
                 <li
                   className={cx(
                     "option-item",
-                    selectedVisibility === "custom" ? "selected" : ""
+                    visibility === "custom" ? "selected" : ""
                   )}
                   onClick={() => {
                     setShowCustomModal(true);
@@ -92,11 +91,9 @@ function VisibilityCreatePost({
           onSave={(list) => {
             if (list.length === 0) {
               // Nếu không chọn ai thì coi như "friends"
-              setSelectedVisibility("friends");
               setVisibility("friends");
               setDenyList([]);
             } else {
-              setSelectedVisibility("custom");
               setVisibility("custom");
               setDenyList(list); // ✅ cập nhật denyList
             }

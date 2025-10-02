@@ -11,7 +11,11 @@ const postSlice = createSlice({
       state.posts = action.payload;
     },
     addPost: (state, action) => {
-      state.posts.unshift(action.payload); // thêm bài mới vào đầu
+      if (Array.isArray(state.posts)) {
+        state.posts.unshift(action.payload); // thêm bài mới lên đầu
+      } else {
+        state.posts = [action.payload];
+      }
     },
     updatePost: (state, action) => {
       const updatedPost = action.payload;
