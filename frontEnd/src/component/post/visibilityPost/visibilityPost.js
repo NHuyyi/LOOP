@@ -10,10 +10,16 @@ import CustomVisibilityModal from "../CustomVisibility/CustomVisibility";
 
 const cx = classNames.bind(styles);
 
-function ChangeVisibility({ postId, visibility, token, friendList = [] }) {
+function ChangeVisibility({
+  postId,
+  visibility,
+  denyList = [],
+  token,
+  friendList = [],
+}) {
   const [showOptions, setShowOptions] = useState(false);
   const [selectedVisibility, setSelectedVisibility] = useState(visibility);
-  const [restrictedList, setRestrictedList] = useState([]);
+  const [restrictedList, setRestrictedList] = useState(denyList);
   const [showCustomModal, setShowCustomModal] = useState(false); // 🔹 quan trọng
   const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();

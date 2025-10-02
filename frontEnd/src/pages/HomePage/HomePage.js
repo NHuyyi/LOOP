@@ -69,7 +69,11 @@ function HomePage() {
   return (
     <div className={cx("home-container")}>
       <div className={cx("content")}>
-        <CreatePost setMessage={setMessage} setSuccess={setSuccess} />
+        <CreatePost
+          setMessage={setMessage}
+          setSuccess={setSuccess}
+          friendList={currentUser?.friends || []}
+        />
 
         {/* Loading */}
         {loading && <p className="text-center">Đang tải bài viết...</p>}

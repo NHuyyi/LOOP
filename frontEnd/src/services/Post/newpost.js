@@ -1,5 +1,12 @@
 const API_URL = process.env.REACT_APP_API_URL || "http://localhost:3001/api";
-const newpost = async (imageUrl, content, author) => {
+
+const newpost = async (
+  imageUrl,
+  content,
+  author,
+  visibility = "friends",
+  denyList = []
+) => {
   const token = localStorage.getItem("token");
   try {
     const res = await fetch(`${API_URL}/posts/newpost`, {
@@ -8,9 +15,11 @@ const newpost = async (imageUrl, content, author) => {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
-      body: JSON.stringify({ imageUrl, content, author }),
+      body: JSON.stringify({ imageUrl, content, author, visibility, denyList }),
     });
+
     const data = await res.json();
+
     if (!res.ok) {
       return {
         success: data.success,
@@ -19,6 +28,7 @@ const newpost = async (imageUrl, content, author) => {
           data.message || "Tạo bài viết thất bại, vui lòng kiểm tra thông tin",
       };
     }
+
     return data;
   } catch (error) {
     return {

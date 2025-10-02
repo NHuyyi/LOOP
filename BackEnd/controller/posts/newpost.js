@@ -1,20 +1,46 @@
+// controllers/postController.js
 const PostModel = require("../../model/Post.Model");
+const UserModel = require("../../model/User.Model"); // để lấy danh sách bạn bè
 
 exports.NewPost = async (req, res) => {
   try {
-    const { imageUrl, content, author } = req.body;
+    const { imageUrl, content, author, visibility, denyList } = req.body;
 
-    // kiểm tra xem thông tin đã được điền đầy đủ chưa
-    if (!imageUrl || !content || !author) {
+    if (!content || !author) {
       return res.status(400).json({
-        message: "vui lòng điền đầy đủ các thông tin",
+        message: "Vui lòng điền đầy đủ nội dung và tác giả",
         success: false,
       });
     }
+
+    let finalVisibility = visibility || "friends";
+    let finalDenyList = [];
+
+    // Trường hợp custom
+    if (finalVisibility === "custom") {
+      if (Array.isArray(denyList) && denyList.length > 0) {
+        finalDenyList = denyList;
+      } else {
+        // nếu denyList rỗng thì mặc định thành "friends"
+        finalVisibility = "friends";
+      }
+    }
+
+    // Trường hợp private
+    if (finalVisibility === "private") {
+      // lấy danh sách bạn bè của author
+      const user = await UserModel.findById(author).select("friends");
+      if (user && user.friends) {
+        finalDenyList = user.friends; // chặn toàn bộ bạn bè
+      }
+    }
+
     const newPost = new PostModel({
       imageUrl,
       content,
       author,
+      visibility: finalVisibility,
+      denyList: finalDenyList,
     });
 
     await newPost.save();
@@ -25,9 +51,10 @@ exports.NewPost = async (req, res) => {
       post: newPost,
     });
   } catch (error) {
-    console.error("lỗi tạo bài viết:", error);
-    return res
-      .status(500)
-      .json({ message: "Kết nối server bị lỗi", success: false });
+    console.error("Lỗi tạo bài viết:", error);
+    return res.status(500).json({
+      message: "Kết nối server bị lỗi",
+      success: false,
+    });
   }
 };

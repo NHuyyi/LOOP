@@ -83,6 +83,7 @@ function PostMenu({ post, friendList = [] }) {
             <ChangeVisibility
               postId={post._id}
               visibility={post.visibility}
+              denyList={post.denyList || []}
               friendList={friendList}
               token={token}
             />

@@ -4,14 +4,18 @@ import uploadImage from "../../../services/Post/uploadImage";
 import newpost from "../../../services/Post/newpost";
 import styles from "./creatpost.module.css";
 import classNames from "classnames/bind";
+import VisibilityCreatePost from "../visibilitycreatpost/visibilitycreatpost";
 
 const cx = classNames.bind(styles);
 
-function CreatePost({ setMessage, setSuccess }) {
+function CreatePost({ setMessage, setSuccess, friendList = [] }) {
   const [image, setImage] = useState(null); // file ảnh
   const [preview, setPreview] = useState(null); // để preview ảnh
   const [loading, setLoading] = useState(false);
   const [content, setContent] = useState(""); // nội dung bài viết
+  const [visibility, setVisibility] = useState("friends"); // sửa lại đúng tên
+
+  const [denyList, setDenyList] = useState([]); // danh sách người bị chặn xem (khi custom)
 
   const stateUser = useSelector((state) => state.user);
   const currentUser = stateUser?.user;
@@ -41,7 +45,14 @@ function CreatePost({ setMessage, setSuccess }) {
       const imageUrl = imageRes.data.url;
 
       // Tạo bài viết mới
-      const post = await newpost(imageUrl, content, author);
+      const post = await newpost(
+        imageUrl,
+        content,
+        author,
+        visibility,
+        denyList
+      );
+
       setMessage(post.message);
       setSuccess(post.success);
 
@@ -100,6 +111,13 @@ function CreatePost({ setMessage, setSuccess }) {
         placeholder="Bạn đang nghĩ gì?"
         value={content}
         onChange={(e) => setContent(e.target.value)}
+      />
+      {/* Chế độ công khai */}
+      <VisibilityCreatePost
+        setVisibility={setVisibility}
+        setDenyList={setDenyList}
+        friendList={friendList}
+        denyList={denyList}
       />
 
       {/* Nút đăng */}
