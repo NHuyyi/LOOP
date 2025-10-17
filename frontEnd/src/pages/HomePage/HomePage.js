@@ -8,6 +8,7 @@ import { useGetPost } from "../../hooks/getpost";
 import { updateReaction } from "../../redux/reactionSlide";
 import countreaction from "../../services/Post/reaction/countreaction";
 import { setPosts } from "../../redux/postSlice";
+import MiniProfile from "../../component/user/minipofile/miniprofile";
 
 const cx = classNames.bind(styles);
 
@@ -68,6 +69,14 @@ function HomePage() {
 
   return (
     <div className={cx("home-container")}>
+      <div className={cx("miniprofile-section")}>
+        <MiniProfile
+          user={currentUser}
+          post={posts}
+          setMessage={setMessage}
+          setSuccess={setSuccess}
+        />
+      </div>
       <div className={cx("content")}>
         <CreatePost
           setMessage={setMessage}

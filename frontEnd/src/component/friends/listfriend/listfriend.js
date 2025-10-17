@@ -56,7 +56,6 @@ function FriendsList({ currentUserId, id }) {
       </button>
       {open && (
         <>
-          <div className={cx("overlay")} onClick={() => setOpen(false)}></div>
           <Removefriend
             currentUserId={currentUserId}
             id={id}

@@ -1,0 +1,41 @@
+/* ============================= */
+/* 🔷 LAYOUT CHUNG CHO HOMEPAGE  */
+/* ============================= */
+.home-container {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 24px;
+  padding: 20px;
+  background-color: #f9fafb;
+  box-sizing: border-box;
+  position: relative;
+}
+
+/* ============================= */
+/* 🔹 MINI PROFILE SECTION (TRÁI) */
+/* ============================= */
+.miniprofile-section {
+  position: fixed;
+  top: 90px; /* để không che navbar nếu có */
+  left: 0;
+  width: 50%; /* chiếm 1 nửa trang */
+  max-width: 500px;
+  padding: 0 20px;
+  box-sizing: border-box;
+}
+
+/* Ẩn thanh cuộn để đẹp hơn */
+.miniprofile-section::-webkit-scrollbar {
+  display: none;
+}
+
+/* ============================= */
+/* 🔹 CONTENT SECTION (PHẢI) */
+/* ============================= */
+.content {
+  margin-left: 50%; /* chừa khoảng cho phần profile cố định bên trái */
+  width: 50%; /* phần còn lại */
+  padding: 0 20px;
+  box-sizing: border-box;
+}

@@ -112,7 +112,6 @@ function SocketManager() {
         }
       });
       socket.on("createPost", ({ post }) => {
-        console.log("Socket nhận createPost:", post);
         dispatch(addPost(post));
       });
 

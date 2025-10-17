@@ -15,12 +15,17 @@
   flex-direction: column;
   gap: 2rem;
   background: var(--bg-primary);
+  position: relative;
 }
 
 .app-title {
   font-size: 2rem;
   font-weight: 700;
-  background: linear-gradient(90deg, var(--color-gradient-start), var(--color-gradient-end));
+  background: linear-gradient(
+    90deg,
+    var(--color-gradient-start),
+    var(--color-gradient-end)
+  );
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   text-align: center;
@@ -36,7 +41,11 @@
   font-size: 1.25rem;
   font-weight: bold;
   text-transform: uppercase;
-  background: linear-gradient(90deg, var(--color-gradient-start), var(--color-gradient-end));
+  background: linear-gradient(
+    90deg,
+    var(--color-gradient-start),
+    var(--color-gradient-end)
+  );
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   margin-bottom: 1rem;
@@ -110,7 +119,11 @@
   font-size: 1rem;
   font-weight: 600;
   margin-bottom: 0.75rem;
-  background: linear-gradient(90deg, var(--color-gradient-start), var(--color-gradient-end));
+  background: linear-gradient(
+    90deg,
+    var(--color-gradient-start),
+    var(--color-gradient-end)
+  );
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }

@@ -1,0 +1,131 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  backdrop-filter: blur(6px);
+}
+
+.modal {
+  display: flex;
+  background: #111;
+  border-radius: 16px;
+  max-width: 1000px;
+  width: 95%;
+  height: 80vh;
+  position: relative;
+  color: white;
+  animation: fadeIn 0.3s ease;
+}
+
+/* ========== LEFT (IMAGE) ========== */
+.left {
+  flex: 1;
+  position: relative;
+  background: black;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.post-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  position: relative;
+  z-index: 0;
+}
+
+/* THÔNG TIN BÀI VIẾT HIỂN THỊ TRÊN ẢNH */
+.post-details {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  padding: 20px;
+  background: #11111182;
+  opacity: 0.8;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  z-index: 2;
+}
+
+.author-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.author-avatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid rgba(255, 255, 255, 0.7);
+}
+
+.author-name {
+  font-weight: 600;
+  font-size: 15px;
+}
+
+.post-content {
+  margin: 0;
+  margin-left: 50px;
+  font-size: 14px;
+  opacity: 0.9;
+  line-height: 1.4;
+}
+
+/* ========== RIGHT (COMMENTS) ========== */
+.right {
+  flex: 0.4;
+  background: #1c1c1c;
+  display: flex;
+  flex-direction: column;
+  padding: 18px;
+  overflow: visible;
+  z-index: 3;
+}
+
+.reaction-bar {
+  display: flex;
+  margin-top: 50px;
+  position: relative;
+  z-index: 10;
+}
+
+/* ========== CLOSE BUTTON ========== */
+.close-button {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  background: rgba(0, 0, 0, 0.5);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  font-size: 22px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.close-button:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}

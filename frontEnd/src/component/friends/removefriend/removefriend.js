@@ -4,6 +4,7 @@ import styles from "./Removefriend.module.css";
 import { getUserbyId } from "../../../services/User/getUserbyId";
 import { useDispatch } from "react-redux";
 import { setUser } from "../../../redux/userSlice";
+import { createPortal } from "react-dom";
 
 const cx = classNames.bind(styles);
 
@@ -17,16 +18,22 @@ function Removefriend({ currentUserId, id, name, onClose }) {
     );
   };
 
-  return (
-    <div className={cx("container-remove")}>
-      <span>Bạn có chắc muốn xóa kết bạn với {name}</span>
-      <button className={cx("submitbutton")} onClick={handleRemoveFriend}>
-        Xác nhận{" "}
-      </button>
-      <button className={cx("cancelbutton")} onClick={onClose}>
-        Hủy{" "}
-      </button>
-    </div>
+  return createPortal(
+    <div className={cx("overlay")} onClick={onClose}>
+      <div
+        className={cx("container-remove")}
+        onClick={(e) => e.stopPropagation()}
+      >
+        <span>Bạn có chắc muốn xóa kết bạn với {name}</span>
+        <button className={cx("submitbutton")} onClick={handleRemoveFriend}>
+          Xác nhận{" "}
+        </button>
+        <button className={cx("cancelbutton")} onClick={onClose}>
+          Hủy{" "}
+        </button>
+      </div>
+    </div>,
+    document.body
   );
 }
 

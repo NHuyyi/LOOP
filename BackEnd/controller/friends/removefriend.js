@@ -11,7 +11,6 @@ exports.removeRequest = async (req, res) => {
 
     // kiểm tra nếu người nhận không tồn tại
     if (!received) {
-      console.log("thử", userId);
       return res
         .status(404)
         .json({ message: "Người dùng không tồn tại", success: false });
