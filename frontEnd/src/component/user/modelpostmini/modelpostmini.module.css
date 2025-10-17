@@ -19,6 +19,7 @@
   position: relative;
   color: white;
   animation: fadeIn 0.3s ease;
+  overflow: hidden;
 }
 
 /* ========== LEFT (IMAGE) ========== */
@@ -88,7 +89,6 @@
   display: flex;
   flex-direction: column;
   padding: 18px;
-  overflow: visible;
   z-index: 3;
 }
 
