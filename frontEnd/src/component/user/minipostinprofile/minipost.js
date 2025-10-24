@@ -8,7 +8,6 @@ const cx = classNames.bind(styles);
 function MiniPost({ post = [], user }) {
   const [open, setOpen] = useState(false);
   const [selectedPost, setSelectedPost] = useState(null);
-  console.log("MiniPost received posts:", open);
   return (
     <div className={cx("minipost")}>
       {post.length > 0 ? (

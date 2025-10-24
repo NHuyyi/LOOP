@@ -67,8 +67,17 @@ function SocketManager() {
 
       socket.on(
         "reactionUpdated",
-        ({ postId, reactionCounts, totalReactions }) => {
-          dispatch(updateReaction({ postId, reactionCounts, totalReactions }));
+        ({ post, reactionCounts, totalReactions }) => {
+          dispatch(
+            updateReaction({
+              postId: post._id,
+              reactionCounts,
+              totalReactions,
+            })
+          );
+
+          // updatePost phải truyền post trực tiếp
+          dispatch(updatePost(post));
         }
       );
 

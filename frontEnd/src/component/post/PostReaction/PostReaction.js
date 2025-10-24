@@ -1,4 +1,5 @@
 import { useState, useRef } from "react";
+import { useSelector } from "react-redux";
 import classNames from "classnames/bind";
 import styles from "./PostReaction.module.css";
 import addreaction from "../../../services/Post/reaction/addreaction";
@@ -14,19 +15,18 @@ import {
 
 const cx = classNames.bind(styles);
 
-function PostReaction({
-  postId,
-  userID,
-  reactionType: initialReaction,
-  onReacted,
-}) {
-  const [currentReaction, setCurrentReaction] = useState(
-    initialReaction || null
-  );
+function PostReaction({ postId, userID, onReacted }) {
   const [showMenu, setShowMenu] = useState(false);
-
-  // ref để lưu timer đóng menu
   const closeTimer = useRef(null);
+
+  // ✅ Lấy post từ Redux --> tự động re-render khi Redux update
+  const post = useSelector((state) =>
+    state.posts?.posts?.find((p) => p._id === postId)
+  );
+
+  // ✅ Lấy reaction hiện tại của user trên post này
+  const currentReaction =
+    post?.reactions?.find((r) => r.user === userID)?.type || null;
 
   const reactions = [
     {
@@ -67,69 +67,43 @@ function PostReaction({
     },
   ];
 
+  // ✅ Không lưu reaction trong local state -> Redux upd là UI tự đổi
   const handleReaction = async (type) => {
-    if (!userID) {
-      alert("Vui lòng đăng nhập để thực hiện phản ứng.");
-      return;
-    }
+    if (!userID) return alert("Vui lòng đăng nhập để thực hiện phản ứng.");
 
     try {
       const res = await addreaction(postId, userID, type);
 
       if (res.success) {
-        // nếu user vừa bấm lại cùng loại reaction => xóa
-        if (currentReaction === type) {
-          setCurrentReaction(null);
-        } else {
-          setCurrentReaction(type);
-        }
         setShowMenu(false);
-        onReacted?.();
+        onReacted?.(); // socket sẽ update redux
       } else {
-        alert(res.message || "Thêm phản ứng thất bại, vui lòng thử lại.");
+        alert(res?.message || "Có lỗi khi thực hiện.");
       }
-    } catch (error) {
-      console.error("Lỗi khi thêm reaction:", error);
-      alert("Có lỗi xảy ra, vui lòng thử lại.");
+    } catch (err) {
+      console.error(err);
+      alert("Lỗi mạng, vui lòng thử lại.");
     }
   };
 
+  const handleMainClick = () => {
+    if (!currentReaction) handleReaction("like");
+    else handleReaction(currentReaction);
+  };
+
   const handleMouseEnter = () => {
-    if (closeTimer.current) {
-      clearTimeout(closeTimer.current);
-      closeTimer.current = null;
-    }
+    clearTimeout(closeTimer.current);
     setShowMenu(true);
   };
 
   const handleMouseLeave = () => {
-    closeTimer.current = setTimeout(() => {
-      setShowMenu(false);
-    }, 400); // delay 0.4s trước khi đóng
+    closeTimer.current = setTimeout(() => setShowMenu(false), 400);
   };
 
-  let currentReactionObj;
+  const currentObj = currentReaction
+    ? reactions.find((r) => r.type === currentReaction)
+    : { label: "Like", icon: <FaThumbsUp size={25} />, color: "gray" };
 
-  if (!currentReaction) {
-    currentReactionObj = {
-      type: "none",
-      icon: <FaThumbsUp className="text-gray" size={25} />,
-      label: "Like",
-      color: "gray",
-    };
-  } else {
-    currentReactionObj = reactions.find((r) => r.type === currentReaction);
-  }
-
-  const handleMainClick = () => {
-    // Nếu chưa có reaction thì mặc định là "like"
-    if (!currentReaction) {
-      handleReaction("like");
-    } else {
-      // Nếu đã có reaction thì click lại vào nút chính => toggle (xoá reaction)
-      handleReaction(currentReaction);
-    }
-  };
   return (
     <div
       className={cx("reaction-wrapper")}
@@ -139,28 +113,26 @@ function PostReaction({
       {/* Nút chính */}
       <button
         className={cx("main-button")}
-        style={{ color: currentReactionObj.color }}
+        style={{ color: currentObj.color }}
         onClick={handleMainClick}
       >
-        {currentReactionObj.icon}
-        <span style={{ color: currentReactionObj.color }}>
-          {currentReactionObj.label}
-        </span>
+        {currentObj.icon}
+        <span style={{ color: currentObj.color }}>{currentObj.label}</span>
       </button>
 
-      {/* Menu reactions */}
+      {/* Menu lựa chọn reaction */}
       {showMenu && (
         <div className={cx("reaction-menu")}>
-          {reactions.map((reaction) => (
+          {reactions.map((r) => (
             <button
-              key={reaction.type}
+              key={r.type}
               className={cx("reaction-item", {
-                active: currentReaction === reaction.type,
+                active: currentReaction === r.type,
               })}
-              onClick={() => handleReaction(reaction.type)}
-              title={reaction.label}
+              onClick={() => handleReaction(r.type)}
+              title={r.label}
             >
-              {reaction.icon}
+              {r.icon}
             </button>
           ))}
         </div>

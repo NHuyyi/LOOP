@@ -32,7 +32,20 @@ function PostCard({ post, currentUserId, friendList = [] }) {
 
   let commentlength = commentCount;
 
-  const reactions = post.reactions || [];
+  const updatedPost = useSelector((state) =>
+    state.posts.posts.find((p) => p._id === post._id)
+  );
+  const currentPost = updatedPost || post;
+  const reactions = currentPost.reactions || [];
+  const reactionType =
+    reactions.find(
+      (r) =>
+        r.user === currentUserId ||
+        r.user?._id === currentUserId ||
+        String(r.user) === String(currentUserId)
+    )?.type || "";
+  console.log("PostCard reactions:", reactionType);
+
   return (
     <div className={cx("postCard")}>
       {/* Author */}
@@ -41,7 +54,7 @@ function PostCard({ post, currentUserId, friendList = [] }) {
           <div className={cx("authorInfo")}>
             <img
               src={
-                post.author?.avatar ||
+                currentPost.author?.avatar ||
                 "https://res.cloudinary.com/dpym64zg9/image/upload/v1755614090/raw_cq4nqn.png"
               }
               alt="avatar"
@@ -49,52 +62,52 @@ function PostCard({ post, currentUserId, friendList = [] }) {
             />
             <div>
               <p className={cx("authorName")}>
-                {post.author?.name || "ẩn danh"}
-                {post.isEdited && (
+                {currentPost.author?.name || "ẩn danh"}
+                {currentPost.isEdited && (
                   <span className={cx("editedTag")}>- đã chỉnh sửa</span>
                 )}
               </p>
             </div>
           </div>
           <p className={cx("authorDate")}>
-            {post.isEdited && post.editedAt
-              ? new Date(post.editedAt).toLocaleString()
-              : new Date(post.createdAt).toLocaleString()}{" "}
+            {currentPost.isEdited && currentPost.editedAt
+              ? new Date(currentPost.editedAt).toLocaleString()
+              : new Date(currentPost.createdAt).toLocaleString()}{" "}
           </p>
         </div>
-        {post.author?._id === currentUserId && (
-          <PostMenu post={post} friendList={friendList} />
+        {currentPost.author?._id === currentUserId && (
+          <PostMenu post={currentPost} friendList={friendList} />
         )}
       </div>
 
       {/* Image */}
-      {post.imageUrl && (
+      {currentPost.imageUrl && (
         <div className={cx("postImage")}>
-          <img src={post.imageUrl} alt="post" />
+          <img src={currentPost.imageUrl} alt="post" />
         </div>
       )}
 
       {/* Content */}
-      {post.content && <p className={cx("postContent")}>{post.content}</p>}
+      {currentPost.content && (
+        <p className={cx("postContent")}>{currentPost.content}</p>
+      )}
 
       {/* Reaction count */}
       <div className={cx("reactionCount")}>
         <ReactionCounts
           key={refreshKey}
-          postId={post._id}
+          postId={currentPost._id}
           currentUserId={currentUserId}
-          postAuthorId={post.author._id}
+          postAuthorId={currentPost.author._id}
         />
       </div>
 
       {/* Action bar */}
       <div className={cx("actionBar")}>
         <PostReaction
-          postId={post._id}
+          postId={currentPost._id}
           userID={currentUserId}
-          reactionType={
-            reactions.find((r) => r.user === currentUserId)?.type || ""
-          }
+          reactionType={reactionType}
           onReacted={() => setRefreshKey((k) => k + 1)}
         />
         <button
@@ -122,9 +135,9 @@ function PostCard({ post, currentUserId, friendList = [] }) {
               <CircleX />
             </button>
             <CommentList
-              postId={post._id}
+              postId={currentPost._id}
               userID={currentUserId}
-              AuthorId={post.author._id}
+              AuthorId={currentPost.author._id}
             />
           </div>
         </div>

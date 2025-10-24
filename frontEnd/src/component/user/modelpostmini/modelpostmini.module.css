@@ -26,7 +26,7 @@
 .left {
   flex: 1;
   position: relative;
-  background: black;
+  background: #fff;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -85,7 +85,7 @@
 /* ========== RIGHT (COMMENTS) ========== */
 .right {
   flex: 0.4;
-  background: #1c1c1c;
+  background: var(--bg-primary);
   display: flex;
   flex-direction: column;
   padding: 18px;

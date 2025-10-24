@@ -42,12 +42,17 @@ exports.addReaction = async (req, res) => {
     // Gửi event cho tất cả user online (hoặc lọc user liên quan)
     Object.values(onlineUsers).forEach((socketId) => {
       io.to(socketId).emit("reactionUpdated", {
-        postId,
+        post,
         reactionCounts: counts,
         totalReactions: total,
       });
     });
-    res.json({ success: true, data: post });
+    res.json({
+      success: true,
+      data: {
+        post, // GIỮ LẠI DANH SÁCH CHI TIẾT
+      },
+    });
   } catch (err) {
     console.error("Lỗi:", err.message);
     res.status(500).json({ error: err.message });

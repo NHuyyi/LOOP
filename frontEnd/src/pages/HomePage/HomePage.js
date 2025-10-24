@@ -29,6 +29,8 @@ function HomePage() {
     currentUser?.friends || [],
     currentUser?._id
   );
+  console.log("Rendered ModelPostMini for post:", posts);
+
   // Đẩy dữ liệu từ API vào redux
   useEffect(() => {
     if (fetchedPosts && fetchedPosts.length > 0) {

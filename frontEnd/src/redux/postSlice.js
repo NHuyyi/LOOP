@@ -21,10 +21,12 @@ const postSlice = createSlice({
       const updatedPost = action.payload;
       const index = state.posts.findIndex((p) => p._id === updatedPost._id);
       if (index !== -1) {
+        const oldPost = state.posts[index];
+
         state.posts[index] = {
-          ...state.posts[index],
+          ...oldPost,
           ...updatedPost,
-          author: updatedPost.author || state.posts[index].author, // giữ lại tác giả cũ nếu BE không trả về
+          author: oldPost.author, // 🚀 KHÓA author lại luôn
         };
       }
     },
