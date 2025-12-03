@@ -100,9 +100,11 @@
 }
 
 .reactionCount {
-  font-size: 0.875rem;
   color: #374151;
   margin-bottom: 0.5rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .actionBar {

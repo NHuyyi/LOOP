@@ -64,6 +64,9 @@ function ReactionCounts({ postId, postAuthorId, currentUserId }) {
           cursor: currentUserId === postAuthorId ? "pointer" : "default",
         }}
       >
+        <span className={cx("total")}>
+          {formatNumber(reactionData.totalReactions)}
+        </span>
         <div className={cx("icons")}>
           {topReactions.map(([type]) => (
             <span key={type} className={cx("icon")}>
@@ -71,9 +74,6 @@ function ReactionCounts({ postId, postAuthorId, currentUserId }) {
             </span>
           ))}
         </div>
-        <span className={cx("total")}>
-          {formatNumber(reactionData.totalReactions)}
-        </span>
       </div>
 
       {showPopup && (
@@ -92,6 +92,7 @@ function formatNumber(num) {
   if (num >= 1000000)
     return (num / 1000000).toFixed(1).replace(/\.0$/, "") + "M";
   if (num >= 1000) return (num / 1000).toFixed(1).replace(/\.0$/, "") + "K";
+  if (num === 0) return "";
   return num.toString();
 }
 
