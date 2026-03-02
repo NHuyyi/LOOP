@@ -41,10 +41,12 @@ function FriendsList({ currentUserId, userData }) {
 
       {open && (
         <Removefriend
+          type="removeFriend"
           currentUserId={currentUserId}
           id={userData._id} // Nhớ truyền ID cho Removefriend để nó gọi API xóa
           name={userData.name}
           onClose={() => setOpen(false)}
+          onSuccess={() => setOpen(false)} // Đóng modal sau khi xóa thành công
         />
       )}
     </div>

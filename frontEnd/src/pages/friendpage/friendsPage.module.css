@@ -19,16 +19,15 @@
 }
 
 .app-title {
-  font-size: 2rem;
-  font-weight: 700;
-  background: linear-gradient(
-    90deg,
-    var(--color-gradient-start),
-    var(--color-gradient-end)
-  );
+  font-size: 2.2rem;
+  font-weight: 800;
+  /* Chữ có màu chuyển sắc dịu nhẹ */
+  background: linear-gradient(90deg, #6d5dfc, #b8c6ff);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   text-align: center;
+  filter: drop-shadow(0px 2px 4px rgba(0, 0, 0, 0.1));
+  margin-bottom: 1.5rem;
 }
 
 .section {
@@ -38,18 +37,14 @@
 }
 
 .section-title {
-  font-size: 1.25rem;
-  font-weight: bold;
+  font-size: 1.1rem;
+  font-weight: 600;
+  letter-spacing: 1px;
+  color: #5a4db2; /* Màu tím đậm để nổi bật nhưng không chói */
   text-transform: uppercase;
-  background: linear-gradient(
-    90deg,
-    var(--color-gradient-start),
-    var(--color-gradient-end)
-  );
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  margin-bottom: 1rem;
-  text-shadow: 0 0 4px rgba(59, 130, 246, 0.5), 0 0 8px rgba(6, 182, 212, 0.4);
+  margin-bottom: 1.2rem;
+  /* Bỏ hiệu ứng text-shadow chói cũ */
+  text-shadow: none;
 }
 
 .searchBox {
@@ -80,7 +75,9 @@
   border: none;
   border-radius: 0.75rem;
   cursor: pointer;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .searchBox button:hover {
@@ -119,13 +116,7 @@
   font-size: 1rem;
   font-weight: 600;
   margin-bottom: 0.75rem;
-  background: linear-gradient(
-    90deg,
-    var(--color-gradient-start),
-    var(--color-gradient-end)
-  );
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+  color: #ab69e5;
 }
 
 .card p {

@@ -74,7 +74,7 @@ function FriendsPage() {
 
   return (
     <div className={cx("container")}>
-      <h1 className={cx("app-title")}>Bạn bè</h1>
+      <h1 className={cx("app-title")}>Bạn Của Tôi</h1>
 
       {/* Tìm kiếm bạn mới */}
       <div className={cx("section")}>
@@ -116,7 +116,7 @@ function FriendsPage() {
           <div className={cx("requestTabs")}>
             {/* 🟢 Lời mời ĐÃ GỬI (sentRequests) */}
             <div className={cx("SentrequestList")}>
-              <h3>Đã gửi</h3>
+              <h3>Đã Gửi</h3>
               {sentRequests.length > 0 ? (
                 sentRequests.map((req, index) => (
                   <SentRequestList
@@ -132,7 +132,7 @@ function FriendsPage() {
 
             {/* 🟢 Lời mời ĐÃ NHẬN (friendRequests) */}
             <div className={cx("requestSection")}>
-              <h3>Đã nhận</h3>
+              <h3>Đã Nhận</h3>
               {friendRequests.length > 0 ? (
                 friendRequests.map((req, index) => (
                   <FriendsRequestList

@@ -5,21 +5,18 @@ import classNames from "classnames/bind";
 import { useDispatch } from "react-redux";
 
 // Import action từ friendSlice
-import {
-  acceptRequestLocal,
-  rejectFriendRequest,
-} from "../../../redux/friendSlice";
+import { acceptRequestLocal } from "../../../redux/friendSlice";
 import { acceptRequest } from "../../../services/Friends/acceptRequest";
-import { rejectRequest } from "../../../services/Friends/rejectRequest";
-import { CircleCheckBig, CircleX } from "lucide-react";
 
+import { CircleCheckBig, CircleX } from "lucide-react";
+import Removefriend from "../removefriend/removefriend";
 const cx = classNames.bind(styles);
 
 // Đổi prop `id` thành `userData`
 function FriendsRequestList({ currentUserId, userData }) {
   const [isProcessing, setIsProcessing] = useState(false);
   const dispatch = useDispatch();
-
+  const [open, setOpen] = useState(false);
   if (!userData) return null;
 
   const handleAccept = async () => {
@@ -35,20 +32,6 @@ function FriendsRequestList({ currentUserId, userData }) {
     }
   };
 
-  const handlereject = async () => {
-    try {
-      setIsProcessing(true);
-      await rejectRequest(currentUserId, userData._id);
-
-      // Tự động xóa người này khỏi Hộp thư đến
-      dispatch(rejectFriendRequest(userData._id));
-    } catch (err) {
-      console.error("Lỗi khi từ chối:", err);
-    } finally {
-      setIsProcessing(false);
-    }
-  };
-
   return (
     <div className={cx("infoItem")}>
       <img
@@ -56,12 +39,10 @@ function FriendsRequestList({ currentUserId, userData }) {
         alt={userData.name}
         className={cx("avatar")}
       />
-
       <div className={cx("info")}>
         <span className={cx("name")}>{userData.name || userData.username}</span>
         <div className={cx("friendCode")}>Mã: {userData.friendCode}</div>
       </div>
-
       <button
         className={cx("acceptButton")}
         onClick={handleAccept}
@@ -69,14 +50,23 @@ function FriendsRequestList({ currentUserId, userData }) {
       >
         <CircleCheckBig />
       </button>
-
       <button
         className={cx("rejectButton")}
-        onClick={handlereject}
+        onClick={() => setOpen(true)}
         disabled={isProcessing}
       >
         <CircleX />
       </button>
+      {open && (
+        <Removefriend
+          type="rejectRequest"
+          currentUserId={currentUserId}
+          id={userData._id} // Nhớ truyền ID cho Removefriend để nó gọi API xóa
+          name={userData.name}
+          onClose={() => setOpen(false)}
+          onSuccess={() => setOpen(false)} // Đóng modal sau khi xóa thành công
+        />
+      )}
     </div>
   );
 }

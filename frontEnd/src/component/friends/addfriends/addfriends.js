@@ -14,18 +14,9 @@ import { useDispatch } from "react-redux";
 // Import API Services
 import { sendRequest } from "../../../services/Friends/SendRequest";
 import { acceptRequest } from "../../../services/Friends/acceptRequest";
-import { removeFriend as removeFriendAPI } from "../../../services/Friends/removefriend";
-import { cancelRequest } from "../../../services/Friends/cancleRequest";
-import { rejectRequest } from "../../../services/Friends/rejectRequest";
 
 // Import Redux Actions (KHÔNG DÙNG userSlice NỮA)
-import {
-  addSentRequest,
-  removeSentRequestLocal,
-  acceptFriendRequest,
-  rejectFriendRequest,
-  removeFriend as removeFriendRedux,
-} from "../../../redux/friendSlice";
+import { addSentRequest, acceptRequestLocal } from "../../../redux/friendSlice";
 
 import Removefriend from "../removefriend/removefriend";
 const cx = classNames.bind(styles);
@@ -37,6 +28,7 @@ function AddFriends({ currentUserId, finduser }) {
     finduser._id,
   );
   const [open, setOpen] = useState(false);
+  const [Type, setType] = useState("");
 
   // Trạng thái chờ API để làm hiệu ứng loading cho nút
   const [isProcessing, setIsProcessing] = useState(false);
@@ -56,58 +48,15 @@ function AddFriends({ currentUserId, finduser }) {
     }
   };
 
-  const handleCancel = async () => {
-    try {
-      setIsProcessing(true);
-      await cancelRequest(currentUserId, finduser._id);
-
-      setStatus("none");
-      // Xóa khỏi danh sách "Đã gửi"
-      dispatch(removeSentRequestLocal(finduser._id));
-    } catch (error) {
-      console.error("Lỗi hủy yêu cầu", error);
-    } finally {
-      setIsProcessing(false);
-    }
-  };
-
-  // const handleRemoveFriend = async () => {
-  //   try {
-  //     setIsProcessing(true);
-  //     await removeFriendAPI(currentUserId, finduser._id);
-
-  //     setStatus("none");
-  //     dispatch(removeFriendRedux(finduser._id));
-  //   } catch (error) {
-  //     console.error("Lỗi xóa bạn", error);
-  //   } finally {
-  //     setIsProcessing(false);
-  //   }
-  // };
-
   const handleAccept = async () => {
     try {
       setIsProcessing(true);
       await acceptRequest(currentUserId, finduser._id);
 
       setStatus("friends");
-      dispatch(acceptFriendRequest(finduser._id));
+      dispatch(acceptRequestLocal(finduser._id));
     } catch (error) {
       console.error("Lỗi chấp nhận kết bạn", error);
-    } finally {
-      setIsProcessing(false);
-    }
-  };
-
-  const handlereject = async () => {
-    try {
-      setIsProcessing(true);
-      await rejectRequest(currentUserId, finduser._id);
-
-      setStatus("none");
-      dispatch(rejectFriendRequest(finduser._id));
-    } catch (error) {
-      console.error("Lỗi từ chối kết bạn", error);
     } finally {
       setIsProcessing(false);
     }
@@ -133,7 +82,10 @@ function AddFriends({ currentUserId, finduser }) {
         {status === "requestSent" && (
           <button
             className={cx("cancelButton")}
-            onClick={handleCancel}
+            onClick={() => {
+              setOpen(true);
+              setType("cancelRequest");
+            }}
             disabled={isProcessing}
           >
             {isProcessing ? "Đang xử lý..." : "Hủy yêu cầu"}
@@ -151,7 +103,10 @@ function AddFriends({ currentUserId, finduser }) {
             </button>
             <button
               className={cx("rejectButton")}
-              onClick={handlereject}
+              onClick={() => {
+                setOpen(true);
+                setType("rejectRequest");
+              }}
               disabled={isProcessing}
             >
               {isProcessing ? "..." : <CircleX />}
@@ -166,7 +121,10 @@ function AddFriends({ currentUserId, finduser }) {
             </button>
             <button
               className={cx("removeButton")}
-              onClick={() => setOpen(true)}
+              onClick={() => {
+                setOpen(true);
+                setType("removeFriend");
+              }}
               disabled={isProcessing}
             >
               {isProcessing ? "..." : <UserRoundX />}
@@ -176,6 +134,7 @@ function AddFriends({ currentUserId, finduser }) {
       </div>
       {open && (
         <Removefriend
+          type={Type}
           currentUserId={currentUserId}
           id={finduser._id} // Nhớ truyền ID cho Removefriend để nó gọi API xóa
           name={finduser.name}
