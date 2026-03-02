@@ -25,35 +25,49 @@ const friendSlice = createSlice({
 
     // socket: có người vừa hủy lời mời kết bạn đã gửi cho mình
     cancelReceivedRequest: (state, action) => {
-      const receiverId = action.payload; // id người gửi lời mời
-
-      state.sentRequests = state.sentRequests.filter(
-        (r) => r.to._id !== receiverId,
+      const senderId = action.payload; // ID của người vừa hủy lời mời
+      // Phải lọc trong friendRequests
+      state.friendRequests = state.friendRequests.filter(
+        (r) => r.from._id !== senderId,
       );
     },
 
     // socket: chấp nhận lời mời kết bạn
     acceptFriendRequest: (state, action) => {
-      const accepterId = action.payload; // id người vừa bấm chấp nhận
-
-      // ✅ Mình là người đã gửi, nên phải tìm trong sentRequests
+      const accepterId = action.payload;
       const request = state.sentRequests.find((r) => r.to._id === accepterId);
-
       if (request) {
-        state.friends.push(request.to); // thêm vào danh sách bạn bè
-        // ✅ Xóa khỏi sentRequests
+        state.friends.push(request.to);
         state.sentRequests = state.sentRequests.filter(
           (r) => r.to._id !== accepterId,
         );
       }
     },
 
+    acceptRequestLocal: (state, action) => {
+      const senderId = action.payload;
+      const request = state.friendRequests.find((r) => r.from._id === senderId);
+      if (request) {
+        state.friends.push(request.from);
+        state.friendRequests = state.friendRequests.filter(
+          (r) => r.from._id !== senderId,
+        );
+      }
+    },
+
     // socket: từ chối lời mời kết bạn
     rejectFriendRequest: (state, action) => {
-      const rejectorId = action.payload; // id người được gửi lời mời
+      const targetId = action.payload;
+
+      // 1. Nếu mình là người gửi (người kia từ chối), xóa khỏi sentRequests
       state.sentRequests = state.sentRequests.filter(
-        (r) => r.to._id !== rejectorId,
-      ); // xóa khỏi sentRequests
+        (r) => r.to._id !== targetId,
+      );
+
+      // 2. Nếu mình là người nhận (mình chủ động từ chối), xóa khỏi friendRequests
+      state.friendRequests = state.friendRequests.filter(
+        (r) => r.from._id !== targetId,
+      );
     },
 
     // socket: xóa bạn bè
@@ -85,6 +99,7 @@ export const {
   receiveFriendRequest,
   cancelReceivedRequest,
   acceptFriendRequest,
+  acceptRequestLocal,
   rejectFriendRequest,
   removeFriend,
 } = friendSlice.actions;

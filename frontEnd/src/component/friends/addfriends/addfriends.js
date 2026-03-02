@@ -27,6 +27,7 @@ import {
   removeFriend as removeFriendRedux,
 } from "../../../redux/friendSlice";
 
+import Removefriend from "../removefriend/removefriend";
 const cx = classNames.bind(styles);
 
 function AddFriends({ currentUserId, finduser }) {
@@ -35,7 +36,7 @@ function AddFriends({ currentUserId, finduser }) {
     currentUserId,
     finduser._id,
   );
-  console.log("Trạng thái bạn bè:", finduser._id, status);
+  const [open, setOpen] = useState(false);
 
   // Trạng thái chờ API để làm hiệu ứng loading cho nút
   const [isProcessing, setIsProcessing] = useState(false);
@@ -70,19 +71,19 @@ function AddFriends({ currentUserId, finduser }) {
     }
   };
 
-  const handleRemoveFriend = async () => {
-    try {
-      setIsProcessing(true);
-      await removeFriendAPI(currentUserId, finduser._id);
+  // const handleRemoveFriend = async () => {
+  //   try {
+  //     setIsProcessing(true);
+  //     await removeFriendAPI(currentUserId, finduser._id);
 
-      setStatus("none");
-      dispatch(removeFriendRedux(finduser._id));
-    } catch (error) {
-      console.error("Lỗi xóa bạn", error);
-    } finally {
-      setIsProcessing(false);
-    }
-  };
+  //     setStatus("none");
+  //     dispatch(removeFriendRedux(finduser._id));
+  //   } catch (error) {
+  //     console.error("Lỗi xóa bạn", error);
+  //   } finally {
+  //     setIsProcessing(false);
+  //   }
+  // };
 
   const handleAccept = async () => {
     try {
@@ -165,7 +166,7 @@ function AddFriends({ currentUserId, finduser }) {
             </button>
             <button
               className={cx("removeButton")}
-              onClick={handleRemoveFriend}
+              onClick={() => setOpen(true)}
               disabled={isProcessing}
             >
               {isProcessing ? "..." : <UserRoundX />}
@@ -173,6 +174,15 @@ function AddFriends({ currentUserId, finduser }) {
           </div>
         )}
       </div>
+      {open && (
+        <Removefriend
+          currentUserId={currentUserId}
+          id={finduser._id} // Nhớ truyền ID cho Removefriend để nó gọi API xóa
+          name={finduser.name}
+          onClose={() => setOpen(false)}
+          onSuccess={() => setStatus("none")}
+        />
+      )}
     </div>
   );
 }

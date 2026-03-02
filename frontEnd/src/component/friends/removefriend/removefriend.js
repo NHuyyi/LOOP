@@ -1,21 +1,27 @@
-import { removeFriend } from "../../../services/Friends/removefriend";
+import { removeFriend as removeFriendAPI } from "../../../services/Friends/removefriend";
 import classNames from "classnames/bind";
 import styles from "./Removefriend.module.css";
-import { getUserbyId } from "../../../services/User/getUserbyId";
 import { useDispatch } from "react-redux";
-import { setUser } from "../../../redux/userSlice";
+import { removeFriend } from "../../../redux/friendSlice";
 import { createPortal } from "react-dom";
 
 const cx = classNames.bind(styles);
 
-function Removefriend({ currentUserId, id, name, onClose }) {
+function Removefriend({ currentUserId, id, name, onClose, onSuccess }) {
   const dispatch = useDispatch();
   const handleRemoveFriend = async () => {
-    await removeFriend(currentUserId, id);
-    const updatedUser = await getUserbyId(currentUserId);
-    dispatch(
-      setUser({ user: updatedUser, token: localStorage.getItem("token") })
-    );
+    try {
+      const res = await removeFriendAPI(currentUserId, id);
+      if (res.success) {
+        //  Cập nhật Redux ngay lập tức để mất icon trên giao diện
+        dispatch(removeFriend(id));
+        //  Cập nhật trạng thái ở component cha (AddFriends)
+        if (onSuccess) onSuccess();
+        onClose(); // Đóng modal
+      }
+    } catch (err) {
+      console.error("Lỗi khi xóa bạn:", err);
+    }
   };
 
   return createPortal(
@@ -33,7 +39,7 @@ function Removefriend({ currentUserId, id, name, onClose }) {
         </button>
       </div>
     </div>,
-    document.body
+    document.body,
   );
 }
 

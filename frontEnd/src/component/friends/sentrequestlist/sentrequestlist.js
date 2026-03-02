@@ -5,7 +5,7 @@ import classNames from "classnames/bind";
 import { useDispatch } from "react-redux";
 
 // Import action từ friendSlice thay vì userSlice
-import { cancelReceivedRequest } from "../../../redux/friendSlice";
+import { removeSentRequestLocal } from "../../../redux/friendSlice";
 import { cancelRequest } from "../../../services/Friends/cancleRequest";
 
 const cx = classNames.bind(styles);
@@ -21,12 +21,9 @@ function SendRequestList({ currentUserId, userData }) {
   const handleCancel = async () => {
     try {
       setIsProcessing(true);
-
-      // 1. Gọi API hủy yêu cầu
       await cancelRequest(currentUserId, userData._id);
-
-      // 2. Cập nhật Redux ngay lập tức (xóa khỏi mảng sentRequests)
-      dispatch(cancelReceivedRequest(userData._id));
+      // Sử dụng action local vừa tạo
+      dispatch(removeSentRequestLocal(userData._id));
     } catch (err) {
       console.error("Lỗi khi hủy yêu cầu:", err);
     } finally {

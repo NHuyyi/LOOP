@@ -6,7 +6,7 @@ import { useDispatch } from "react-redux";
 
 // Import action từ friendSlice
 import {
-  acceptFriendRequest,
+  acceptRequestLocal,
   rejectFriendRequest,
 } from "../../../redux/friendSlice";
 import { acceptRequest } from "../../../services/Friends/acceptRequest";
@@ -26,9 +26,8 @@ function FriendsRequestList({ currentUserId, userData }) {
     try {
       setIsProcessing(true);
       await acceptRequest(currentUserId, userData._id);
-
-      // Tự động bốc người này từ Hộp thư đến ném sang Bạn bè
-      dispatch(acceptFriendRequest(userData._id));
+      // Gọi action local xử lý trên mảng friendRequests
+      dispatch(acceptRequestLocal(userData._id));
     } catch (err) {
       console.error("Lỗi khi chấp nhận:", err);
     } finally {
