@@ -1,59 +1,57 @@
-// src/components/FriendsList/FriendsList.js
-import { useEffect, useState } from "react";
+// src/components/FriendsList/SendRequestList.js
+import { useState } from "react";
 import styles from "./sentRequests.module.css";
 import classNames from "classnames/bind";
-import { getUserbyId } from "../../../services/User/getUserbyId";
 import { useDispatch } from "react-redux";
-import { setUser } from "../../../redux/userSlice";
+
+// Import action từ friendSlice thay vì userSlice
+import { cancelReceivedRequest } from "../../../redux/friendSlice";
 import { cancelRequest } from "../../../services/Friends/cancleRequest";
+
 const cx = classNames.bind(styles);
 
-function SendRequestList({ currentUserId, id }) {
-  const [info, setInfo] = useState(null);
-  const [loading, setLoading] = useState(true);
-
+// Đổi prop `id` thành `userData`
+function SendRequestList({ currentUserId, userData }) {
+  const [isProcessing, setIsProcessing] = useState(false);
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    const fetchInfo = async () => {
-      try {
-        const res = await getUserbyId(id); // giả sử service này trả về object user
-
-        setInfo(res);
-      } catch (err) {
-        console.error("Lỗi lấy user:", err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    if (id) fetchInfo();
-  }, [id]);
+  // Nếu không có dữ liệu thì không render
+  if (!userData) return null;
 
   const handleCancel = async () => {
-    await cancelRequest(currentUserId, id);
-    const updatedUser = await getUserbyId(currentUserId);
-    dispatch(
-      setUser({ user: updatedUser, token: localStorage.getItem("token") })
-    );
-  };
+    try {
+      setIsProcessing(true);
 
-  if (loading) return <div className={cx("spinner-border text-light")}></div>;
+      // 1. Gọi API hủy yêu cầu
+      await cancelRequest(currentUserId, userData._id);
+
+      // 2. Cập nhật Redux ngay lập tức (xóa khỏi mảng sentRequests)
+      dispatch(cancelReceivedRequest(userData._id));
+    } catch (err) {
+      console.error("Lỗi khi hủy yêu cầu:", err);
+    } finally {
+      setIsProcessing(false);
+    }
+  };
 
   return (
     <div className={cx("infoItem")}>
       <img
-        src={info.avatar || "/default-avatar.png"}
-        alt={info.name}
+        src={userData.avatar || "/default-avatar.png"}
+        alt={userData.name}
         className={cx("avatar")}
       />
 
       <div className={cx("info")}>
-        <span className={cx("name")}>{info.name || info.username}</span>
-        <div className={cx("friendCode")}>Mã: {info.friendCode}</div>
+        <span className={cx("name")}>{userData.name || userData.username}</span>
+        <div className={cx("friendCode")}>Mã: {userData.friendCode}</div>
       </div>
-      <button className={cx("removeButton")} onClick={handleCancel}>
-        Hủy yêu cầu
+      <button
+        className={cx("removeButton")}
+        onClick={handleCancel}
+        disabled={isProcessing} // Chặn bấm 2 lần liên tục
+      >
+        {isProcessing ? "..." : "Hủy yêu cầu"}
       </button>
     </div>
   );

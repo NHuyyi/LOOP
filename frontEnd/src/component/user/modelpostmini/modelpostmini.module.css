@@ -13,7 +13,7 @@
   display: flex;
   background: #111;
   border-radius: 16px;
-  max-width: 1000px;
+  max-width: 1200px;
   width: 95%;
   height: 80vh;
   position: relative;
@@ -84,7 +84,7 @@
 
 /* ========== RIGHT (COMMENTS) ========== */
 .right {
-  flex: 0.4;
+  flex: 0.5;
   background: var(--bg-primary);
   display: flex;
   flex-direction: column;
@@ -92,11 +92,46 @@
   z-index: 3;
 }
 
+.reaction-counts {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 10px;
+}
+
 .reaction-bar {
   display: flex;
-  margin-top: 50px;
   position: relative;
   z-index: 10;
+}
+
+.action-bar {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  border-top: 1px solid rgba(255, 255, 255, 0.595);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.595);
+}
+
+/* THÊM ĐOẠN NÀY DÀNH CHO COMMENT LIST */
+.comment-list-container {
+  flex: 1; /* Chiếm hết phần không gian trống còn lại của cột right */
+  overflow-y: auto; /* Hiển thị thanh cuộn dọc nếu bình luận quá dài */
+  margin-top: 15px; /* Cách ra một chút so với action-bar */
+  padding-right: 5px; /* Tránh text bị dính sát vào thanh cuộn (nếu có) */
+}
+
+/* (Tùy chọn) Làm đẹp thanh cuộn scrollbar cho container này */
+.comment-list-container::-webkit-scrollbar {
+  width: 6px;
+}
+.comment-list-container::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.2);
+  border-radius: 10px;
+}
+.comment-list-container::-webkit-scrollbar-track {
+  background: transparent;
 }
 
 /* ========== CLOSE BUTTON ========== */

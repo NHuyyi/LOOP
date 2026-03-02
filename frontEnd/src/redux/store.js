@@ -4,6 +4,7 @@ import reactionReducer from "./reactionSlide";
 import commentRecuder from "./commentSlide";
 import onlineRecuder from "./onlineSlice";
 import postsReducer from "./postSlice";
+import friendReducer from "./friendSlice";
 
 export const store = configureStore({
   reducer: {
@@ -12,5 +13,6 @@ export const store = configureStore({
     reactions: reactionReducer,
     comments: commentRecuder,
     online: onlineRecuder,
+    friend: friendReducer,
   },
 });

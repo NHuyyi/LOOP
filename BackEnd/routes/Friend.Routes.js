@@ -8,6 +8,8 @@ const findnewfriend = require("../controller/friends/findnewfriend");
 const checkFriendStatus = require("../controller/friends/checkstatust");
 const cancelRequest = require("../controller/friends/cancleRequest");
 const authorize = require("../middleware/Authorization");
+const getFriendList = require("../controller/friends/getFriendList");
+const getFriendListFilter = require("../controller/friends/getFriendListFilter");
 
 router.post("/sendRequest", authorize, sendRequest.sendRequest);
 router.post("/acceptRequest", authorize, acceptRequest.acceptRequest);
@@ -17,8 +19,14 @@ router.post("/findnewfriend", authorize, findnewfriend.findnewfriend);
 router.post(
   "/checkFriendStatus",
   authorize,
-  checkFriendStatus.checkFriendStatus
+  checkFriendStatus.checkFriendStatus,
 );
 router.post("/cancelRequest", authorize, cancelRequest.cacleRequest);
+router.post("/getFriendList", authorize, getFriendList.getFriendList);
+router.post(
+  "/getFriendListFilter",
+  authorize,
+  getFriendListFilter.getFriendListFilter,
+);
 
 module.exports = router;

@@ -47,7 +47,13 @@ exports.sendRequest = async (req, res) => {
     const onlineUsers = getOnlineUsers();
     if (onlineUsers[receivedId]) {
       io.to(onlineUsers[receivedId]).emit("friendRequestReceived", {
-        by: senderId,
+        senderInfo: {
+          _id: sender._id,
+          name: sender.name,
+          username: sender.username,
+          avatar: sender.avatar,
+          friendCode: sender.friendCode,
+        },
       });
     }
 

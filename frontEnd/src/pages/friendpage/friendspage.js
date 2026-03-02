@@ -1,8 +1,14 @@
 import styles from "./friendsPage.module.css";
 import classNames from "classnames/bind";
-import { useSelector } from "react-redux";
-import { useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { useState, useEffect } from "react";
+
+// Import API services và Redux action
 import { findnewfriend } from "../../services/Friends/findnewfriend";
+import getFriendList from "../../services/Friends/getFriendList"; // Đảm bảo bạn đã có file này trong mục services
+import { setFriendData } from "../../redux/friendSlice";
+
+// Import Components
 import AddFriends from "../../component/friends/addfriends/addfriends";
 import FriendsList from "../../component/friends/listfriend/listfriend";
 import SentRequestList from "../../component/friends/sentrequestlist/sentrequestlist";
@@ -11,20 +17,45 @@ import FriendsRequestList from "../../component/friends/friendsrequest/friendreq
 const cx = classNames.bind(styles);
 
 function FriendsPage() {
+  const dispatch = useDispatch();
+  const currentUser = useSelector((state) => state.user.user);
+
+  // 🟢 Lấy dữ liệu Real-time trực tiếp từ friendSlice
+  const { friends, friendRequests, sentRequests } = useSelector(
+    (state) => state.friend,
+  );
+
   const [finduser, setFindUser] = useState(null);
   const [friendCode, setFriendCode] = useState("");
-  const stateUser = useSelector((state) => state.user);
-  const currentUser = stateUser?.user || null;
-  const friends = currentUser?.friends || [];
-  const sentRequests = currentUser?.sentRequests || [];
-  const friendRequests = currentUser?.friendRequests || [];
   const [abbert, setAbbert] = useState("");
+  const [loading, setLoading] = useState(true);
+
+  // 🟢 Gọi API 1 lần duy nhất khi load trang để lấy dữ liệu chuẩn từ DB
+  useEffect(() => {
+    const fetchFriends = async () => {
+      if (currentUser?._id) {
+        try {
+          const res = await getFriendList(currentUser._id);
+          if (res?.success) {
+            // Ném toàn bộ data vào Redux, từ nay UI sẽ tự động đồng bộ
+            dispatch(setFriendData(res));
+          }
+        } catch (error) {
+          console.error("Lỗi khi tải danh sách bạn bè:", error);
+        } finally {
+          setLoading(false);
+        }
+      }
+    };
+    fetchFriends();
+  }, [currentUser?._id, dispatch]);
 
   const handleFindNewFriend = async () => {
     try {
       setFindUser(null);
+      setAbbert("");
       if (!currentUser?._id) {
-        setAbbert("Bạn chưa đăng nhập hoặc thiếu thông tin người dùng.");
+        setAbbert("Bạn chưa đăng nhập.");
         return;
       }
       const response = await findnewfriend(friendCode, currentUser._id);
@@ -39,12 +70,14 @@ function FriendsPage() {
     }
   };
 
+  if (loading) return <div className={cx("loading")}>Đang tải dữ liệu...</div>;
+
   return (
-    <div className={cx("container")}> 
+    <div className={cx("container")}>
       <h1 className={cx("app-title")}>Bạn bè</h1>
 
       {/* Tìm kiếm bạn mới */}
-      <div className={cx("section")}> 
+      <div className={cx("section")}>
         <div className={cx("searchBox")}>
           <input
             type="text"
@@ -57,12 +90,15 @@ function FriendsPage() {
           </button>
         </div>
 
-        <div className={cx("card")}> 
+        <div className={cx("card")}>
           <h2 className={cx("section-title")}>Kết quả tìm kiếm</h2>
           {finduser ? (
             <div className={cx("userCard")}>
               {currentUser?._id && (
-                <AddFriends currentUserId={currentUser._id} finduser={finduser} />
+                <AddFriends
+                  currentUserId={currentUser._id}
+                  finduser={finduser}
+                />
               )}
             </div>
           ) : abbert ? (
@@ -74,18 +110,19 @@ function FriendsPage() {
       </div>
 
       {/* Lời mời kết bạn */}
-      <div className={cx("section")}> 
-        <div className={cx("card")}> 
+      <div className={cx("section")}>
+        <div className={cx("card")}>
           <h2 className={cx("section-title")}>Lời mời kết bạn</h2>
           <div className={cx("requestTabs")}>
+            {/* 🟢 Lời mời ĐÃ GỬI (sentRequests) */}
             <div className={cx("SentrequestList")}>
               <h3>Đã gửi</h3>
               {sentRequests.length > 0 ? (
-                sentRequests.map((f, index) => (
+                sentRequests.map((req, index) => (
                   <SentRequestList
-                    key={f?.to?._id || f?.to || index}
+                    key={req.to?._id || index}
                     currentUserId={currentUser._id}
-                    id={f?.to?._id || f?.to}
+                    userData={req.to} // TRUYỀN THẲNG OBJECT USER
                   />
                 ))
               ) : (
@@ -93,14 +130,15 @@ function FriendsPage() {
               )}
             </div>
 
+            {/* 🟢 Lời mời ĐÃ NHẬN (friendRequests) */}
             <div className={cx("requestSection")}>
               <h3>Đã nhận</h3>
               {friendRequests.length > 0 ? (
-                friendRequests.map((f, index) => (
+                friendRequests.map((req, index) => (
                   <FriendsRequestList
-                    key={f?.From?._id || f?.from || index}
+                    key={req.from?._id || index}
                     currentUserId={currentUser._id}
-                    id={f?.from?._id || f?.from}
+                    userData={req.from} // TRUYỀN THẲNG OBJECT USER
                   />
                 ))
               ) : (
@@ -112,13 +150,18 @@ function FriendsPage() {
       </div>
 
       {/* Danh sách bạn bè */}
-      <div className={cx("section")}> 
-        <div className={cx("card")}> 
+      <div className={cx("section")}>
+        <div className={cx("card")}>
           <h2 className={cx("section-title")}>Danh sách bạn bè</h2>
           <div className={cx("friendsList")}>
+            {/* 🟢 Danh sách bạn bè (friends) */}
             {friends.length > 0 ? (
-              friends.map((f) => (
-                <FriendsList key={f} currentUserId={currentUser._id} id={f} />
+              friends.map((friend) => (
+                <FriendsList
+                  key={friend._id}
+                  currentUserId={currentUser._id}
+                  userData={friend} // TRUYỀN THẲNG OBJECT USER
+                />
               ))
             ) : (
               <p>Nhanh thêm bạn nào</p>

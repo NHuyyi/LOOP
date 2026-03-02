@@ -1,68 +1,51 @@
-// src/components/FriendsList/FriendsList.js
-import { useEffect, useState } from "react";
+// src/component/friends/listfriend/listfriend.js
+import { useState } from "react";
 import styles from "./FriendsList.module.css";
 import classNames from "classnames/bind";
-import { getUserbyId } from "../../../services/User/getUserbyId";
 import { UserRoundX } from "lucide-react";
 import { useSelector } from "react-redux";
 import Removefriend from "../removefriend/removefriend";
 
 const cx = classNames.bind(styles);
 
-function FriendsList({ currentUserId, id }) {
-  const [friend, setFriend] = useState(null);
-  const [loading, setLoading] = useState(true);
+// Đổi prop `id` thành `userData`
+function FriendsList({ currentUserId, userData }) {
   const [open, setOpen] = useState(false);
 
-  const onlineUsers = useSelector((state) => state.online); // lấy danh sách userId đang online
-  const isOnline = onlineUsers.includes(id);
+  const onlineUsers = useSelector((state) => state.online);
+  // Kiểm tra trạng thái online dựa trên ID nằm trong userData
+  const isOnline = onlineUsers.includes(userData._id);
 
-  useEffect(() => {
-    const fetchFriend = async () => {
-      try {
-        const res = await getUserbyId(id); // giả sử service này trả về object user
-        setFriend(res);
-      } catch (err) {
-        console.error("Lỗi lấy user:", err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    if (id) fetchFriend();
-  }, [id]);
-
-  if (loading) return <div className={cx("spinner-border text-light")}></div>;
+  // Không cần useEffect hay loading nữa, vì dữ liệu có sẵn ngay lập tức!
+  if (!userData) return null;
 
   return (
     <div className={cx("friendItem")}>
       <div className={cx("avatarWrapper")}>
         <img
-          src={friend.avatar || "/default-avatar.png"}
-          alt={friend.name}
+          src={userData.avatar || "/default-avatar.png"}
+          alt={userData.name}
           className={cx("avatar", { offline: !isOnline })}
         />
-        {/* chấm trạng thái */}
         <span className={cx("statusDot", isOnline ? "online" : "offline")} />
       </div>
 
       <div className={cx("info")}>
-        <span className={cx("name")}>{friend.name || friend.username}</span>
-        <div className={cx("friendCode")}>Mã: {friend.friendCode}</div>
+        <span className={cx("name")}>{userData.name || userData.username}</span>
+        <div className={cx("friendCode")}>Mã: {userData.friendCode}</div>
       </div>
 
       <button className={cx("removeButton")} onClick={() => setOpen(true)}>
         <UserRoundX />
       </button>
+
       {open && (
-        <>
-          <Removefriend
-            currentUserId={currentUserId}
-            id={id}
-            name={friend.name}
-            onClose={() => setOpen(false)}
-          />
-        </>
+        <Removefriend
+          currentUserId={currentUserId}
+          id={userData._id} // Nhớ truyền ID cho Removefriend để nó gọi API xóa
+          name={userData.name}
+          onClose={() => setOpen(false)}
+        />
       )}
     </div>
   );

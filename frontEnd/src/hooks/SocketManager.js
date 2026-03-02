@@ -1,8 +1,13 @@
 import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import socket from "../socker";
-import { getUserbyId } from "../services/User/getUserbyId";
-import { setUser } from "../redux/userSlice";
+import {
+  receiveFriendRequest,
+  cancelReceivedRequest,
+  acceptFriendRequest,
+  rejectFriendRequest,
+  removeFriend,
+} from "../redux/friendSlice";
 import { updateReaction } from "../redux/reactionSlide";
 import { setOnlineUsers } from "../redux/onlineSlice";
 import {
@@ -27,42 +32,26 @@ function SocketManager() {
     if (currentUser?._id) {
       socket.emit("register", currentUser._id);
 
-      socket.on("friendRemoved", async () => {
-        const updatedUser = await getUserbyId(currentUser._id);
-        dispatch(
-          setUser({ user: updatedUser, token: localStorage.getItem("token") })
-        );
+      socket.on("friendRemoved", ({ by }) => {
+        dispatch(removeFriend(by));
       });
 
-      socket.on("friendRequestReceived", async () => {
-        // Re-fetch user để update danh sách request
-        const updatedUser = await getUserbyId(currentUser._id);
-        dispatch(
-          setUser({ user: updatedUser, token: localStorage.getItem("token") })
-        );
+      socket.on("friendRequestReceived", ({ senderInfo }) => {
+        // Nhớ sửa Backend để gửi thêm senderInfo nhé
+        if (senderInfo) dispatch(receiveFriendRequest(senderInfo));
+        console.log("Nhận friendRequestReceived từ socket:", senderInfo);
       });
 
-      socket.on("friendRequestAccepted", async () => {
-        const updatedUser = await getUserbyId(currentUser._id);
-        dispatch(
-          setUser({ user: updatedUser, token: localStorage.getItem("token") })
-        );
+      socket.on("friendRequestAccepted", ({ by }) => {
+        dispatch(acceptFriendRequest(by));
       });
 
-      socket.on("friendRequestCancle", async () => {
-        // Re-fetch user để update danh sách request
-        const updatedUser = await getUserbyId(currentUser._id);
-        dispatch(
-          setUser({ user: updatedUser, token: localStorage.getItem("token") })
-        );
+      socket.on("friendRequestCancle", ({ by }) => {
+        dispatch(cancelReceivedRequest(by));
       });
 
-      socket.on("friendRequestReject", async ({ by }) => {
-        // Re-fetch user để update danh sách request
-        const updatedUser = await getUserbyId(currentUser._id);
-        dispatch(
-          setUser({ user: updatedUser, token: localStorage.getItem("token") })
-        );
+      socket.on("friendRequestReject", ({ by }) => {
+        dispatch(rejectFriendRequest(by));
       });
 
       socket.on(
@@ -73,12 +62,12 @@ function SocketManager() {
               postId: post._id,
               reactionCounts,
               totalReactions,
-            })
+            }),
           );
 
           // updatePost phải truyền post trực tiếp
           dispatch(updatePost(post));
-        }
+        },
       );
 
       socket.on("update-online-users", (onlineUserIds) => {
@@ -102,9 +91,9 @@ function SocketManager() {
               commentId,
               reactionCounts,
               totalReactions,
-            })
+            }),
           );
-        }
+        },
       );
       socket.on("Deletecomment", ({ postid, comment }) => {
         // dispatch trực tiếp reducer deleteComment
@@ -116,7 +105,7 @@ function SocketManager() {
         const res = await getCommentList(payload.postId, token);
         if (res?.data) {
           dispatch(
-            updateComment({ postId: payload.postId, comment: payload.comment })
+            updateComment({ postId: payload.postId, comment: payload.comment }),
           );
         }
       });

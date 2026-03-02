@@ -1,72 +1,81 @@
-// src/components/FriendsList/FriendsList.js
-import { useEffect, useState } from "react";
+// src/components/FriendsList/FriendsRequestList.js
+import { useState } from "react";
 import styles from "./friendRequests.module.css";
 import classNames from "classnames/bind";
-import { getUserbyId } from "../../../services/User/getUserbyId";
 import { useDispatch } from "react-redux";
-import { setUser } from "../../../redux/userSlice";
+
+// Import action từ friendSlice
+import {
+  acceptFriendRequest,
+  rejectFriendRequest,
+} from "../../../redux/friendSlice";
 import { acceptRequest } from "../../../services/Friends/acceptRequest";
 import { rejectRequest } from "../../../services/Friends/rejectRequest";
 import { CircleCheckBig, CircleX } from "lucide-react";
+
 const cx = classNames.bind(styles);
 
-function FriendsRequestList({ currentUserId, id }) {
-  const [info, setInfo] = useState(null);
-  const [loading, setLoading] = useState(true);
-
+// Đổi prop `id` thành `userData`
+function FriendsRequestList({ currentUserId, userData }) {
+  const [isProcessing, setIsProcessing] = useState(false);
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    const fetchInfo = async () => {
-      try {
-        const res = await getUserbyId(id); // giả sử service này trả về object user
-        console.log("Fetched user info:", id);
-
-        setInfo(res);
-      } catch (err) {
-        console.error("Lỗi lấy user:", err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    if (id) fetchInfo();
-  }, [id]);
+  if (!userData) return null;
 
   const handleAccept = async () => {
-    await acceptRequest(currentUserId, id);
-    const updatedUser = await getUserbyId(currentUserId);
-    dispatch(
-      setUser({ user: updatedUser, token: localStorage.getItem("token") })
-    );
+    try {
+      setIsProcessing(true);
+      await acceptRequest(currentUserId, userData._id);
+
+      // Tự động bốc người này từ Hộp thư đến ném sang Bạn bè
+      dispatch(acceptFriendRequest(userData._id));
+    } catch (err) {
+      console.error("Lỗi khi chấp nhận:", err);
+    } finally {
+      setIsProcessing(false);
+    }
   };
 
   const handlereject = async () => {
-    await rejectRequest(currentUserId, id);
-    const updatedUser = await getUserbyId(currentUserId);
-    dispatch(
-      setUser({ user: updatedUser, token: localStorage.getItem("token") })
-    );
-  };
+    try {
+      setIsProcessing(true);
+      await rejectRequest(currentUserId, userData._id);
 
-  if (loading) return <div className={cx("spinner-border text-light")}></div>;
+      // Tự động xóa người này khỏi Hộp thư đến
+      dispatch(rejectFriendRequest(userData._id));
+    } catch (err) {
+      console.error("Lỗi khi từ chối:", err);
+    } finally {
+      setIsProcessing(false);
+    }
+  };
 
   return (
     <div className={cx("infoItem")}>
       <img
-        src={info.avatar || "/default-avatar.png"}
-        alt={info.name}
+        src={userData.avatar || "/default-avatar.png"}
+        alt={userData.name}
         className={cx("avatar")}
       />
 
       <div className={cx("info")}>
-        <span className={cx("name")}>{info.name || info.username}</span>
-        <div className={cx("friendCode")}>Mã: {info.friendCode}</div>
+        <span className={cx("name")}>{userData.name || userData.username}</span>
+        <div className={cx("friendCode")}>Mã: {userData.friendCode}</div>
       </div>
-      <button className={cx("acceptButton")} onClick={handleAccept}>
+
+      <button
+        className={cx("acceptButton")}
+        onClick={handleAccept}
+        disabled={isProcessing}
+      >
         <CircleCheckBig />
       </button>
-      <button className={cx("rejectButton")} onClick={handlereject}>
+
+      <button
+        className={cx("rejectButton")}
+        onClick={handlereject}
+        disabled={isProcessing}
+      >
         <CircleX />
       </button>
     </div>

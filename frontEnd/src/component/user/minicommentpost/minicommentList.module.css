@@ -1,0 +1,34 @@
+.commentWrapper {
+  display: flex;
+  flex-direction: column;
+  height: 100%; /* Chiếm toàn bộ chiều cao của comment-list-container */
+}
+
+/* Khu vực danh sách bình luận: Cho phép cuộn */
+.scrollArea {
+  flex: 1;
+  overflow-y: auto;
+  padding-right: 5px; /* Tránh chữ dính vào thanh cuộn */
+}
+
+/* Tùy chỉnh thanh cuộn cho đẹp (tùy chọn) */
+.scrollArea::-webkit-scrollbar {
+  width: 6px;
+}
+.scrollArea::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.2);
+  border-radius: 10px;
+}
+.scrollArea::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* Khu vực nhập bình luận: Cố định ở đáy */
+.addCommentWrapper {
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(255, 255, 255, 0.2); /* Tạo đường kẻ ngang mỏng phân cách */
+  position: sticky;
+  bottom: 0;
+  z-index: 10;
+}

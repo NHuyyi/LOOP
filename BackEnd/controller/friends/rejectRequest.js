@@ -18,11 +18,11 @@ exports.rejectRequest = async (req, res) => {
 
     // xóa sender khỏi danh sách nhận lời mời kết bạn của user
     user.friendRequests = user.friendRequests.filter(
-      (r) => r.from.toString() !== senderId
+      (r) => r.from.toString() !== senderId,
     );
     // xóa user khỏi danh sách gửi lời mời của sender
     sender.sentRequests = sender.sentRequests.filter(
-      (r) => r.to.toString() !== userId
+      (r) => r.to.toString() !== userId,
     );
 
     await user.save();
@@ -33,7 +33,7 @@ exports.rejectRequest = async (req, res) => {
     const onlineUsers = getOnlineUsers();
     if (onlineUsers[senderId]) {
       io.to(onlineUsers[senderId]).emit("friendRequestReject", {
-        by: senderId,
+        by: userId,
       });
     }
 

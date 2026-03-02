@@ -1,3 +1,12 @@
+// Chỉ ép DNS Google khi đang chạy ở máy cá nhân (môi trường development)
+if (process.env.NODE_ENV !== "production") {
+  const dns = require("dns");
+  dns.setServers(["8.8.8.8", "8.8.4.4"]);
+  console.log(
+    "🛠️ Đang chạy ở máy Local: Đã ép dùng Google DNS để chống lỗi mạng.",
+  );
+}
+
 require("dotenv").config();
 const express = require("express");
 const cors = require("cors");

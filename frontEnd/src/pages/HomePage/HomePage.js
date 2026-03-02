@@ -27,7 +27,7 @@ function HomePage() {
   // Gọi hook lấy danh sách bài viết
   const { posts: fetchedPosts, loading } = useGetPost(
     currentUser?.friends || [],
-    currentUser?._id
+    currentUser?._id,
   );
   console.log("Rendered ModelPostMini for post:", posts);
 
@@ -48,7 +48,7 @@ function HomePage() {
             postId: post._id,
             reactionCounts: res.data.reactionCounts,
             totalReactions: res.data.totalReactions,
-          })
+          }),
         );
       }
     });
@@ -108,7 +108,15 @@ function HomePage() {
           <p className="text-center text-gray-500">Chưa có bài viết nào</p>
         )}
       </div>
-
+      <div className={cx("right-sidebar")}>
+        {/* Tạm thời để một khung trống, sau này bạn nhúng Component ListFriend vào đây */}
+        <div className={cx("friend-list-placeholder")}>
+          <h3>Người liên hệ</h3>
+          <p className="text-gray-500 text-sm mt-2">
+            Danh sách bạn bè sẽ hiển thị ở đây...
+          </p>
+        </div>
+      </div>
       {message && (
         <div
           className={`${cx("app-message")}  
