@@ -1,0 +1,49 @@
+const Conversation = require("../../model/Conversation.Model");
+const Message = require("../../model/Message.Model");
+
+// API gửi tin nhắn trong một cuộc trò chuyện
+
+exports.sendMessage = async (req, res) => {
+  try {
+    const senderId = req.userId; // ID người gửi được lấy từ token
+    const { receiverId, text } = req.body;
+
+    // tìm xem 2 người này đã có cuộc trò chuyện chưa
+    let conversation = await Conversation.findOne({
+      participants: { $all: [senderId, receiverId] },
+    });
+
+    // nếu chưa có cuộc trò chuyện thì tạo mới
+    if (!conversation) {
+      conversation = await Conversation.create({
+        participants: [senderId, receiverId],
+      });
+    }
+
+    // tạo tin nhắn mới
+    const message = await Message.create({
+      conversationId: conversation._id,
+      sender: senderId,
+      text,
+    });
+
+    // câp nhật trường lastMessage trong Conversation để lưu trữ tin nhắn mới nhất
+    conversation.lastMessage = message._id;
+    await conversation.save();
+
+    //socket.io sẽ lắng nghe sự kiện "newMessage" và gửi tin nhắn mới đến người nhận
+    const io = getIO();
+    const onlineUsers = getOnlineUsers();
+    if (onlineUsers[receiverId]) {
+      io.to(onlineUsers[receiverId]).emit("newMessage", {
+        conversationId: conversation._id,
+        message: await message.populate("sender", "name avatar"),
+      });
+    }
+
+    return res.status(200).json({ success: true, message });
+  } catch (err) {
+    console.error("Lỗi sendMessage:", err);
+    return res.status(500).json({ message: "Lỗi server", success: false });
+  }
+};

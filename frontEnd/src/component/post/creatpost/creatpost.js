@@ -52,14 +52,10 @@ function CreatePost({ setMessage, setSuccess, friendList = [] }) {
         content,
         author,
         visibility,
-        denyList
+        denyList,
       );
       if (post.success) {
         const postList = await getpost(friendList, author);
-        console.log(
-          "Đã cập nhật lại danh sách bài viết sau khi tạo mới.",
-          postList
-        );
         if (postList && Array.isArray(postList.data)) {
           dispatch(setPosts(postList.data));
         }

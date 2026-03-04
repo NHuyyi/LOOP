@@ -48,7 +48,6 @@ function EditPost({ postId, currentContent, token, setMessage, setSuccess }) {
             <div
               className={`${cx("edit-dialog")} edit-dialog`}
               onClick={(e) => {
-                console.log("clicked inside dialog");
                 e.stopPropagation();
               }} // chặn lan truyền
             >
@@ -66,7 +65,7 @@ function EditPost({ postId, currentContent, token, setMessage, setSuccess }) {
               </div>
             </div>
           </div>,
-          document.body
+          document.body,
         )}
     </>
   );

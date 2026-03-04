@@ -39,7 +39,6 @@ function SocketManager() {
       socket.on("friendRequestReceived", ({ senderInfo }) => {
         // Nhớ sửa Backend để gửi thêm senderInfo nhé
         if (senderInfo) dispatch(receiveFriendRequest(senderInfo));
-        console.log("Nhận friendRequestReceived từ socket:", senderInfo);
       });
 
       socket.on("friendRequestAccepted", ({ by }) => {

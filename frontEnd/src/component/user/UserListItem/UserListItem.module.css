@@ -1,0 +1,59 @@
+.user-item-container {
+  display: flex;
+  align-items: center;
+  padding: 8px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  margin-bottom: 4px;
+}
+
+.user-item-container:hover {
+  background-color: #b19aef3f; /* Hiệu ứng hover nhẹ nhàng */
+}
+
+.avatar-wrapper {
+  position: relative;
+  margin-right: 12px;
+}
+
+.user-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid #e4e6eb;
+  background: linear-gradient(135deg, #c084fc, #60a5fa);
+  padding: 0.125rem;
+}
+.statusDot.online {
+  background-color: greenyellow;
+  position: absolute;
+  bottom: 0.1rem;
+  left: 2rem;
+  width: 0.75rem;
+  height: 0.75rem;
+  border-radius: 50%;
+  border: 2px solid #fff; /* viền trắng để nổi bật trên avatar */
+}
+
+.user-avatar.offline {
+  filter: grayscale(90%); /* Làm mờ ảnh để biểu thị trạng thái offline */
+}
+
+.user-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  overflow: hidden; /* Cắt phần text bị dài */
+}
+
+.user-name {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+  color: #050505;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis; /* Thêm dấu ... nếu tên quá dài */
+}

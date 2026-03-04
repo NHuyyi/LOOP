@@ -20,7 +20,7 @@ function FriendsPage() {
   const dispatch = useDispatch();
   const currentUser = useSelector((state) => state.user.user);
 
-  // 🟢 Lấy dữ liệu Real-time trực tiếp từ friendSlice
+  //  Lấy dữ liệu Real-time trực tiếp từ friendSlice
   const { friends, friendRequests, sentRequests } = useSelector(
     (state) => state.friend,
   );
@@ -30,7 +30,7 @@ function FriendsPage() {
   const [abbert, setAbbert] = useState("");
   const [loading, setLoading] = useState(true);
 
-  // 🟢 Gọi API 1 lần duy nhất khi load trang để lấy dữ liệu chuẩn từ DB
+  //  Gọi API 1 lần duy nhất khi load trang để lấy dữ liệu chuẩn từ DB
   useEffect(() => {
     const fetchFriends = async () => {
       if (currentUser?._id) {
@@ -114,7 +114,7 @@ function FriendsPage() {
         <div className={cx("card")}>
           <h2 className={cx("section-title")}>Lời mời kết bạn</h2>
           <div className={cx("requestTabs")}>
-            {/* 🟢 Lời mời ĐÃ GỬI (sentRequests) */}
+            {/*  Lời mời ĐÃ GỬI (sentRequests) */}
             <div className={cx("SentrequestList")}>
               <h3>Đã Gửi</h3>
               {sentRequests.length > 0 ? (
@@ -130,7 +130,7 @@ function FriendsPage() {
               )}
             </div>
 
-            {/* 🟢 Lời mời ĐÃ NHẬN (friendRequests) */}
+            {/*  Lời mời ĐÃ NHẬN (friendRequests) */}
             <div className={cx("requestSection")}>
               <h3>Đã Nhận</h3>
               {friendRequests.length > 0 ? (
@@ -154,7 +154,7 @@ function FriendsPage() {
         <div className={cx("card")}>
           <h2 className={cx("section-title")}>Danh sách bạn bè</h2>
           <div className={cx("friendsList")}>
-            {/* 🟢 Danh sách bạn bè (friends) */}
+            {/*  Danh sách bạn bè (friends) */}
             {friends.length > 0 ? (
               friends.map((friend) => (
                 <FriendsList

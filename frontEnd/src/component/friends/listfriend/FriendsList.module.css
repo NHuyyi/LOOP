@@ -7,19 +7,24 @@
   border-radius: 0.75rem;
   cursor: pointer;
   position: relative;
-  transition: background 0.2s ease-in-out, transform 0.15s;
+  transition:
+    background 0.2s ease-in-out,
+    transform 0.15s;
 }
 
 .friendItem:hover {
   background: #f9f9f9;
+  cursor: auto;
 }
 
-.avatar {
+.avatarWrapper .avatar {
   width: 2.75rem;
   height: 2.75rem;
   border-radius: 50%;
   object-fit: cover;
   border: 0.125rem solid #eee;
+  background: linear-gradient(135deg, #c084fc, #60a5fa);
+  padding: 0.125rem;
 }
 
 .avatar.offline {
@@ -59,4 +64,32 @@
 
 .removeButton:hover {
   background: #ffcccc;
+}
+
+.chatButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #e6f7ff;
+  border: none;
+  outline: none;
+  padding: 0.4rem;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.chatButton:hover {
+  background: #b3ecff;
+}
+
+.statusDot.online {
+  background-color: greenyellow;
+  position: absolute;
+  bottom: 0.5rem;
+  left: 3rem;
+  width: 0.75rem;
+  height: 0.75rem;
+  border-radius: 50%;
+  border: 2px solid #fff; /* viền trắng để nổi bật trên avatar */
 }

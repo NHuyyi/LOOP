@@ -33,7 +33,6 @@ function VisibilityCreatePost({
         className={cx("action", "change-visibility")}
         onClick={() => {
           setShowOptions(true);
-          console.log("click");
         }}
       >
         <FaGlobeAmericas />
@@ -50,7 +49,7 @@ function VisibilityCreatePost({
                 <li
                   className={cx(
                     "option-item",
-                    visibility === "friends" ? "selected" : ""
+                    visibility === "friends" ? "selected" : "",
                   )}
                   onClick={() => handleSelectVisibility("friends")}
                 >
@@ -59,7 +58,7 @@ function VisibilityCreatePost({
                 <li
                   className={cx(
                     "option-item",
-                    visibility === "private" ? "selected" : ""
+                    visibility === "private" ? "selected" : "",
                   )}
                   onClick={() => handleSelectVisibility("private")}
                 >
@@ -68,7 +67,7 @@ function VisibilityCreatePost({
                 <li
                   className={cx(
                     "option-item",
-                    visibility === "custom" ? "selected" : ""
+                    visibility === "custom" ? "selected" : "",
                   )}
                   onClick={() => {
                     setShowCustomModal(true);
@@ -79,7 +78,7 @@ function VisibilityCreatePost({
               </ul>
             </div>
           </div>,
-          document.body
+          document.body,
         )}
 
       {/* 🔹 Modal custom tách riêng */}

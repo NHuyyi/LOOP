@@ -22,7 +22,7 @@ function PostCard({ post, currentUserId, friendList = [] }) {
   const countComments = (arr) =>
     arr.reduce(
       (acc, c) => acc + (c.isDeleted ? 0 : 1) + countComments(c.replies || []),
-      0
+      0,
     );
 
   const commentCount =
@@ -33,7 +33,7 @@ function PostCard({ post, currentUserId, friendList = [] }) {
   let commentlength = commentCount;
 
   const updatedPost = useSelector((state) =>
-    state.posts.posts.find((p) => p._id === post._id)
+    state.posts.posts.find((p) => p._id === post._id),
   );
   const currentPost = updatedPost || post;
   const reactions = currentPost.reactions || [];
@@ -42,9 +42,8 @@ function PostCard({ post, currentUserId, friendList = [] }) {
       (r) =>
         r.user === currentUserId ||
         r.user?._id === currentUserId ||
-        String(r.user) === String(currentUserId)
+        String(r.user) === String(currentUserId),
     )?.type || "";
-  console.log("PostCard reactions:", reactionType);
 
   return (
     <div className={cx("postCard")}>

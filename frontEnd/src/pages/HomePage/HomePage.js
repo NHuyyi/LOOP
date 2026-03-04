@@ -9,6 +9,7 @@ import { updateReaction } from "../../redux/reactionSlide";
 import countreaction from "../../services/Post/reaction/countreaction";
 import { setPosts } from "../../redux/postSlice";
 import MiniProfile from "../../component/user/minipofile/miniprofile";
+import FriendFilterList from "../../component/friends/FriendFilterList/FriendFilterList";
 
 const cx = classNames.bind(styles);
 
@@ -29,7 +30,6 @@ function HomePage() {
     currentUser?.friends || [],
     currentUser?._id,
   );
-  console.log("Rendered ModelPostMini for post:", posts);
 
   // Đẩy dữ liệu từ API vào redux
   useEffect(() => {
@@ -111,10 +111,7 @@ function HomePage() {
       <div className={cx("right-sidebar")}>
         {/* Tạm thời để một khung trống, sau này bạn nhúng Component ListFriend vào đây */}
         <div className={cx("friend-list-placeholder")}>
-          <h3>Người liên hệ</h3>
-          <p className="text-gray-500 text-sm mt-2">
-            Danh sách bạn bè sẽ hiển thị ở đây...
-          </p>
+          <FriendFilterList />
         </div>
       </div>
       {message && (

@@ -16,7 +16,7 @@ exports.getFriendListFilter = async (req, res) => {
         .json({ message: "Người dùng không tồn tại", success: false });
     }
 
-    // Lọc danh sách bạn bè 10 người chat gần nhất, nếu không đủ thì sẽ lấy danh sách bạn bè mới kết bạ  bỏ vào để đủ 10 người
+    // Lọc danh sách bạn bè 10 người chat gần nhất, nếu không đủ thì sẽ lấy danh sách bạn bè mới kết bạn bỏ vào để đủ 10 người
 
     const recentFriends = [...user.friends].reverse().slice(0, 10);
 

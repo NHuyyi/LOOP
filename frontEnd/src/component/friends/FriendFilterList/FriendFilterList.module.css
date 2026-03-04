@@ -1,0 +1,9 @@
+.title {
+  margin-bottom: 1.125rem;
+  padding-bottom: 1rem;
+  font-weight: 500;
+  font-size: 1.125rem;
+  text-align: start;
+  color: blueviolet;
+  border-bottom: 2px solid #dd8ae8;
+}

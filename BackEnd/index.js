@@ -15,6 +15,7 @@ const UserRoute = require("./routes/User.Routes");
 const { connectCloudinary } = require("./config/Cloudinary");
 const PostRoute = require("./routes/post.Routes");
 const FriendRoute = require("./routes/Friend.Routes");
+const ChatRoute = require("./routes/Chat.Routes");
 const http = require("http"); // thêm http
 const { initSocket } = require("./config/socker"); // sửa đường dẫn nếu cần
 const { getIO, getOnlineUsers } = require("./config/socker");
@@ -45,5 +46,6 @@ connectCloudinary();
 app.use("/api/users", UserRoute);
 app.use("/api/posts", PostRoute);
 app.use("/api/friends", FriendRoute);
+app.use("/api/chat", ChatRoute);
 // Xuất io & onlineUsers để các controller (removeFriend, sendRequest, …) dùng
 module.exports = { getIO, getOnlineUsers };

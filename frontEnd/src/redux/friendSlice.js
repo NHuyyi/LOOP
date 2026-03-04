@@ -2,6 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   friends: [],
+  filteredFriends: [],
   friendRequests: [],
   sentRequests: [],
   loading: false,
@@ -89,6 +90,10 @@ const friendSlice = createSlice({
         (r) => r.to._id !== receiverId,
       );
     },
+
+    setFilteredFriends: (state, action) => {
+      state.filteredFriends = action.payload;
+    },
   },
 });
 
@@ -102,5 +107,6 @@ export const {
   acceptRequestLocal,
   rejectFriendRequest,
   removeFriend,
+  setFilteredFriends,
 } = friendSlice.actions;
 export default friendSlice.reducer;
