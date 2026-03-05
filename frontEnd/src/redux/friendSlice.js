@@ -94,6 +94,27 @@ const friendSlice = createSlice({
     setFilteredFriends: (state, action) => {
       state.filteredFriends = action.payload;
     },
+
+    updateChatInFilteredFriends: (state, action) => {
+      const { friendId, conversationId } = action.payload;
+
+      // Tìm vị trí của người bạn đó trong danh sách Cột 3 hiện tại
+      const index = state.filteredFriends.findIndex((f) => f._id === friendId);
+
+      if (index !== -1) {
+        // Cập nhật lại conversationId cho họ (nếu trước đó chưa có)
+        const updatedFriend = {
+          ...state.filteredFriends[index],
+          conversationId,
+        };
+
+        // Cắt họ ra khỏi vị trí cũ
+        state.filteredFriends.splice(index, 1);
+
+        // Nhét lên vị trí Top 1
+        state.filteredFriends.unshift(updatedFriend);
+      }
+    },
   },
 });
 
@@ -108,5 +129,6 @@ export const {
   rejectFriendRequest,
   removeFriend,
   setFilteredFriends,
+  updateChatInFilteredFriends,
 } = friendSlice.actions;
 export default friendSlice.reducer;

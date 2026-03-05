@@ -53,7 +53,7 @@ const chatSlice = createSlice({
     // khi đang mở khung chat mà có tin nhắn mới
     addMessage: (state, action) => {
       if (state.activeConversationId === action.payload.conversationId) {
-        state.currentMessages.push(action.payload); // thêm tin nhắn mới vào cuối danh sách
+        state.currentMessages.push(action.payload.message); // thêm tin nhắn mới vào cuối danh sách
       }
     },
   },

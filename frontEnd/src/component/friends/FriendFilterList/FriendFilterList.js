@@ -28,9 +28,9 @@ function FriendFilterList() {
         try {
           const res = await getFriendListFilter(currentUser._id);
           if (res.success) {
-            console.log("Danh sách bạn bè đã filter:", res);
+            console.log("Danh sách bạn bè đã filter:", res.data);
             // Đẩy dữ liệu vào Redux. (Lưu ý: Tùy theo cấu trúc trả về của API mà bạn truyền res.data hoặc res.friends nhé)
-            dispatch(setFilteredFriends(res.friend));
+            dispatch(setFilteredFriends(res.data));
           }
         } catch (error) {
           console.error("Lỗi khi tải danh sách người liên hệ:", error);
@@ -53,6 +53,7 @@ function FriendFilterList() {
         <div className={cx("friend-list-wrapper")}>
           {filteredFriends.map((friend) => (
             <UserListItem
+              key={friend._id}
               id={friend._id}
               avatar={friend.avatar}
               name={friend.name}
