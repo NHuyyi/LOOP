@@ -4,6 +4,7 @@ import Forget from "../pages/forgetpasspage/forgetpasspage";
 import Reset from "../pages/resetpasspage/resetpasspage";
 import Home from "../pages/HomePage/HomePage";
 import Friends from "../pages/friendpage/friendspage";
+import Chat from "../pages/chat/chatpage";
 
 const routes = [
   {
@@ -35,6 +36,11 @@ const routes = [
   {
     path: "friends",
     Element: <Friends />,
+    isHeader: true,
+  },
+  {
+    path: "chat",
+    Element: <Chat />,
     isHeader: true,
   },
 ];

@@ -1,5 +1,6 @@
 const Conversation = require("../../model/Conversation.Model");
 const Message = require("../../model/Message.Model");
+const { getIO, getOnlineUsers } = require("../../config/socker");
 
 // API gửi tin nhắn trong một cuộc trò chuyện
 

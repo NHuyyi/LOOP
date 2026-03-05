@@ -7,6 +7,7 @@ import {
   acceptFriendRequest,
   rejectFriendRequest,
   removeFriend,
+  updateChatInFilteredFriends,
 } from "../redux/friendSlice";
 import { updateReaction } from "../redux/reactionSlide";
 import { setOnlineUsers } from "../redux/onlineSlice";
@@ -19,10 +20,19 @@ import {
 import { getCommentList } from "../services/Post/comments/getCommentList";
 import getpost from "../services/Post/getpost";
 import { setPosts, DeletePosts, addPost, updatePost } from "../redux/postSlice";
+import {
+  addMessage,
+  updateLastMessage,
+  OpenMiniChat,
+} from "../redux/chatSlice";
+
+import { useLocation } from "react-router-dom";
 
 function SocketManager() {
   const currentUser = useSelector((state) => state.user.user);
   const dispatch = useDispatch();
+
+  const location = useLocation();
 
   useEffect(() => {
     socket.on("testEvent", (data) => {
@@ -128,6 +138,36 @@ function SocketManager() {
           dispatch(setPosts(res.data));
         }
       });
+
+      socket.on("newMessage", ({ conversationId, message }) => {
+        // 1. Nếu đang mở khung chat của người này, thêm tin nhắn mới vào mảng hiện tại
+        dispatch(addMessage({ conversationId, message }));
+
+        // 2. Cập nhật tin nhắn cuối cùng ở danh sách hội thoại và đẩy người đó lên Top 1
+        dispatch(updateLastMessage({ conversationId, message }));
+
+        const senderId = message.senderId;
+
+        if (senderId) {
+          dispatch(
+            updateChatInFilteredFriends({
+              friendId: senderId,
+              conversationId: conversationId,
+            }),
+          );
+        }
+
+        // mở minichat khi không ở trang chat chính mà có người gửi tin nhắn đến
+        const isChatpage = location.pathname.startsWith("/chat");
+        if (!isChatpage && message.senderId) {
+          dispatch(
+            OpenMiniChat({
+              receiver: { _id: message.senderId },
+              conversationId,
+            }),
+          );
+        }
+      });
     }
 
     return () => {
@@ -142,8 +182,9 @@ function SocketManager() {
       socket.off("Deletepost");
       socket.off("postEdited");
       socket.off("postVisibilityChanged");
+      socket.off("newMessage");
     };
-  }, [currentUser, dispatch]);
+  }, [currentUser, dispatch, location.pathname]);
 
   return null; // component này không render gì, chỉ để quản lý socket
 }

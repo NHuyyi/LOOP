@@ -13,8 +13,8 @@ function App() {
   usePersistedUser();
   return (
     <div className={cx("App")}>
-      <SocketManager />
       <Router>
+        <SocketManager />
         <Routes>
           {routes.map((route, index) => (
             <Route

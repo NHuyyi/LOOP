@@ -69,7 +69,7 @@ const ConversationList = () => {
       <div className={cx("list")}>
         {loading && <div className={cx("spinner-border")} />}
 
-        {conversationList.map((conv) => {
+        {ConversationList.map((conv) => {
           // tìm người bạn chat cùng
           const otherUser = conv.participants.find(
             (p) => p._id !== currentUser._id,
