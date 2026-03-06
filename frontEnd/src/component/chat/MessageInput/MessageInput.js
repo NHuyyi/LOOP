@@ -1,10 +1,12 @@
 import React, { useState } from "react";
 import styles from "./MessageInput.module.css";
+import classNames from "classnames/bind";
 import { Send, Image, Smile } from "lucide-react";
 import { useSelector, useDispatch } from "react-redux";
 
 import { sendMessage } from "../../../services/chat/sendMessage";
 import { addMessage, updateLastMessage } from "../../../redux/chatSlice";
+import { updateChatInFilteredFriends } from "../../../redux/friendSlice";
 
 const cx = classNames.bind(styles);
 
@@ -15,24 +17,34 @@ function MessageInput() {
   const stateUser = useSelector((state) => state.user);
   const currentUser = stateUser?.user;
 
-  const { conversationList, activeConversationId } = useSelector(
-    (state) => state.chat,
-  );
+  const {
+    conversationList = [],
+    activeConversationId,
+    activeReceiver,
+  } = useSelector((state) => state.chat);
 
   const handleSend = async (e) => {
     e.preventDefault();
-    if (!text.trim() || !activeConversationId) return;
+    if (!text.trim()) return;
 
-    // tìm Receiver ID từ Conversation hiện tại
-    const currentConv = conversationList.find(
-      (c) => c._id === activeConversationId,
-    );
-    const receiver = currentConv.participants.find(
-      (p) => p._id !== currentUser?._id,
-    );
+    let receiverId = null;
+
+    if (activeConversationId) {
+      const currentConv = conversationList.find(
+        (c) => c._id === activeConversationId,
+      );
+      const receiver = currentConv?.participants.find(
+        (p) => p._id !== currentUser?._id,
+      );
+      receiverId = receiver?._id;
+    } else if (activeReceiver) {
+      receiverId = activeReceiver._id;
+    }
+
+    if (!receiverId) return; // Không có người nhận thì không gửi
 
     try {
-      const res = await sendMessage(receiver._id, text);
+      const res = await sendMessage(receiverId, text);
       if (res?.success) {
         const newMessage = res.data;
 
@@ -55,7 +67,7 @@ function MessageInput() {
         // cập nhật cột 3 ở trang home
         dispatch(
           updateChatInFilteredFriends({
-            friendId: receiver._id,
+            friendId: receiverId,
             conversationId: activeConversationId,
           }),
         );

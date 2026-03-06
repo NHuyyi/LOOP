@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import styles from "./MessageList.module.css";
+import classNames from "classnames/bind";
 import { useSelector, useDispatch } from "react-redux";
 import { getMessages } from "../../../services/chat/getMessages";
 import { loadMoreMessages } from "../../../redux/chatSlice";
@@ -15,6 +16,10 @@ function MessageList() {
 
   const { currentMessages, activeConversationId, page, hasMore } = useSelector(
     (state) => state.chat,
+  );
+  console.log(
+    "currentMessages",
+    useSelector((state) => state.chat),
   );
 
   const [loading, setLoading] = useState(false);
@@ -54,6 +59,7 @@ function MessageList() {
       {loading && <div className={cx("spinner-border")} />}
 
       {currentMessages.map((msg, index) => {
+        console.log("mgs", msg);
         // kiểm tra người gửi là ai
         const isMyMessage = msg.senderId === currentUser?._id;
 

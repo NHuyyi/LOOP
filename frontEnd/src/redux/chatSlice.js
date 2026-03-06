@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  conversationsList: [], // lưu trữ danh sách bạn bè đã chat + tin nhắn cuối cùng
+  ConversationList: [], // lưu trữ danh sách bạn bè đã chat + tin nhắn cuối cùng
   activeConversationId: null, // lưu trữ cuộc trò chuyện hiện tại đang mở
   currentMessages: [], // lưu trữ tin nhắn của cuộc trò chuyện hiện tại(mặc định 20 tin nhắn)
   activeReceiver: null, // thông tin người đang chat cùng
@@ -16,21 +16,21 @@ const chatSlice = createSlice({
   initialState,
   reducers: {
     setConversations: (state, action) => {
-      state.conversationsList = action.payload; // lấy từ API lúc mới vào web
+      state.ConversationList = action.payload; // lấy từ API lúc mới vào web
     },
     // Khi có tin nhắn mới (mình gửi hoặc người ta gửi), cập nhật lại "tin nhắn cuối" và đẩy người đó lên top 1
     updateLastMessage: (state, action) => {
       const { conversationId, message } = action.payload;
-      const index = state.conversationsList.findIndex(
+      const index = state.ConversationList.findIndex(
         (c) => c._id === conversationId,
       );
 
       if (index !== -1) {
         // cập nhật tin nhắn cuối
-        state.conversationsList[index].lastMessage = message;
+        state.ConversationList[index].lastMessage = message;
         // đẩy cuộc trò chuyện lên top 1
-        const updatedConversation = state.conversationsList.splice(index, 1)[0];
-        state.conversationsList.unshift(updatedConversation);
+        const updatedConversation = state.ConversationList.splice(index, 1)[0];
+        state.ConversationList.unshift(updatedConversation);
       }
     },
 
@@ -63,6 +63,8 @@ const chatSlice = createSlice({
       state.currentMessages = [];
       state.page = 1;
       state.hasMore = false;
+      console.log("Reducer setNewFriendChat đã chạy!");
+      console.log("Dữ liệu nhận được:", state.activeReceiver);
     },
 
     OpenMiniChat: (state, action) => {
@@ -97,7 +99,7 @@ const chatSlice = createSlice({
     },
 
     setMiniChatMessages: (state, action) => {
-      const { receiverId, messages, conversationId } = state.payload;
+      const { receiverId, messages, conversationId } = action.payload;
       const index = state.miniChat.findIndex(
         (c) => c.receiver._id === receiverId,
       );

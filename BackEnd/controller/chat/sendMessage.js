@@ -6,7 +6,7 @@ const { getIO, getOnlineUsers } = require("../../config/socker");
 
 exports.sendMessage = async (req, res) => {
   try {
-    const senderId = req.userId; // ID người gửi được lấy từ token
+    const senderId = req.user.id; // ID người gửi được lấy từ token
     const { receiverId, text } = req.body;
 
     // tìm xem 2 người này đã có cuộc trò chuyện chưa
@@ -24,7 +24,7 @@ exports.sendMessage = async (req, res) => {
     // tạo tin nhắn mới
     const message = await Message.create({
       conversationId: conversation._id,
-      sender: senderId,
+      senderId,
       text,
     });
 

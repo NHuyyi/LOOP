@@ -9,21 +9,32 @@ const cx = classNames.bind(styles);
 function ChatHeader({ onOpenModal }) {
   const stateUser = useSelector((state) => state.user);
   const currentUser = stateUser?.user;
-  const { ConversationList, activeConversationId } = useSelector(
-    (state) => state.chat,
-  );
+  const {
+    ConversationList = [],
+    activeConversationId,
+    activeReceiver,
+  } = useSelector((state) => state.chat);
 
-  // tìm thông tin cuộc trò chuyện hiện tại
-  const currentConv = ConversationList.find(
-    (c) => c._id === activeConversationId,
-  );
+  let otherUser = null;
 
-  if (!currentConv) return null;
+  // Nếu là cuộc trò chuyện cũ đã có ID
+  if (activeConversationId) {
+    const currentConv = ConversationList.find(
+      (c) => c._id === activeConversationId,
+    );
+    if (currentConv) {
+      otherUser = currentConv.participants.find(
+        (p) => p._id !== currentUser._id,
+      );
+    }
+  }
+  // Nếu là bắt đầu chat với người mới
+  else if (activeReceiver) {
+    otherUser = activeReceiver;
+  }
 
-  const otherUser = currentConv.participants.find(
-    (p) => p._id !== currentUser._id,
-  );
-
+  // Ẩn Header nếu không tìm thấy user nào
+  if (!otherUser) return null;
   return (
     <div className={cx("header")}>
       <div className={cx("userInfo")}>

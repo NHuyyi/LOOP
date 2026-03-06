@@ -1,6 +1,6 @@
 const API_URL = process.env.REACT_APP_API_URL || "http://localhost:3001/api";
 
-export const sendMessage = async (receiverId, content) => {
+export const sendMessage = async (receiverId, text) => {
   try {
     const token = localStorage.getItem("token");
 
@@ -12,7 +12,7 @@ export const sendMessage = async (receiverId, content) => {
       },
       body: JSON.stringify({
         receiverId,
-        content,
+        text,
       }),
     });
 

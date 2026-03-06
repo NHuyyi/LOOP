@@ -5,6 +5,7 @@ import commentRecuder from "./commentSlide";
 import onlineRecuder from "./onlineSlice";
 import postsReducer from "./postSlice";
 import friendReducer from "./friendSlice";
+import chatReducer from "./chatSlice";
 
 export const store = configureStore({
   reducer: {
@@ -14,5 +15,6 @@ export const store = configureStore({
     comments: commentRecuder,
     online: onlineRecuder,
     friend: friendReducer,
+    chat: chatReducer,
   },
 });
