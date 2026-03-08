@@ -27,7 +27,7 @@ const ConversationList = () => {
   const stateUser = useSelector((state) => state.user);
   const currentUser = stateUser?.user;
 
-  const { conversationsList = [], activeConversationId } = useSelector(
+  const { ConversationList = [], activeConversationId } = useSelector(
     (state) => state.chat || [],
   );
 
@@ -39,9 +39,8 @@ const ConversationList = () => {
           getConversations(currentUser?._id),
           getFriendList(currentUser?._id),
         ]);
-
         if (convRes?.success)
-          dispatch(setConversations(convRes.conversation || []));
+          dispatch(setConversations(convRes.conversations || []));
         if (friendRes?.success) setLocalFriends(friendRes.friend || []);
       } catch (error) {
         console.error("Lỗi khi tải dữ liệu chat/bạn bè:", error);
@@ -52,24 +51,23 @@ const ConversationList = () => {
 
     if (
       currentUser &&
-      (conversationsList.length === 0 || localFriends.length === 0)
+      (ConversationList.length === 0 || localFriends.length === 0)
     ) {
       fetchData();
     }
-  }, [currentUser, dispatch, conversationsList.length, localFriends.length]);
+  }, [currentUser, dispatch, ConversationList.length, localFriends.length]);
 
   const handleConversationClick = async (conversation) => {
     if (activeConversationId === conversation._id) return;
 
     try {
       const res = await getMessages(conversation._id, 1);
-      console.log("res", res);
 
       if (res?.success) {
         dispatch(
           setInitialMessages({
             conversationId: conversation._id,
-            messages: res.data,
+            messages: res.messages,
           }),
         );
       }
@@ -79,7 +77,7 @@ const ConversationList = () => {
   };
 
   const handleSearchResultClick = (targetUser) => {
-    const existingConv = conversationsList.find((conv) =>
+    const existingConv = ConversationList.find((conv) =>
       conv.participants.some((p) => p._id === targetUser._id),
     );
 
@@ -123,7 +121,7 @@ const ConversationList = () => {
   };
 
   const renderConversationHistory = () => {
-    return conversationsList.map((conv) => {
+    return ConversationList.map((conv) => {
       const otherUser = conv.participants.find(
         (p) => p._id !== currentUser._id,
       );

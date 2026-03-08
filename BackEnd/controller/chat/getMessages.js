@@ -9,7 +9,7 @@ exports.getMessages = async (req, res) => {
     const skip = (page - 1) * limit;
 
     const messages = await Message.find({ conversationId })
-      .populate("sender", "name avatar")
+      .populate("senderId", "name avatar")
       .sort({ createdAt: -1 })
       .skip(skip)
       .limit(limit);

@@ -46,7 +46,7 @@ function MessageInput() {
     try {
       const res = await sendMessage(receiverId, text);
       if (res?.success) {
-        const newMessage = res.data;
+        const newMessage = res.message;
 
         // ném vào redux để hiển thị lên màng hình ngay lập tức
         dispatch(

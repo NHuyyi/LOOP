@@ -3,7 +3,7 @@ const Conversation = require("../../model/Conversation.Model");
 // api lấy danh sách cuộc trò chuyện của người dùng, bao gồm thông tin người chat cùng và tin nhắn cuối cùng
 exports.getConversations = async (req, res) => {
   try {
-    const userId = req.user._id;
+    const userId = req.user.id;
 
     const conversations = await Conversation.find({
       participants: { $in: [userId] },

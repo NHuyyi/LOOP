@@ -3,6 +3,7 @@
   height: calc(100vh - 60px); /* Trừ đi chiều cao của Navbar nếu có */
   background-color: #ffffff;
   border-top: 1px solid #e4e6eb;
+  gap: 10px;
 }
 
 .sidebar {

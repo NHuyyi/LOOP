@@ -17,6 +17,8 @@ const chatSlice = createSlice({
   reducers: {
     setConversations: (state, action) => {
       state.ConversationList = action.payload; // lấy từ API lúc mới vào web
+      console.log("Reducer setConversations đã chạy!");
+      console.log("Dữ liệu nhận được:", action.payload);
     },
     // Khi có tin nhắn mới (mình gửi hoặc người ta gửi), cập nhật lại "tin nhắn cuối" và đẩy người đó lên top 1
     updateLastMessage: (state, action) => {
