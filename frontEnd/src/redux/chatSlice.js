@@ -17,8 +17,6 @@ const chatSlice = createSlice({
   reducers: {
     setConversations: (state, action) => {
       state.ConversationList = action.payload; // lấy từ API lúc mới vào web
-      console.log("Reducer setConversations đã chạy!");
-      console.log("Dữ liệu nhận được:", action.payload);
     },
     // Khi có tin nhắn mới (mình gửi hoặc người ta gửi), cập nhật lại "tin nhắn cuối" và đẩy người đó lên top 1
     updateLastMessage: (state, action) => {
@@ -65,8 +63,6 @@ const chatSlice = createSlice({
       state.currentMessages = [];
       state.page = 1;
       state.hasMore = false;
-      console.log("Reducer setNewFriendChat đã chạy!");
-      console.log("Dữ liệu nhận được:", state.activeReceiver);
     },
 
     OpenMiniChat: (state, action) => {
@@ -112,6 +108,26 @@ const chatSlice = createSlice({
         }
       }
     },
+    markConversationAsRead: (state, action) => {
+      const { conversationId, currentUserId } = action.payload;
+
+      // Tìm cuộc trò chuyện trong mảng
+      const conversation = state.ConversationList.find(
+        (c) => c._id === conversationId,
+      );
+
+      // Nếu có tin nhắn cuối
+      if (conversation && conversation.lastMessage) {
+        const senderId =
+          conversation.lastMessage.senderId?._id ||
+          conversation.lastMessage.senderId;
+
+        // Nếu tin nhắn cuối KHÔNG phải do mình gửi thì đổi isRead = true
+        if (senderId !== currentUserId) {
+          conversation.lastMessage.isRead = true;
+        }
+      }
+    },
   },
 });
 
@@ -125,6 +141,7 @@ export const {
   OpenMiniChat,
   CloseMiniChat,
   setMiniChatMessages,
+  markConversationAsRead,
 } = chatSlice.actions;
 
 export default chatSlice.reducer;

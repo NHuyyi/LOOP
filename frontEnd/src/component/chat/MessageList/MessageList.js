@@ -59,9 +59,8 @@ function MessageList() {
       {loading && <div className={cx("spinner-border")} />}
 
       {currentMessages.map((msg, index) => {
-        console.log("mgs", msg);
         // kiểm tra người gửi là ai
-        const isMyMessage = msg.senderId === currentUser?._id;
+        const isMyMessage = msg.senderId._id === currentUser?._id;
 
         return (
           <div

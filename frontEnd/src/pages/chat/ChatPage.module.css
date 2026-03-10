@@ -1,6 +1,6 @@
-.chatContainer {
+.container {
   display: flex;
-  height: calc(100vh - 60px); /* Trừ đi chiều cao của Navbar nếu có */
+  height: calc(100vh - 70px); /* Trừ đi chiều cao của Navbar nếu có */
   background-color: #ffffff;
   border-top: 1px solid #e4e6eb;
   gap: 10px;
@@ -9,6 +9,7 @@
 .sidebar {
   width: 360px;
   min-width: 300px;
+  height: 100%;
   border-right: 1px solid #e4e6eb;
   background-color: #ffffff;
   display: flex;

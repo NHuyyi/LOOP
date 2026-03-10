@@ -90,4 +90,19 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  text-align: start;
+}
+.unread-text {
+  font-weight: 700 !important;
+  color: #050505 !important;
+}
+
+/* Chấm xanh biểu thị có tin nhắn mới */
+.unread-dot {
+  width: 12px;
+  height: 12px;
+  background-color: #0866ff; /* Màu xanh tương tự Messenger */
+  border-radius: 50%;
+  margin-left: 10px;
+  flex-shrink: 0;
 }

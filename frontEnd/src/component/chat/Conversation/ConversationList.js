@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import styles from "./ConversationList.module.css";
 import classNames from "classnames/bind";
 import { useSelector, useDispatch } from "react-redux";
@@ -11,7 +11,9 @@ import {
   setConversations,
   setInitialMessages,
   setNewFriendChat,
+  markConversationAsRead,
 } from "../../../redux/chatSlice";
+import { markAsRead } from "../../../services/chat/markAsRead";
 
 // Import Component con
 import ChatSearch from "./ChatSearch";
@@ -39,6 +41,7 @@ const ConversationList = () => {
           getConversations(currentUser?._id),
           getFriendList(currentUser?._id),
         ]);
+
         if (convRes?.success)
           dispatch(setConversations(convRes.conversations || []));
         if (friendRes?.success) setLocalFriends(friendRes.friend || []);
@@ -61,6 +64,7 @@ const ConversationList = () => {
     if (activeConversationId === conversation._id) return;
 
     try {
+      // gọi API lấy danh sách tin nhắn
       const res = await getMessages(conversation._id, 1);
 
       if (res?.success) {
@@ -71,6 +75,15 @@ const ConversationList = () => {
           }),
         );
       }
+
+      // gọi API đánh dấu tin nhắn đã đọc rồi hay chưa
+      await markAsRead(conversation._id);
+      dispatch(
+        markConversationAsRead({
+          conversationId: conversation._id,
+          currentUserId: currentUser._id,
+        }),
+      );
     } catch (error) {
       console.error("Lỗi lấy tin nhắn:", error);
     }
@@ -122,10 +135,25 @@ const ConversationList = () => {
 
   const renderConversationHistory = () => {
     return ConversationList.map((conv) => {
+      // Tìm người đang chat cùng mình
       const otherUser = conv.participants.find(
         (p) => p._id !== currentUser._id,
       );
       const isActive = conv._id === activeConversationId;
+
+      // ---- XỬ LÝ LOGIC TRẠNG THÁI TIN NHẮN ----
+      let isMyMessage = false;
+      let isUnread = false;
+
+      if (conv.lastMessage) {
+        // Kiểm tra xem ai là người gửi (so sánh ID người gửi với ID của user đang đăng nhập)
+        const senderId =
+          conv.lastMessage.senderId?._id || conv.lastMessage.senderId;
+        isMyMessage = senderId === currentUser._id;
+
+        // Nếu tin nhắn KHÔNG phải do mình gửi VÀ trạng thái isRead là false -> Chưa đọc
+        isUnread = !isMyMessage && !conv.lastMessage.isRead;
+      }
 
       return (
         <div
@@ -143,8 +171,11 @@ const ConversationList = () => {
           />
           <div className={cx("info")}>
             <div className={cx("name-time")}>
-              <h4>{otherUser?.name}</h4>
-              <span>
+              {/* Nếu chưa đọc thì in đậm tên người gửi */}
+              <h4 className={cx({ "unread-text": isUnread })}>
+                {otherUser?.name}
+              </h4>
+              <span className={cx({ "unread-text": isUnread })}>
                 {conv.lastMessage
                   ? new Date(conv.updatedAt).toLocaleTimeString([], {
                       hour: "2-digit",
@@ -153,10 +184,23 @@ const ConversationList = () => {
                   : ""}
               </span>
             </div>
-            <p className={cx("last-message")}>
-              {conv.lastMessage ? conv.lastMessage.content : ""}
+            {/* Nếu chưa đọc thì in đậm nội dung tin nhắn */}
+            <p className={cx("last-message", { "unread-text": isUnread })}>
+              {conv.lastMessage ? (
+                <>
+                  {/* Nếu là mình gửi thì thêm chữ "Bạn: " */}
+                  {isMyMessage ? "Bạn: " : ""}
+                  {conv.lastMessage.text}{" "}
+                  {/* Nhớ dùng .text thay vì .content như đã nói ở trên */}
+                </>
+              ) : (
+                "Chưa có tin nhắn"
+              )}
             </p>
           </div>
+
+          {/* Hiển thị một chấm xanh nhỏ góc phải nếu có tin nhắn chưa đọc */}
+          {isUnread && <div className={cx("unread-dot")}></div>}
         </div>
       );
     });
