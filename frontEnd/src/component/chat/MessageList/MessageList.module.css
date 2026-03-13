@@ -42,6 +42,28 @@
   font-size: 14px;
   line-height: 1.4;
   word-wrap: break-word;
+  display: flex; /* Thêm flex */
+  flex-direction: column; /* Xếp dọc nội dung chữ và thời gian */
+  min-width: 55px; /* Đảm bảo bong bóng đủ rộng để chứa thời gian dù text rất ngắn */
+}
+
+/* Định dạng cho thời gian bên trong bong bóng */
+.msgTimeInside {
+  font-size: 10px; /* Chữ siêu nhỏ */
+  margin-top: 4px; /* Cách chữ phía trên một chút */
+  user-select: none; /* Không cho phép bôi đen thời gian */
+}
+
+/* Màu thời gian cho tin nhắn của MÌNH (trên nền xanh #8ef0d7) */
+.myMsg .msgTimeInside {
+  color: rgba(0, 0, 0, 0.5); /* Đen mờ 50% để nổi bật trên nền xanh */
+  text-align: end;
+}
+
+/* Màu thời gian cho tin nhắn của NGƯỜI KHÁC (trên nền trắng/xám) */
+.otherMsg .msgTimeInside {
+  color: #8e8e93; /* Xám nhạt */
+  text-align: start;
 }
 
 .myMsg .bubble {
@@ -54,4 +76,64 @@
   color: #050505;
   border-bottom-left-radius: 4px;
   border: 1px solid #000;
+}
+
+/* Container chứa trạng thái nằm dưới bong bóng */
+.messageStatus {
+  display: flex;
+  align-items: center;
+  margin-top: 4px; /* Tạo một khoảng cách nhỏ từ bong bóng xuống avatar trạng thái */
+  height: 14px; /* Fix chiều cao để UI không bị giật mạn khi chuyển đổi trạng thái */
+}
+
+/* Định dạng chung cho cả 3 loại Avatar trạng thái */
+.avatarStatus {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  object-fit: cover;
+  transition: all 0.4s ease; /* Chuyển đổi trạng thái mượt mà */
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  display: block;
+}
+
+/* Avatar Vô danh (Đã gửi) */
+.avatarStatus.sent {
+  filter: grayscale(100%) opacity(40%);
+  transform: scale(0.85);
+}
+
+/* Avatar Người nhận tối/mờ (Đã nhận) */
+.avatarStatus.delivered {
+  filter: grayscale(80%) brightness(70%) opacity(70%);
+  transform: scale(0.95);
+}
+
+/* Avatar rực rỡ (Đã xem) */
+.avatarStatus.read {
+  filter: grayscale(0%) brightness(100%) opacity(100%);
+  transform: scale(1);
+  animation: popInAvatar 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes popInAvatar {
+  0% {
+    transform: scale(0.8);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+/* Thanh hiển thị thời gian ngăn cách giữa các cuộc hội thoại (cách 30 phút) */
+.timeSeparator {
+  text-align: center;
+  font-size: 12px;
+  color: #8e8e93; /* Màu xám nhạt để không bị chói mắt */
+  margin: 20px 0 16px 0; /* Tạo khoảng trống ở trên và dưới */
+  user-select: none; /* Không cho phép bôi đen */
+  width: 100%; /* Căn giữa màn hình */
+  font-weight: 500;
 }

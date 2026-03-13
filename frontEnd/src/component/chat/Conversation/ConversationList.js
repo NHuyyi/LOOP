@@ -143,7 +143,7 @@ const ConversationList = () => {
 
       // ---- XỬ LÝ LOGIC TRẠNG THÁI TIN NHẮN ----
       let isMyMessage = false;
-      let isUnread = false;
+      let isUnread = "delivered";
 
       if (conv.lastMessage) {
         // Kiểm tra xem ai là người gửi (so sánh ID người gửi với ID của user đang đăng nhập)
@@ -151,8 +151,8 @@ const ConversationList = () => {
           conv.lastMessage.senderId?._id || conv.lastMessage.senderId;
         isMyMessage = senderId === currentUser._id;
 
-        // Nếu tin nhắn KHÔNG phải do mình gửi VÀ trạng thái isRead là false -> Chưa đọc
-        isUnread = !isMyMessage && !conv.lastMessage.isRead;
+        // Nếu tin nhắn KHÔNG phải do mình gửi VÀ trạng thái status là false -> Chưa đọc
+        isUnread = !isMyMessage && conv.lastMessage.status !== "read";
       }
 
       return (

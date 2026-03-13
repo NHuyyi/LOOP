@@ -11,9 +11,9 @@ exports.markAsRead = async (req, res) => {
       {
         conversationId: conversationId,
         senderId: { $ne: userId },
-        isRead: false,
+        status: { $in: ["sent", "delivered"] },
       },
-      { $set: { isRead: true } },
+      { $set: { status: "read" } },
     );
 
     return res

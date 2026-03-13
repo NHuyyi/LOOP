@@ -18,7 +18,7 @@ function MessageInput() {
   const currentUser = stateUser?.user;
 
   const {
-    conversationList = [],
+    ConversationList = [],
     activeConversationId,
     activeReceiver,
   } = useSelector((state) => state.chat);
@@ -29,13 +29,17 @@ function MessageInput() {
 
     let receiverId = null;
 
+    console.log("activeConversationId:", activeConversationId);
+    console.log("activeReceiver:", activeReceiver);
     if (activeConversationId) {
-      const currentConv = conversationList.find(
+      const currentConv = ConversationList.find(
         (c) => c._id === activeConversationId,
       );
+      console.log("currentConv:", currentConv);
       const receiver = currentConv?.participants.find(
         (p) => p._id !== currentUser?._id,
       );
+      console.log("receiver:", receiver);
       receiverId = receiver?._id;
     } else if (activeReceiver) {
       receiverId = activeReceiver._id;
@@ -47,6 +51,7 @@ function MessageInput() {
       const res = await sendMessage(receiverId, text);
       if (res?.success) {
         const newMessage = res.message;
+        console.log("newMessage:", newMessage);
 
         // ném vào redux để hiển thị lên màng hình ngay lập tức
         dispatch(

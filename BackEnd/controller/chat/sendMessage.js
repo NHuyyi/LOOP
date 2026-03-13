@@ -20,12 +20,14 @@ exports.sendMessage = async (req, res) => {
         participants: [senderId, receiverId],
       });
     }
-
+    const onlineUsers = getOnlineUsers();
+    const initialStatus = onlineUsers[receiverId] ? "delivered" : "sent";
     // tạo tin nhắn mới
     const message = await Message.create({
       conversationId: conversation._id,
       senderId,
       text,
+      status: initialStatus,
     });
 
     // câp nhật trường lastMessage trong Conversation để lưu trữ tin nhắn mới nhất
@@ -34,7 +36,6 @@ exports.sendMessage = async (req, res) => {
 
     //socket.io sẽ lắng nghe sự kiện "newMessage" và gửi tin nhắn mới đến người nhận
     const io = getIO();
-    const onlineUsers = getOnlineUsers();
     if (onlineUsers[receiverId]) {
       io.to(onlineUsers[receiverId]).emit("newMessage", {
         conversationId: conversation._id,

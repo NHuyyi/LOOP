@@ -17,9 +17,10 @@ const MessageSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    isRead: {
-      type: Boolean,
-      default: false,
+    status: {
+      type: String,
+      enum: ["sent", "delivered", "read"], // sent: đã gửi, delivered: đã nhận, read: đã xem, deleted: đã xóa
+      default: "sent",
     },
     isdeleted: {
       type: Boolean,

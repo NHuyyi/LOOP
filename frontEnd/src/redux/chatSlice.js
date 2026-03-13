@@ -53,6 +53,7 @@ const chatSlice = createSlice({
     },
     // khi đang mở khung chat mà có tin nhắn mới
     addMessage: (state, action) => {
+      console.log("Dữ liệu nhận được:", action.payload);
       if (state.activeConversationId === action.payload.conversationId) {
         state.currentMessages.push(action.payload.message); // thêm tin nhắn mới vào cuối danh sách
       }
@@ -122,9 +123,9 @@ const chatSlice = createSlice({
           conversation.lastMessage.senderId?._id ||
           conversation.lastMessage.senderId;
 
-        // Nếu tin nhắn cuối KHÔNG phải do mình gửi thì đổi isRead = true
+        // Nếu tin nhắn cuối KHÔNG phải do mình gửi thì đổi status = "read"
         if (senderId !== currentUserId) {
-          conversation.lastMessage.isRead = true;
+          conversation.lastMessage.status = "read";
         }
       }
     },
