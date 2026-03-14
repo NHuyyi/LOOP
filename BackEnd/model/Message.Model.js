@@ -26,6 +26,20 @@ const MessageSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    reactions: [
+      {
+        userId: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "User",
+          required: true,
+        },
+        type: {
+          type: String,
+          enum: ["like", "love", "haha", "wow", "sad", "angry"], // Bạn có thể tùy chỉnh danh sách này
+          required: true,
+        },
+      },
+    ],
   },
   { timestamps: true },
 );

@@ -137,3 +137,71 @@
   width: 100%; /* Căn giữa màn hình */
   font-weight: 500;
 }
+/* ... (Giữ nguyên phần code cũ của bạn ở trên) ... */
+
+/* =========================================================
+   CSS CHO TÍNH NĂNG REACTION (MESSENGER STYLE)
+   ========================================================= */
+
+/* Dòng chứa tin nhắn (để bắt sự kiện hover) */
+.msgRow {
+  position: relative;
+}
+
+/* KHU VỰC NÚT THÊM CẢM XÚC (ẨN ĐI, CHỈ HIỆN KHI HOVER) */
+.reactActionArea {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+
+  opacity: 0;
+  /* visibility: hidden; */
+
+  transition: all 0.2s ease-in-out;
+  z-index: 5;
+}
+
+/* Tin nhắn của mình: Nút nằm bên TRÁI bong bóng */
+.actionLeft {
+  left: 12px;
+}
+
+/* Tin nhắn người khác: Nút nằm bên PHẢI bong bóng */
+.actionRight {
+  right: 12px;
+}
+
+/* Hiện nút khi rê chuột vào dòng tin nhắn */
+.bubble:hover .reactActionArea {
+  /* visibility: static; */
+  cursor: text;
+}
+.reactActionArea:focus-within,
+.reactActionArea:active {
+  visibility: visible;
+}
+
+/* KHU VỰC HIỂN THỊ CÁC ICON ĐÃ ĐƯỢC THẢ (ĐÈ DƯỚI BONG BÓNG) */
+.reactionsSummary {
+  position: absolute;
+  bottom: -12px; /* Kéo đè xuống mép dưới của bong bóng */
+  background: white;
+  padding: 2px 4px;
+  border-radius: 12px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+  display: flex;
+  align-items: center;
+  z-index: 4;
+  border: 1px solid #f0f2f5;
+  cursor: pointer;
+}
+
+/* Nếu là tin nhắn của mình: Hiển thị đè ở mép dưới bên PHẢI */
+.summaryRight {
+  right: 12px;
+}
+
+/* Nếu là tin nhắn người khác: Hiển thị đè ở mép dưới bên TRÁI */
+.summaryLeft {
+  left: 12px;
+}

@@ -4,6 +4,7 @@ import classNames from "classnames/bind";
 import { useSelector, useDispatch } from "react-redux";
 import { getMessages } from "../../../services/chat/getMessages";
 import { loadMoreMessages } from "../../../redux/chatSlice";
+import MessageReaction from "../MessageReaction/MessageReaction";
 
 const cx = classNames.bind(styles);
 
@@ -146,6 +147,10 @@ function MessageList() {
             }
           }
         }
+
+        const myReaction = msg.reactions?.find(
+          (r) => (r.userId?._id || r.userId) === currentUser?._id,
+        )?.type;
         return (
           // Dùng React.Fragment vì bây giờ mỗi vòng lặp có thể trả về 2 phần tử (Dải phân cách + Tin nhắn)
           <React.Fragment key={msg._id || index}>
@@ -177,10 +182,14 @@ function MessageList() {
                 className={cx("messageContent")}
                 onClick={() => isMyMessage && handleMsgClick(msg._id)}
                 style={{
+                  position: "relative", // Quan trọng: Để đặt các nút reaction tuyệt đối theo bong bóng
                   cursor: isMyMessage ? "pointer" : "default",
                   display: "flex",
                   flexDirection: "column",
                   alignItems: isMyMessage ? "flex-end" : "flex-start",
+                  // Tạo khoảng cách dưới nếu tin nhắn này có reaction để không bị lẹm
+                  marginBottom:
+                    msg.reactions && msg.reactions.length > 0 ? "16px" : "4px",
                 }}
               >
                 <div className={cx("bubble")}>
@@ -228,6 +237,18 @@ function MessageList() {
                     )}
                   </div>
                 )}
+                {/* --- NÚT THÊM CẢM XÚC ĐÈ GÓC --- */}
+                <div
+                  className={cx(
+                    "reactActionArea",
+                    isMyMessage ? "actionLeft" : "actionRight",
+                  )}
+                >
+                  <MessageReaction
+                    messageId={msg._id}
+                    initialReaction={myReaction}
+                  />
+                </div>
               </div>
             </div>
           </React.Fragment>

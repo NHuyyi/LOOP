@@ -129,6 +129,18 @@ const chatSlice = createSlice({
         }
       }
     },
+
+    UpdateReactionMessage: (state, action) => {
+      const { messageId, reactions, conversationId } = action.payload;
+      if (state.activeConversationId === conversationId) {
+        const msgIndex = state.currentMessages.findIndex(
+          (m) => m._id === messageId,
+        );
+        if (msgIndex !== -1) {
+          state.currentMessages[msgIndex].reactions = reactions;
+        }
+      }
+    },
   },
 });
 
