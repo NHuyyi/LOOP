@@ -106,7 +106,8 @@ function MessageList() {
 
       {currentMessages.map((msg, index) => {
         // kiểm tra người gửi là ai
-        const isMyMessage = msg.senderId?._id === currentUser?._id;
+        const isMyMessage =
+          (msg.senderId?._id || msg.senderId) === currentUser?._id;
 
         // Điều kiện hiển thị trạng thái
         const showStatus = activeStatusId === msg._id;
