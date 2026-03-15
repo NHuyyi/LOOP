@@ -37,6 +37,7 @@
 }
 
 .bubble {
+  position: relative;
   padding: 8px 12px;
   border-radius: 18px;
   font-size: 14px;
@@ -143,22 +144,16 @@
    CSS CHO TÍNH NĂNG REACTION (MESSENGER STYLE)
    ========================================================= */
 
-/* Dòng chứa tin nhắn (để bắt sự kiện hover) */
-.msgRow {
-  position: relative;
-}
-
 /* KHU VỰC NÚT THÊM CẢM XÚC (ẨN ĐI, CHỈ HIỆN KHI HOVER) */
 .reactActionArea {
   position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
 
   opacity: 0;
   /* visibility: hidden; */
 
   transition: all 0.2s ease-in-out;
   z-index: 5;
+  bottom: -8px;
 }
 
 /* Tin nhắn của mình: Nút nằm bên TRÁI bong bóng */
@@ -173,7 +168,8 @@
 
 /* Hiện nút khi rê chuột vào dòng tin nhắn */
 .bubble:hover .reactActionArea {
-  /* visibility: static; */
+  visibility: visible;
+  opacity: 1;
   cursor: text;
 }
 .reactActionArea:focus-within,

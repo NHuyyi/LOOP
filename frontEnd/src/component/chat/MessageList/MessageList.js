@@ -201,6 +201,18 @@ function MessageList() {
                       {formatTime(msg.createdAt || msg.updatedAt)}
                     </span>
                   )}
+                  {/* --- NÚT THÊM CẢM XÚC ĐÈ GÓC --- */}
+                  <div
+                    className={cx(
+                      "reactActionArea",
+                      isMyMessage ? "actionLeft" : "actionRight",
+                    )}
+                  >
+                    <MessageReaction
+                      messageId={msg._id}
+                      initialReaction={myReaction}
+                    />
+                  </div>
                 </div>
 
                 {isMyMessage && showStatus && (
@@ -237,18 +249,6 @@ function MessageList() {
                     )}
                   </div>
                 )}
-                {/* --- NÚT THÊM CẢM XÚC ĐÈ GÓC --- */}
-                <div
-                  className={cx(
-                    "reactActionArea",
-                    isMyMessage ? "actionLeft" : "actionRight",
-                  )}
-                >
-                  <MessageReaction
-                    messageId={msg._id}
-                    initialReaction={myReaction}
-                  />
-                </div>
               </div>
             </div>
           </React.Fragment>

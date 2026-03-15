@@ -5,8 +5,8 @@
 }
 
 /* Nút mặt cười mặc định (Nằm đè 1 góc) */
-.main-button {
-  background: white;
+main-button {
+  background: rgb(222, 9, 9) !important;
   border: 2px solid #e5e5e5;
   cursor: pointer;
   font-size: 16px;
