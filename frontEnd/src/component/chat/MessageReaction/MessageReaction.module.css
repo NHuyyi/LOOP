@@ -5,12 +5,12 @@
 }
 
 /* Nút mặt cười mặc định (Nằm đè 1 góc) */
-main-button {
-  background: rgb(222, 9, 9) !important;
+.main-button {
+  background: white;
   border: 2px solid #e5e5e5;
   cursor: pointer;
   font-size: 16px;
-  padding: 6px;
+  padding: 4px;
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -28,19 +28,28 @@ main-button {
 /* MENU HIỂN THỊ CẢM XÚC (KIỂU MESSENGER) */
 .reaction-menu {
   position: absolute;
-  bottom: calc(100% + 12px); /* Nổi hẳn lên trên nút mặt cười */
-  left: 50%;
-  transform: translateX(-50%);
+  bottom: calc(100% + 12px);
   background: white;
-  border-radius: 40px; /* Bo tròn dạng viên thuốc */
-  padding: 8px 14px; /* Rộng rãi hơn */
+  border-radius: 40px;
+  padding: 8px 14px;
   display: flex;
   gap: 12px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15); /* Đổ bóng sâu hơn */
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
   z-index: 999;
-  /* Hoạt ảnh nảy lên nhẹ nhàng */
   animation: scaleUp 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   width: max-content;
+}
+
+/* Dành cho tin nhắn của MÌNH (Bên phải) */
+.menu-right {
+  right: -10px;
+  transform-origin: bottom right; /* Hiệu ứng nảy lên từ góc phải dưới */
+}
+
+/* Dành cho tin nhắn của NGƯỜI KHÁC (Bên trái) */
+.menu-left {
+  left: -10px;
+  transform-origin: bottom left; /* Hiệu ứng nảy lên từ góc trái dưới */
 }
 
 /* Các Icon cảm xúc trong Menu */
@@ -62,18 +71,7 @@ main-button {
 }
 
 .reaction-item.active {
-  background-color: rgba(0, 0, 0, 0.05);
-  border-radius: 50%;
-}
-
-/* Keyframe hoạt ảnh mở menu */
-@keyframes scaleUp {
-  from {
-    opacity: 0;
-    transform: translate(-50%, 15px) scale(0.7);
-  }
-  to {
-    opacity: 1;
-    transform: translate(-50%, 0) scale(1);
-  }
+  background: linear-gradient(to right, #e389f9, #4dfff3);
+  border-radius: 8px;
+  position: relative;
 }

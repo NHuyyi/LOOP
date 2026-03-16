@@ -1,5 +1,5 @@
 import React, { useState, useRef } from "react";
-import classNames from "classnames";
+import classNames from "classnames/bind";
 import styles from "./MessageReaction.module.css";
 
 import { reactMessage } from "../../../services/chat/reactMessage";
@@ -16,7 +16,7 @@ import {
 
 const cx = classNames.bind(styles);
 
-function MessageReaction({ messageId, initialReaction }) {
+function MessageReaction({ messageId, initialReaction, isMine }) {
   const [currentReaction, setCurrentReaction] = useState(
     initialReaction || null,
   );
@@ -102,7 +102,9 @@ function MessageReaction({ messageId, initialReaction }) {
       </button>
 
       {showMenu && (
-        <div className={cx("reaction-menu")}>
+        <div
+          className={cx("reaction-menu", isMine ? "menu-right" : "menu-left")}
+        >
           {reactions.map((reaction) => (
             <button
               key={reaction.type}

@@ -211,6 +211,7 @@ function MessageList() {
                     <MessageReaction
                       messageId={msg._id}
                       initialReaction={myReaction}
+                      isMine={isMyMessage}
                     />
                   </div>
                 </div>
