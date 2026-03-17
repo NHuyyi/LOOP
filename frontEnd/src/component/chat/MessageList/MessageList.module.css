@@ -172,6 +172,11 @@
   opacity: 1;
   cursor: text;
 }
+
+.reactActionArea.alwaysShow {
+  visibility: visible;
+  opacity: 1;
+}
 .reactActionArea:focus-within,
 .reactActionArea:active {
   visibility: visible;

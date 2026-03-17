@@ -16,7 +16,12 @@ import {
 
 const cx = classNames.bind(styles);
 
-function MessageReaction({ messageId, initialReaction, isMine }) {
+function MessageReaction({
+  messageId,
+  initialReaction,
+  isMine,
+  onReactionChange,
+}) {
   const [currentReaction, setCurrentReaction] = useState(
     initialReaction || null,
   );
@@ -39,6 +44,10 @@ function MessageReaction({ messageId, initialReaction, isMine }) {
       setCurrentReaction(newReaction);
       setShowMenu(false);
 
+      // BÁO CHO COMPONENT CHA (MessageList) BIẾT TRẠNG THÁI MỚI
+      if (onReactionChange) {
+        onReactionChange(newReaction);
+      }
       const res = await reactMessage(messageId, type);
 
       if (!res.success) {

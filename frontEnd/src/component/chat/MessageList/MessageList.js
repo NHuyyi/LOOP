@@ -57,6 +57,15 @@ function MessageList() {
   // 1. Chỉ dùng state để lưu ID tin nhắn mà người dùng CHỦ ĐỘNG CLICK (mặc định chưa click gì thì là null)
   const [clickedMsgId, setClickedMsgId] = useState(null);
 
+  const [localReactions, setLocalReactions] = useState({});
+
+  const handleReactionChange = (msgId, reactionType) => {
+    setLocalReactions((prev) => ({
+      ...prev,
+      [msgId]: reactionType,
+    }));
+  };
+
   // 2. Tự động tính toán ID của tin nhắn mặc định (Tin cuối cùng của mảng)
   const lastMessage = currentMessages[currentMessages.length - 1];
   const isLastMessageMine =
@@ -151,6 +160,11 @@ function MessageList() {
         const myReaction = msg.reactions?.find(
           (r) => (r.userId?._id || r.userId) === currentUser?._id,
         )?.type;
+
+        const finalReaction =
+          localReactions[msg._id] !== undefined
+            ? localReactions[msg._id]
+            : myReaction;
         return (
           // Dùng React.Fragment vì bây giờ mỗi vòng lặp có thể trả về 2 phần tử (Dải phân cách + Tin nhắn)
           <React.Fragment key={msg._id || index}>
@@ -206,6 +220,7 @@ function MessageList() {
                     className={cx(
                       "reactActionArea",
                       isMyMessage ? "actionLeft" : "actionRight",
+                      { alwaysShow: finalReaction },
                     )}
                   >
                     <MessageReaction
