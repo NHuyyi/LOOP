@@ -226,7 +226,11 @@ function MessageList() {
                     <MessageReaction
                       messageId={msg._id}
                       initialReaction={myReaction}
+                      allReactions={msg.reactions || []}
                       isMine={isMyMessage}
+                      onReactionChange={(type) =>
+                        handleReactionChange(msg._id, type)
+                      }
                     />
                   </div>
                 </div>

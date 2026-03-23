@@ -10,6 +10,7 @@ exports.getMessages = async (req, res) => {
 
     const messages = await Message.find({ conversationId })
       .populate("senderId", "name avatar")
+      .populate("reactions.userId", "name avatar")
       .sort({ createdAt: -1 })
       .skip(skip)
       .limit(limit);

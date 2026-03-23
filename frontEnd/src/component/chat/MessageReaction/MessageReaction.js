@@ -19,6 +19,7 @@ const cx = classNames.bind(styles);
 function MessageReaction({
   messageId,
   initialReaction,
+  allReactions,
   isMine,
   onReactionChange,
 }) {
@@ -26,6 +27,7 @@ function MessageReaction({
     initialReaction || null,
   );
   const [showMenu, setShowMenu] = useState(false);
+  const [showInfo, setShowInfo] = useState(false);
   const closeTimer = useRef(null);
 
   const reactions = [
@@ -95,6 +97,13 @@ function MessageReaction({
       handleReaction(currentReaction);
     }
   };
+  let countReactions = "";
+  if (allReactions && allReactions.length === 2) {
+    countReactions = "2";
+  } else {
+    // Nếu bạn muốn hiện số 1 thì sửa ở đây, không thì để trống
+    countReactions = "";
+  }
 
   return (
     <div
@@ -105,10 +114,105 @@ function MessageReaction({
       <button
         className={cx("main-button", { hasReaction: currentReaction })}
         style={{ color: currentReactionObj.color }}
-        onClick={handleMainClick}
+        onClick={(e) => {
+          e.stopPropagation();
+          if (currentReaction) {
+            setShowInfo(!showInfo); // Nếu đã có reaction thì click để xem thông tin
+            setShowMenu(false);
+          } else {
+            handleMainClick(); // Nếu chưa có thì thả cảm xúc
+          }
+        }}
       >
+        {countReactions !== "" && (
+          <span
+            style={{
+              fontSize: "12px",
+              marginRight: "4px",
+              fontWeight: "bold",
+              color: "#666",
+            }}
+          >
+            {countReactions}
+          </span>
+        )}
         {currentReactionObj.icon}
       </button>
+
+      {/* BẢNG HIỂN THỊ THÔNG TIN KHI CLICK */}
+      {showInfo && currentReaction && (
+        <div
+          style={{
+            position: "absolute",
+            bottom: "100%", // Nổi lên trên nút
+            marginBottom: "8px",
+            right: isMine ? 0 : "auto",
+            left: isMine ? "auto" : 0,
+            backgroundColor: "#fff",
+            boxShadow: "0px 2px 10px rgba(0,0,0,0.15)",
+            borderRadius: "8px",
+            zIndex: 100,
+            display: "flex",
+            flexDirection: "column",
+            border: "1px solid #eaeaea",
+            padding: "10px 16px", // Tăng khoảng trống bên trong khung (trên/dưới 10px, trái/phải 16px)
+            minWidth: "max-content", // Tự động giãn chiều rộng cho vừa khít với tên dài nhất
+            whiteSpace: "nowrap", // Ngăn không cho chữ (tên người dùng) bị ép xuống dòng
+            gap: "12px", // Tăng khoảng cách giữa các dòng người dùng với nhau
+          }}
+        >
+          {/* Dùng .map để lặp qua mảng allReactions và in ra từng người */}
+          {allReactions &&
+            allReactions.map((r, index) => {
+              // Tìm thông tin màu sắc/icon tương ứng với cảm xúc của người này
+              const userReactionObj = reactions.find(
+                (item) => item.type === r.type,
+              );
+
+              return (
+                <div
+                  key={index}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "8px",
+                    justifyContent: "space-between",
+                  }}
+                >
+                  <span>
+                    <img
+                      src={
+                        r.userId?.avatar ||
+                        "https://res.cloudinary.com/dpym64zg9/image/upload/v1755614090/raw_cq4nqn.png"
+                      }
+                      alt="avatar"
+                      style={{
+                        width: "30px",
+                        height: "30px",
+                        borderRadius: "50%",
+                        objectFit: "cover",
+                      }}
+                    />
+                  </span>
+
+                  {/* Hiển thị tên (Có dấu ? để tránh lỗi nếu API chưa kịp trả về) */}
+                  <span style={{ fontSize: "13px", fontWeight: "500" }}>
+                    {r.userId?.name || "Đang tải..."}
+                  </span>
+                  <span
+                    style={{
+                      color: userReactionObj?.color,
+                      fontSize: "16px",
+                      display: "flex",
+                    }}
+                  >
+                    {userReactionObj?.icon}
+                  </span>
+                </div>
+              );
+            })}
+        </div>
+      )}
 
       {showMenu && (
         <div

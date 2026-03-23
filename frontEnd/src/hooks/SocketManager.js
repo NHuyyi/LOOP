@@ -24,6 +24,7 @@ import {
   addMessage,
   updateLastMessage,
   OpenMiniChat,
+  UpdateReactionMessage,
 } from "../redux/chatSlice";
 
 import { useLocation } from "react-router-dom";
@@ -155,6 +156,11 @@ function SocketManager() {
               conversationId: conversationId,
             }),
           );
+
+          socket.on("UpdateReactionMessage", (data) => {
+            dispatch(UpdateReactionMessage(data));
+            console.log("Dữ liệu nhận được từ server:", data);
+          });
         }
 
         // mở minichat khi không ở trang chat chính mà có người gửi tin nhắn đến

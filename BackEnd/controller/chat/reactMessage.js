@@ -27,16 +27,24 @@ exports.reactMessage = async (req, res) => {
     }
 
     await message.save();
-
+    await message.populate("reactions.userId", "name avatar");
     // gửi socket
-    const onlineUsers = getOnlineUsers();
     const io = getIO();
+    onlineUsers = getOnlineUsers();
+    if (conversation && conversation.participants) {
+      conversation.participants.forEach((participantId) => {
+        const socketId = onlineUsers[participantId.toString()];
 
-    io.emit("UpdateReactionMessage", {
-      messageId,
-      reactions: message.reactions,
-      conversationId: message.conversationId,
-    });
+        // Nếu user này đang online thì gửi data đích danh đến socketId của họ
+        if (socketId) {
+          io.to(socketId).emit("UpdateReactionMessage", {
+            messageId,
+            reactions: message.reactions,
+            conversationId: message.conversationId,
+          });
+        }
+      });
+    }
 
     return res
       .status(200)
