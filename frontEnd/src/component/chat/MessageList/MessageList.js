@@ -4,7 +4,8 @@ import classNames from "classnames/bind";
 import { useSelector, useDispatch } from "react-redux";
 import { getMessages } from "../../../services/chat/getMessages";
 import { loadMoreMessages } from "../../../redux/chatSlice";
-import MessageReaction from "../MessageReaction/MessageReaction";
+import ReactionStatus from "../ReactionStatus/ReactionStatus";
+import ReactionPicker from "../ReactionPicker/ReactionPicker";
 
 const cx = classNames.bind(styles);
 
@@ -56,15 +57,6 @@ function MessageList() {
   };
   // 1. Chỉ dùng state để lưu ID tin nhắn mà người dùng CHỦ ĐỘNG CLICK (mặc định chưa click gì thì là null)
   const [clickedMsgId, setClickedMsgId] = useState(null);
-
-  const [localReactions, setLocalReactions] = useState({});
-
-  const handleReactionChange = (msgId, reactionType) => {
-    setLocalReactions((prev) => ({
-      ...prev,
-      [msgId]: reactionType,
-    }));
-  };
 
   // 2. Tự động tính toán ID của tin nhắn mặc định (Tin cuối cùng của mảng)
   const lastMessage = currentMessages[currentMessages.length - 1];
@@ -119,6 +111,10 @@ function MessageList() {
         const isMyMessage =
           (msg.senderId?._id || msg.senderId) === currentUser?._id;
 
+        // Tìm reaction của user hiện tại từ danh sách activeReactions
+        const myReaction = msg.reactions?.find(
+          (r) => (r.userId?._id || r.userId) === currentUser?._id,
+        )?.type;
         // Điều kiện hiển thị trạng thái
         const showStatus = activeStatusId === msg._id;
 
@@ -157,14 +153,6 @@ function MessageList() {
           }
         }
 
-        const myReaction = msg.reactions?.find(
-          (r) => (r.userId?._id || r.userId) === currentUser?._id,
-        )?.type;
-
-        const finalReaction =
-          localReactions[msg._id] !== undefined
-            ? localReactions[msg._id]
-            : myReaction;
         return (
           // Dùng React.Fragment vì bây giờ mỗi vòng lặp có thể trả về 2 phần tử (Dải phân cách + Tin nhắn)
           <React.Fragment key={msg._id || index}>
@@ -216,21 +204,19 @@ function MessageList() {
                     </span>
                   )}
                   {/* --- NÚT THÊM CẢM XÚC ĐÈ GÓC --- */}
-                  <div
-                    className={cx(
-                      "reactActionArea",
-                      isMyMessage ? "actionLeft" : "actionRight",
-                      { alwaysShow: finalReaction },
-                    )}
-                  >
-                    <MessageReaction
-                      messageId={msg._id}
-                      initialReaction={myReaction}
-                      allReactions={msg.reactions || []}
+                  <div className={cx("status-wrapper")}>
+                    <ReactionStatus
+                      allReactions={msg.reactions}
                       isMine={isMyMessage}
-                      onReactionChange={(type) =>
-                        handleReactionChange(msg._id, type)
-                      }
+                    />
+                  </div>
+
+                  {/* Nút để chọn thêm reaction (thường ẩn, hiện khi hover vào bubble) */}
+                  <div className={cx("picker-wrapper")}>
+                    <ReactionPicker
+                      messageId={msg._id}
+                      currentReaction={myReaction}
+                      isMine={isMyMessage}
                     />
                   </div>
                 </div>

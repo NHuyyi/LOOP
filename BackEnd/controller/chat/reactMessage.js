@@ -1,4 +1,5 @@
 const Message = require("../../model/Message.Model");
+const Conversation = require("../../model/Conversation.Model");
 const { getIO, getOnlineUsers } = require("../../config/socker");
 
 exports.reactMessage = async (req, res) => {
@@ -13,7 +14,7 @@ exports.reactMessage = async (req, res) => {
 
     // tìm user đã react chưa
     const existingIndex = message.reactions.findIndex(
-      (reaction) => reaction.userId.toString() === userId,
+      (reaction) => reaction.userId.toString() === userId.toString(),
     );
 
     if (existingIndex !== -1) {
@@ -27,28 +28,35 @@ exports.reactMessage = async (req, res) => {
     }
 
     await message.save();
-    await message.populate("reactions.userId", "name avatar");
-    // gửi socket
-    const io = getIO();
-    onlineUsers = getOnlineUsers();
-    if (conversation && conversation.participants) {
-      conversation.participants.forEach((participantId) => {
-        const socketId = onlineUsers[participantId.toString()];
+    const populatedMessage = await message.populate(
+      "reactions.userId",
+      "name avatar",
+    );
 
-        // Nếu user này đang online thì gửi data đích danh đến socketId của họ
-        if (socketId) {
-          io.to(socketId).emit("UpdateReactionMessage", {
-            messageId,
-            reactions: message.reactions,
-            conversationId: message.conversationId,
-          });
+    const conversation = await Conversation.findById(message.conversationId);
+    // gửi socket
+    if (conversation && conversation.participants) {
+      const io = getIO();
+      const onlineUsers = getOnlineUsers();
+
+      conversation.participants.forEach((participantId) => {
+        // Chỉ gửi socket cho đối phương, KHÔNG gửi ngược lại cho người vừa bấm
+        if (participantId.toString() !== userId.toString()) {
+          const socketId = onlineUsers[participantId.toString()];
+          if (socketId) {
+            io.to(socketId).emit("UpdateReactionMessage", {
+              messageId: message._id.toString(),
+              reactions: populatedMessage.reactions,
+              conversationId: message.conversationId.toString(),
+            });
+          }
         }
       });
     }
 
     return res
       .status(200)
-      .json({ success: true, reactions: message.reactions });
+      .json({ success: true, reactions: populatedMessage.reactions });
   } catch (err) {
     return res.status(500).json({ message: "Lỗi server", success: false });
   }

@@ -39,7 +39,7 @@ exports.sendMessage = async (req, res) => {
     if (onlineUsers[receiverId]) {
       io.to(onlineUsers[receiverId]).emit("newMessage", {
         conversationId: conversation._id,
-        message: await message.populate("senderIId", "name avatar"),
+        message: await message.populate("senderId", "name avatar"),
       });
     }
 

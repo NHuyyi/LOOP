@@ -156,11 +156,6 @@ function SocketManager() {
               conversationId: conversationId,
             }),
           );
-
-          socket.on("UpdateReactionMessage", (data) => {
-            dispatch(UpdateReactionMessage(data));
-            console.log("Dữ liệu nhận được từ server:", data);
-          });
         }
 
         // mở minichat khi không ở trang chat chính mà có người gửi tin nhắn đến
@@ -173,6 +168,11 @@ function SocketManager() {
             }),
           );
         }
+      });
+
+      socket.on("UpdateReactionMessage", (data) => {
+        dispatch(UpdateReactionMessage(data));
+        console.log("Dữ liệu nhận được từ server:", data);
       });
     }
 
@@ -189,6 +189,9 @@ function SocketManager() {
       socket.off("postEdited");
       socket.off("postVisibilityChanged");
       socket.off("newMessage");
+      socket.off("UpdateReactComment");
+      socket.off("commentUpdated");
+      socket.off("UpdateReactionMessage");
     };
   }, [currentUser, dispatch, location.pathname]);
 

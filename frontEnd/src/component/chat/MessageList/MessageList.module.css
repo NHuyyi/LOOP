@@ -166,43 +166,35 @@
   right: 2px;
 }
 
-/* Hiện nút khi rê chuột vào dòng tin nhắn */
-.bubble:hover .reactActionArea {
-  visibility: visible;
-  opacity: 1;
-  cursor: text;
-}
-
-.reactActionArea.alwaysShow {
-  visibility: visible;
-  opacity: 1;
-}
-.reactActionArea:focus-within,
-.reactActionArea:active {
-  visibility: visible;
-}
-
-/* KHU VỰC HIỂN THỊ CÁC ICON ĐÃ ĐƯỢC THẢ (ĐÈ DƯỚI BONG BÓNG) */
-.reactionsSummary {
+/* Khu vực hiển thị nút cười (Picker) - Thường hiện khi hover vào tin nhắn */
+.picker-wrapper {
   position: absolute;
-  bottom: -12px; /* Kéo đè xuống mép dưới của bong bóng */
-  background: white;
-  padding: 2px 4px;
-  border-radius: 12px;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
-  display: flex;
-  align-items: center;
-  z-index: 4;
-  border: 1px solid #f0f2f5;
-  cursor: pointer;
+  top: 50%;
+  transform: translateY(-50%);
+  opacity: 0;
+  transition: opacity 0.2s;
 }
 
-/* Nếu là tin nhắn của mình: Hiển thị đè ở mép dưới bên PHẢI */
-.summaryRight {
-  right: 12px;
+.myMsg .picker-wrapper {
+  left: -35px;
+}
+.otherMsg .picker-wrapper {
+  right: -35px;
 }
 
-/* Nếu là tin nhắn người khác: Hiển thị đè ở mép dưới bên TRÁI */
-.summaryLeft {
-  left: 12px;
+.messageContent:hover .picker-wrapper {
+  opacity: 1;
+}
+
+/* Vị trí của bong bóng tổng hợp reaction */
+.status-wrapper {
+  position: absolute;
+  bottom: -10px;
+}
+
+.myMsg .status-wrapper {
+  left: 8px;
+}
+.otherMsg .status-wrapper {
+  left: 8px;
 }

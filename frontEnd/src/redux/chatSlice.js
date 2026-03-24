@@ -131,9 +131,11 @@ const chatSlice = createSlice({
 
     UpdateReactionMessage: (state, action) => {
       const { messageId, reactions, conversationId } = action.payload;
-      if (state.activeConversationId === conversationId) {
+
+      // So sánh dạng chuỗi để tránh lỗi 1 bên là Object, 1 bên là String
+      if (String(state.activeConversationId) === String(conversationId)) {
         const msgIndex = state.currentMessages.findIndex(
-          (m) => m._id === messageId,
+          (m) => String(m._id) === String(messageId),
         );
         if (msgIndex !== -1) {
           state.currentMessages[msgIndex].reactions = reactions;
