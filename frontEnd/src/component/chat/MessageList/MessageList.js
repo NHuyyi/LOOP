@@ -242,6 +242,7 @@ function MessageList() {
                         className={cx("avatarStatus", "delivered")}
                       />
                     )}
+                    {console.log(msg.status)}
                     {msg.status === "read" && (
                       <img
                         title="Đã xem"

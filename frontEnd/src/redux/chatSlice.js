@@ -1,4 +1,4 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, current } from "@reduxjs/toolkit";
 
 const initialState = {
   ConversationList: [], // lưu trữ danh sách bạn bè đã chat + tin nhắn cuối cùng
@@ -115,16 +115,37 @@ const chatSlice = createSlice({
       const conversation = state.ConversationList.find(
         (c) => c._id === conversationId,
       );
+      // Xem kết quả tìm được
+      if (conversation) {
+        console.log("TÌM THẤY:", current(conversation));
+      } else {
+        console.log("KHÔNG TÌM THẤY CONVERSATION VỚI ID:", conversationId);
+      }
 
       // Nếu có tin nhắn cuối
       if (conversation && conversation.lastMessage) {
         const senderId =
           conversation.lastMessage.senderId?._id ||
           conversation.lastMessage.senderId;
-
         // Nếu tin nhắn cuối KHÔNG phải do mình gửi thì đổi status = "read"
         if (senderId !== currentUserId) {
           conversation.lastMessage.status = "read";
+          console.log("conversation:", conversation.lastMessage.status);
+        }
+        // Chỉ cập nhật nếu khung chat hiện tại đang mở đúng vào conversation vừa được đọc
+        if (String(state.activeConversationId) === String(conversationId)) {
+          state.currentMessages.forEach((msg) => {
+            const msgSenderId = msg.senderId?._id || msg.senderId;
+
+            // Nếu tin nhắn này do MÌNH gửi (tức là ID người gửi khác với ID của người đọc)
+            // và trạng thái chưa phải là "read", thì chuyển thành "read"
+            if (
+              String(msgSenderId) !== String(currentUserId) &&
+              msg.status !== "read"
+            ) {
+              msg.status = "read";
+            }
+          });
         }
       }
     },

@@ -5,8 +5,13 @@ import { Send, Image, Smile } from "lucide-react";
 import { useSelector, useDispatch } from "react-redux";
 
 import { sendMessage } from "../../../services/chat/sendMessage";
-import { addMessage, updateLastMessage } from "../../../redux/chatSlice";
+import {
+  addMessage,
+  updateLastMessage,
+  markConversationAsRead,
+} from "../../../redux/chatSlice";
 import { updateChatInFilteredFriends } from "../../../redux/friendSlice";
+import { markAsRead } from "../../../services/chat/markAsRead";
 
 const cx = classNames.bind(styles);
 
@@ -21,25 +26,55 @@ function MessageInput() {
     ConversationList = [],
     activeConversationId,
     activeReceiver,
+    currentMessages,
   } = useSelector((state) => state.chat);
 
+  const handleFocus = async () => {
+    // Nếu chưa có cuộc trò chuyện nào hoặc không có tin nhắn thì bỏ qua
+    if (
+      !activeConversationId ||
+      !currentMessages ||
+      currentMessages.length === 0
+    )
+      return;
+
+    // Lấy tin nhắn cuối cùng trong mảng
+    const lastMsg = currentMessages[currentMessages.length - 1];
+    const senderId = lastMsg.senderId?._id || lastMsg.senderId;
+
+    // KẾT HỢP ĐIỀU KIỆN:
+    // - Người gửi tin nhắn cuối KHÔNG phải là mình
+    // - Trạng thái của tin nhắn chưa phải là "read"
+    if (
+      String(senderId) !== String(currentUser?._id) &&
+      lastMsg.status !== "read"
+    ) {
+      try {
+        // GỌI API BÁO ĐÃ XEM LÊN SERVER
+        await markAsRead(activeConversationId);
+        dispatch(
+          markConversationAsRead({
+            conversationId: activeConversationId,
+          }),
+        );
+      } catch (error) {
+        console.error("Lỗi khi cập nhật trạng thái đã xem:", error);
+      }
+    }
+  };
   const handleSend = async (e) => {
     e.preventDefault();
     if (!text.trim()) return;
 
     let receiverId = null;
 
-    console.log("activeConversationId:", activeConversationId);
-    console.log("activeReceiver:", activeReceiver);
     if (activeConversationId) {
       const currentConv = ConversationList.find(
         (c) => c._id === activeConversationId,
       );
-      console.log("currentConv:", currentConv);
       const receiver = currentConv?.participants.find(
         (p) => p._id !== currentUser?._id,
       );
-      console.log("receiver:", receiver);
       receiverId = receiver?._id;
     } else if (activeReceiver) {
       receiverId = activeReceiver._id;
@@ -51,7 +86,6 @@ function MessageInput() {
       const res = await sendMessage(receiverId, text);
       if (res?.success) {
         const newMessage = res.message;
-        console.log("newMessage:", newMessage);
 
         // ném vào redux để hiển thị lên màng hình ngay lập tức
         dispatch(
@@ -99,6 +133,7 @@ function MessageInput() {
         className={cx("textInput")}
         value={text}
         onChange={(e) => setText(e.target.value)}
+        onFocus={handleFocus}
       />
       <button type="submit" className={cx("sendBtn")} disabled={!text.trim()}>
         <Send size={22} />

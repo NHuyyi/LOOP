@@ -25,6 +25,7 @@ import {
   updateLastMessage,
   OpenMiniChat,
   UpdateReactionMessage,
+  markConversationAsRead,
 } from "../redux/chatSlice";
 
 import { useLocation } from "react-router-dom";
@@ -174,6 +175,17 @@ function SocketManager() {
         dispatch(UpdateReactionMessage(data));
         console.log("Dữ liệu nhận được từ server:", data);
       });
+
+      socket.on("messageRead", ({ conversationId, readerId }) => {
+        // Dùng readerId (ID của người vừa đọc tin nhắn) truyền vào làm currentUserId.
+        // Bằng cách này, reducer sẽ hiểu: "Nếu người gửi (mình) khác với người đọc (họ), thì chuyển status thành 'read'"
+        dispatch(
+          markConversationAsRead({
+            conversationId: conversationId,
+            currentUserId: readerId,
+          }),
+        );
+      });
     }
 
     return () => {
@@ -192,6 +204,7 @@ function SocketManager() {
       socket.off("UpdateReactComment");
       socket.off("commentUpdated");
       socket.off("UpdateReactionMessage");
+      socket.off("messageRead");
     };
   }, [currentUser, dispatch, location.pathname]);
 
