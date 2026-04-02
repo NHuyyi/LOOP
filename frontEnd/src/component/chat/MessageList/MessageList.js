@@ -6,6 +6,9 @@ import { getMessages } from "../../../services/chat/getMessages";
 import { loadMoreMessages } from "../../../redux/chatSlice";
 import ReactionStatus from "../ReactionStatus/ReactionStatus";
 import ReactionPicker from "../ReactionPicker/ReactionPicker";
+import TimeSeparator from "./TimeSeparator";
+import TypingIndicator from "./TypingIndicator";
+import MessageItem from "./MessageItem";
 
 const cx = classNames.bind(styles);
 
@@ -22,6 +25,7 @@ function MessageList() {
     page,
     hasMore,
     activeReceiver,
+    typingConversations,
   } = useSelector((state) => state.chat);
 
   const [loading, setLoading] = useState(false);
@@ -102,6 +106,8 @@ function MessageList() {
     });
   };
 
+  const isTyping = typingConversations.includes(activeConversationId);
+
   return (
     <div className={cx("messageList")} ref={scrollRef} onScroll={handleScroll}>
       {loading && <div className={cx("spinner-border")} />}
@@ -156,111 +162,26 @@ function MessageList() {
         return (
           // Dùng React.Fragment vì bây giờ mỗi vòng lặp có thể trả về 2 phần tử (Dải phân cách + Tin nhắn)
           <React.Fragment key={msg._id || index}>
-            {/* 1. HIỂN THỊ DẢI THỜI GIAN Ở NỀN (NẾU CÁCH NHAU 30 PHÚT) */}
             {showTimeSeparator && (
-              <div className={cx("timeSeparator")}>
-                {formatSeparatorTime(msg.createdAt || msg.updatedAt)}
-              </div>
+              <TimeSeparator
+                timeString={formatSeparatorTime(msg.createdAt || msg.updatedAt)}
+              />
             )}
 
-            {/* 2. HIỂN THỊ TIN NHẮN */}
-            <div className={cx(isMyMessage ? "myMsg" : "otherMsg")}>
-              {!isMyMessage && (
-                <img
-                  src={
-                    msg.senderId?.avatar ||
-                    "https://res.cloudinary.com/dpym64zg9/image/upload/v1755614090/raw_cq4nqn.png"
-                  }
-                  alt="avatar"
-                  className={cx("msgAvatar")}
-                  // Ẩn avatar đi nếu chưa phải tin cuối của chuỗi, giữ lại không gian để các bong bóng thẳng hàng
-                  style={{
-                    visibility: isLastInSequence ? "visible" : "hidden",
-                  }}
-                />
-              )}
-
-              <div
-                className={cx("messageContent")}
-                onClick={() => isMyMessage && handleMsgClick(msg._id)}
-                style={{
-                  position: "relative", // Quan trọng: Để đặt các nút reaction tuyệt đối theo bong bóng
-                  cursor: isMyMessage ? "pointer" : "default",
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: isMyMessage ? "flex-end" : "flex-start",
-                  // Tạo khoảng cách dưới nếu tin nhắn này có reaction để không bị lẹm
-                  marginBottom:
-                    msg.reactions && msg.reactions.length > 0 ? "16px" : "4px",
-                }}
-              >
-                <div className={cx("bubble")}>
-                  <span className={cx("msgText")}>{msg.text}</span>
-
-                  {/* CHỈ HIỆN THỜI GIAN TRONG BONG BÓNG NẾU LÀ TIN CUỐI CÙNG CỦA CHUỖI */}
-                  {isLastInSequence && (
-                    <span className={cx("msgTimeInside")}>
-                      {formatTime(msg.createdAt || msg.updatedAt)}
-                    </span>
-                  )}
-                  {/* --- NÚT THÊM CẢM XÚC ĐÈ GÓC --- */}
-                  <div className={cx("status-wrapper")}>
-                    <ReactionStatus
-                      allReactions={msg.reactions}
-                      isMine={isMyMessage}
-                    />
-                  </div>
-
-                  {/* Nút để chọn thêm reaction (thường ẩn, hiện khi hover vào bubble) */}
-                  <div className={cx("picker-wrapper")}>
-                    <ReactionPicker
-                      messageId={msg._id}
-                      currentReaction={myReaction}
-                      isMine={isMyMessage}
-                    />
-                  </div>
-                </div>
-
-                {isMyMessage && showStatus && (
-                  <div className={cx("messageStatus")}>
-                    {msg.status === "sent" && (
-                      <img
-                        title="Đã gửi"
-                        src="https://res.cloudinary.com/dpym64zg9/image/upload/v1755614090/raw_cq4nqn.png"
-                        alt="sent"
-                        className={cx("avatarStatus", "sent")}
-                      />
-                    )}
-                    {msg.status === "delivered" && (
-                      <img
-                        title="Đã nhận"
-                        src={
-                          activeReceiver?.avatar ||
-                          "https://res.cloudinary.com/dpym64zg9/image/upload/v1755614090/raw_cq4nqn.png"
-                        }
-                        alt="delivered"
-                        className={cx("avatarStatus", "delivered")}
-                      />
-                    )}
-                    {console.log(msg.status)}
-                    {msg.status === "read" && (
-                      <img
-                        title="Đã xem"
-                        src={
-                          activeReceiver?.avatar ||
-                          "https://res.cloudinary.com/dpym64zg9/image/upload/v1755614090/raw_cq4nqn.png"
-                        }
-                        alt="read"
-                        className={cx("avatarStatus", "read")}
-                      />
-                    )}
-                  </div>
-                )}
-              </div>
-            </div>
+            <MessageItem
+              msg={msg}
+              isMyMessage={isMyMessage}
+              isLastInSequence={isLastInSequence}
+              showStatus={showStatus}
+              myReaction={myReaction}
+              formatTime={formatTime}
+              handleMsgClick={handleMsgClick}
+              activeReceiver={activeReceiver}
+            />
           </React.Fragment>
         );
       })}
+      {isTyping && <TypingIndicator activeReceiver={activeReceiver} />}
     </div>
   );
 }

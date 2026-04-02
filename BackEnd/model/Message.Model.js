@@ -40,6 +40,12 @@ const MessageSchema = new mongoose.Schema(
         },
       },
     ],
+
+    replyTo: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Message",
+      default: null, // Nếu không phải là tin nhắn trả lời, để null
+    },
   },
   { timestamps: true },
 );

@@ -20,6 +20,29 @@ function initSocket(server) {
       io.emit("update-online-users", Object.keys(onlineUsers));
     });
 
+    // SỰ KIỆN: ĐANG GÕ PHÍM
+    socket.on("typing", ({ senderId, receiverId, conversationId }) => {
+      const receiverSocketId = onlineUsers[receiverId];
+      if (receiverSocketId) {
+        // Chỉ gửi thông báo cho đúng người nhận
+        io.to(receiverSocketId).emit("userTyping", {
+          senderId,
+          conversationId,
+        });
+      }
+    });
+
+    // SỰ KIỆN: NGỪNG GÕ PHÍM
+    socket.on("stopTyping", ({ senderId, receiverId, conversationId }) => {
+      const receiverSocketId = onlineUsers[receiverId];
+      if (receiverSocketId) {
+        io.to(receiverSocketId).emit("userStopTyping", {
+          senderId,
+          conversationId,
+        });
+      }
+    });
+
     socket.on("disconnect", () => {
       for (const [uid, sid] of Object.entries(onlineUsers)) {
         if (sid === socket.id) {

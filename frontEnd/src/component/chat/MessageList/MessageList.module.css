@@ -198,3 +198,91 @@
 .otherMsg .status-wrapper {
   left: 8px;
 }
+
+/* =========================================================
+   CSS CHO TÍNH NĂNG TYPING INDICATOR (ĐANG NHẬP...)
+   ========================================================= */
+
+.typingIndicator {
+  display: flex;
+  align-items: flex-end; /* Căn avatar và bong bóng ở dưới cùng */
+  margin-bottom: 12px;
+  max-width: 70%;
+  align-self: flex-start;
+  animation: fadeIn 0.3s ease-in-out; /* Hiệu ứng mờ dần khi xuất hiện */
+}
+
+/* Kích thước avatar của người đang gõ */
+.typingIndicator .msgAvatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-right: 8px;
+}
+
+/* Bong bóng chứa 3 dấu chấm */
+.typingDots {
+  background-color: #f0f0f0; /* Màu nền xám nhạt giống bong bóng người khác gửi */
+  padding: 12px 16px;
+  border-radius: 18px;
+  display: flex;
+  align-items: center;
+  gap: 4px; /* Khoảng cách giữa các dấu chấm */
+  height: 38px; /* Cố định chiều cao bong bóng */
+  box-sizing: border-box;
+}
+
+/* Định dạng từng dấu chấm */
+.typingDots span {
+  display: block;
+  width: 6px;
+  height: 6px;
+  background-color: #90949c; /* Màu xám tối cho dấu chấm */
+  border-radius: 50%;
+  /* Gọi hiệu ứng nhấp nháy lượn sóng */
+  animation: typingBounce 1.4s infinite ease-in-out both;
+}
+
+/* Tạo độ trễ (delay) cho từng dấu chấm để tạo thành sóng */
+.typingDots span:nth-child(1) {
+  animation-delay: -0.32s;
+}
+
+.typingDots span:nth-child(2) {
+  animation-delay: -0.16s;
+}
+
+.typingDots span:nth-child(3) {
+  animation-delay: 0s;
+}
+
+/* =========================================================
+   KEYFRAMES (HIỆU ỨNG CHUYỂN ĐỘNG)
+   ========================================================= */
+
+/* Hiệu ứng bong bóng nảy lên xuống và to nhỏ */
+@keyframes typingBounce {
+  0%,
+  80%,
+  100% {
+    transform: scale(0.6);
+    opacity: 0.4;
+  }
+  40% {
+    transform: scale(1.1) translateY(-3px);
+    opacity: 1;
+  }
+}
+
+/* Hiệu ứng xuất hiện mượt mà */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

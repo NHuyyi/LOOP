@@ -26,6 +26,7 @@ import {
   OpenMiniChat,
   UpdateReactionMessage,
   markConversationAsRead,
+  setTyping,
 } from "../redux/chatSlice";
 
 import { useLocation } from "react-router-dom";
@@ -186,6 +187,15 @@ function SocketManager() {
           }),
         );
       });
+
+      // LẮNG NGHE TYPING
+      socket.on("userTyping", ({ conversationId }) => {
+        dispatch(setTyping({ conversationId, isTyping: true }));
+      });
+
+      socket.on("userStopTyping", ({ conversationId }) => {
+        dispatch(setTyping({ conversationId, isTyping: false }));
+      });
     }
 
     return () => {
@@ -205,6 +215,8 @@ function SocketManager() {
       socket.off("commentUpdated");
       socket.off("UpdateReactionMessage");
       socket.off("messageRead");
+      socket.off("userTyping");
+      socket.off("userStopTyping");
     };
   }, [currentUser, dispatch, location.pathname]);
 

@@ -3,18 +3,20 @@ import styles from "./MessageInput.module.css";
 import classNames from "classnames/bind";
 import { Send, Image, Smile } from "lucide-react";
 import { useSelector, useDispatch } from "react-redux";
+import socket from "../../../socker";
 
 import { sendMessage } from "../../../services/chat/sendMessage";
 import {
   addMessage,
   updateLastMessage,
   markConversationAsRead,
+  clearReplyMessage,
 } from "../../../redux/chatSlice";
 import { updateChatInFilteredFriends } from "../../../redux/friendSlice";
 import { markAsRead } from "../../../services/chat/markAsRead";
 
 const cx = classNames.bind(styles);
-
+let typingTimeout = null;
 function MessageInput() {
   const [text, setText] = useState("");
   const dispatch = useDispatch();
@@ -27,6 +29,7 @@ function MessageInput() {
     activeConversationId,
     activeReceiver,
     currentMessages,
+    replyMessage,
   } = useSelector((state) => state.chat);
 
   const handleFocus = async () => {
@@ -62,6 +65,50 @@ function MessageInput() {
       }
     }
   };
+
+  // HÀM LẤY ID NGƯỜI NHẬN
+  const getReceiverId = () => {
+    if (activeConversationId) {
+      const currentConv = ConversationList.find(
+        (c) => c._id === activeConversationId,
+      );
+      const receiver = currentConv?.participants.find(
+        (p) => p._id !== currentUser?._id,
+      );
+      return receiver?._id;
+    } else if (activeReceiver) {
+      return activeReceiver._id;
+    }
+    return null;
+  };
+
+  // CẬP NHẬT LẠI HÀM onChange CỦA INPUT
+  const handleTyping = (e) => {
+    setText(e.target.value);
+
+    const receiverId = getReceiverId();
+    if (!receiverId || !activeConversationId) return;
+
+    // Phát sự kiện đang gõ
+    socket.emit("typing", {
+      senderId: currentUser._id,
+      receiverId,
+      conversationId: activeConversationId,
+    });
+
+    // Reset lại đồng hồ đếm ngược mỗi khi gõ phím
+    if (typingTimeout) clearTimeout(typingTimeout);
+
+    // Nếu sau 2.5 giây không gõ nữa thì tắt trạng thái typing
+    typingTimeout = setTimeout(() => {
+      socket.emit("stopTyping", {
+        senderId: currentUser._id,
+        receiverId,
+        conversationId: activeConversationId,
+      });
+    }, 2500);
+  };
+
   const handleSend = async (e) => {
     e.preventDefault();
     if (!text.trim()) return;
@@ -83,7 +130,12 @@ function MessageInput() {
     if (!receiverId) return; // Không có người nhận thì không gửi
 
     try {
-      const res = await sendMessage(receiverId, text);
+      const payload = {
+        receiverId: receiverId,
+        text: text,
+        replyTo: replyMessage ? replyMessage._id : null,
+      };
+      const res = await sendMessage(payload);
       if (res?.success) {
         const newMessage = res.message;
 
@@ -112,6 +164,16 @@ function MessageInput() {
         );
 
         setText("");
+        if (typingTimeout) clearTimeout(typingTimeout);
+        socket.emit("stopTyping", {
+          senderId: currentUser._id,
+          receiverId: receiverId, // receiverId đã lấy trong handleSend cũ của bạn
+          conversationId: activeConversationId,
+        });
+
+        if (replyMessage) {
+          dispatch(clearReplyMessage());
+        }
       }
     } catch (err) {
       console.log("Lỗi khi gửi tin:", err);
@@ -119,26 +181,51 @@ function MessageInput() {
   };
 
   return (
-    <form className={cx("inputArea")} onSubmit={handleSend}>
-      <button type="button" className={cx("actionBtn")}>
-        <Image size={22} />
-      </button>
-      <button type="button" className={cx("actionBtn")}>
-        <Smile size={22} />
-      </button>
+    // THÊM THẺ DIV NÀY ĐỂ BỌC TOÀN BỘ LẠI
+    <div
+      className={cx("messageInputContainer")}
+      style={{ width: "100%", display: "flex", flexDirection: "column" }}
+    >
+      {/* Khung preview trả lời */}
+      {replyMessage && (
+        <div className="reply-preview-box">
+          <div className="reply-info">
+            <span className="reply-name">
+              Đang trả lời {replyMessage.senderName}
+            </span>
+            <p className="reply-text">{replyMessage.text}</p>
+          </div>
+          <button
+            className="close-reply-btn"
+            onClick={() => dispatch(clearReplyMessage())} // ĐÃ SỬA CHỮ 'R' VIẾT HOA
+          >
+            ❌
+          </button>
+        </div>
+      )}
 
-      <input
-        type="text"
-        placeholder="Nhập tin nhắn"
-        className={cx("textInput")}
-        value={text}
-        onChange={(e) => setText(e.target.value)}
-        onFocus={handleFocus}
-      />
-      <button type="submit" className={cx("sendBtn")} disabled={!text.trim()}>
-        <Send size={22} />
-      </button>
-    </form>
+      {/* Form nhập liệu */}
+      <form className={cx("inputArea")} onSubmit={handleSend}>
+        <button type="button" className={cx("actionBtn")}>
+          <Image size={22} />
+        </button>
+        <button type="button" className={cx("actionBtn")}>
+          <Smile size={22} />
+        </button>
+
+        <input
+          type="text"
+          placeholder="Nhập tin nhắn"
+          className={cx("textInput")}
+          value={text}
+          onChange={handleTyping}
+          onFocus={handleFocus}
+        />
+        <button type="submit" className={cx("sendBtn")} disabled={!text.trim()}>
+          <Send size={22} />
+        </button>
+      </form>
+    </div>
   );
 }
 

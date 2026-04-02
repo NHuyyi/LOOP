@@ -9,6 +9,8 @@ const initialState = {
   hasMore: true, // Biến cờ: dung để kiểm tra xem còn tin nhắn nào để tải hay không
   page: 1, // Trang hiện tại, bắt đầu từ 1
   miniChat: [], // mảng chứa danh sách bong bóng chat
+  typingConversations: [],
+  replyMessage: null,
 };
 
 const chatSlice = createSlice({
@@ -163,6 +165,24 @@ const chatSlice = createSlice({
         }
       }
     },
+    setTyping: (state, action) => {
+      const { conversationId, isTyping } = action.payload;
+      if (isTyping && !state.typingConversations.includes(conversationId)) {
+        state.typingConversations.push(conversationId);
+      } else if (!isTyping) {
+        state.typingConversations = state.typingConversations.filter(
+          (id) => id !== conversationId,
+        );
+      }
+    },
+
+    setReplyMessage: (state, action) => {
+      state.replyMessage = action.payload; // Lưu tin nhắn đang trả lời vào state
+    },
+
+    clearReplyMessage: (state) => {
+      state.replyMessage = null; // Xóa tin nhắn đang trả lời khỏi state
+    },
   },
 });
 
@@ -178,6 +198,9 @@ export const {
   setMiniChatMessages,
   markConversationAsRead,
   UpdateReactionMessage,
+  setTyping,
+  setReplyMessage,
+  clearReplyMessage,
 } = chatSlice.actions;
 
 export default chatSlice.reducer;
