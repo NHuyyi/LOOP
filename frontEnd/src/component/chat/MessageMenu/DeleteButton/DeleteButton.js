@@ -6,7 +6,7 @@ const DeleteButton = ({ message, closeMenu }) => {
   };
   return (
     <button onClick={handleDelete} className="menu-action-btn delete-btn">
-      🗑️ Xóa
+      Xóa
     </button>
   );
 };

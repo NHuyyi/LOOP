@@ -1,6 +1,6 @@
 const API_URL = process.env.REACT_APP_API_URL || "http://localhost:3001/api";
 
-export const sendMessage = async (receiverId, text) => {
+export const sendMessage = async (payload) => {
   try {
     const token = localStorage.getItem("token");
 
@@ -10,10 +10,8 @@ export const sendMessage = async (receiverId, text) => {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
-      body: JSON.stringify({
-        receiverId,
-        text,
-      }),
+      // Gửi thẳng payload luôn, không cần bọc lại nữa
+      body: JSON.stringify(payload),
     });
 
     const data = await res.json();

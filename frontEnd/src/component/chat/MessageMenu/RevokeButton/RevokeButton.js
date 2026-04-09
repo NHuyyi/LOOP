@@ -6,7 +6,7 @@ const RevokeButton = ({ message, closeMenu }) => {
   };
   return (
     <button onClick={handleRevoke} className="menu-action-btn revoke-btn">
-      🚫 Thu hồi
+      Thu hồi
     </button>
   );
 };

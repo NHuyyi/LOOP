@@ -1,7 +1,10 @@
+import { useState } from "react";
 import styles from "./MessageList.module.css";
 import classNames from "classnames/bind";
 import ReactionStatus from "../ReactionStatus/ReactionStatus";
 import ReactionPicker from "../ReactionPicker/ReactionPicker";
+import { MoreVertical } from "lucide-react";
+import MessageMenu from "../MessageMenu/MessageMenu";
 
 const cx = classNames.bind(styles);
 
@@ -15,8 +18,9 @@ function MessageItem({
   handleMsgClick,
   activeReceiver,
 }) {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   return (
-    <div className={cx(isMyMessage ? "myMsg" : "otherMsg")}>
+    <div className={cx("messageRow", isMyMessage ? "myMsg" : "otherMsg")}>
       {!isMyMessage && (
         <img
           src={
@@ -42,25 +46,84 @@ function MessageItem({
             msg.reactions && msg.reactions.length > 0 ? "16px" : "4px",
         }}
       >
-        <div className={cx("bubble")}>
-          <span className={cx("msgText")}>{msg.text}</span>
+        <div
+          style={{
+            display: "flex",
+            flexDirection: isMyMessage ? "row-reverse" : "row",
+            alignItems: "center",
+            gap: "8px",
+            maxWidth: "100%",
+          }}
+        >
+          <div className={cx("bubble")}>
+            {msg.replyTo && (
+              <div className={cx("replyQuote")}>
+                <span className={cx("replyQuoteName")}>
+                  {/* Kiểm tra xem người bị trả lời có phải là người gửi tin nhắn hiện tại không */}
+                  {msg.replyTo.senderId?._id === msg.senderId?._id
+                    ? "Đã trả lời chính mình"
+                    : `Đã trả lời ${msg.replyTo.senderId?.name}`}
+                </span>
+                <p className={cx("replyQuoteText")}>{msg.replyTo.text}</p>
+              </div>
+            )}
+            <span className={cx("msgText")}>{msg.text}</span>
 
-          {isLastInSequence && (
-            <span className={cx("msgTimeInside")}>
-              {formatTime(msg.createdAt || msg.updatedAt)}
-            </span>
-          )}
+            {isLastInSequence && (
+              <span className={cx("msgTimeInside")}>
+                {formatTime(msg.createdAt || msg.updatedAt)}
+              </span>
+            )}
 
-          <div className={cx("status-wrapper")}>
-            <ReactionStatus allReactions={msg.reactions} isMine={isMyMessage} />
+            <div className={cx("status-wrapper")}>
+              <ReactionStatus
+                allReactions={msg.reactions}
+                isMine={isMyMessage}
+              />
+            </div>
           </div>
-
-          <div className={cx("picker-wrapper")}>
-            <ReactionPicker
-              messageId={msg._id}
-              currentReaction={myReaction}
-              isMine={isMyMessage}
-            />
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "4px",
+              position: "relative",
+            }}
+            className={cx("reactionPickerContainer")}
+          >
+            <div className={cx("picker-wrapper")}>
+              <ReactionPicker
+                messageId={msg._id}
+                currentReaction={myReaction}
+                isMine={isMyMessage}
+              />
+            </div>
+            <button
+              className={cx("menuOpenBtn")}
+              onClick={(e) => {
+                e.stopPropagation(); // Ngăn chặn việc click truyền vào khung tin nhắn gây bật/tắt "Đã xem"
+                setIsMenuOpen(!isMenuOpen); // Bật/Tắt trạng thái menu
+              }} // Kích hoạt mở MessageMenu
+              title="Thêm"
+            >
+              <MoreVertical size={16} />
+            </button>
+            {isMenuOpen && (
+              <div
+                style={{
+                  position: "absolute",
+                  bottom: "100%", // Đẩy menu xuống dưới nút 3 chấm
+                  right: isMyMessage ? "0" : "auto", // Tin nhắn của mình thì menu canh lề phải
+                  left: isMyMessage ? "auto" : "0", // Tin nhắn người kia thì menu canh lề trái
+                  zIndex: 50,
+                }}
+              >
+                <MessageMenu
+                  message={msg}
+                  onClose={() => setIsMenuOpen(false)} // Truyền hàm để menu tự đóng khi chọn xong
+                />
+              </div>
+            )}
           </div>
         </div>
 

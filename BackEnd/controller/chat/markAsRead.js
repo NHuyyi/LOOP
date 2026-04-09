@@ -6,7 +6,6 @@ exports.markAsRead = async (req, res) => {
   try {
     const { conversationId } = req.params;
     const userId = req.user.id;
-    console.log("userId:", userId);
 
     // tìm và cập nhật tất cả tin nhắn trong cuộc trò chuyện này
     // điều kiện: người gửi không phải là mình  ($ne: userId) và isRead đang là false

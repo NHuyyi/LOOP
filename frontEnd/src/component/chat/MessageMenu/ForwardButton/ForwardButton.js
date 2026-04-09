@@ -6,7 +6,7 @@ const ForwardButton = ({ message, closeMenu }) => {
   };
   return (
     <button onClick={handleForward} className="menu-action-btn">
-      ➡️ Chuyển tiếp
+      Chuyển tiếp
     </button>
   );
 };

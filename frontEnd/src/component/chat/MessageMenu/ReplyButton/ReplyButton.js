@@ -1,12 +1,13 @@
 import { useDispatch } from "react-redux";
-import { setReplyingMessage } from "../../redux/chatSlice";
+import { setReplyMessage } from "../../../../redux/chatSlice";
+import { Reply } from "lucide-react";
 
 const ReplyButton = ({ message, closeMenu }) => {
   const dispatch = useDispatch();
 
   const handleReply = () => {
     dispatch(
-      setReplyingMessage({
+      setReplyMessage({
         _id: message._id,
         text: message.text,
         senderName: message.senderId?.name || "Người dùng", // Lấy tên người gửi
@@ -16,8 +17,8 @@ const ReplyButton = ({ message, closeMenu }) => {
   };
 
   return (
-    <button onClick={handleReply} className="menu-action-btn">
-      ↪️ Trả lời
+    <button onClick={handleReply}>
+      <Reply size={16} /> Trả lời
     </button>
   );
 };

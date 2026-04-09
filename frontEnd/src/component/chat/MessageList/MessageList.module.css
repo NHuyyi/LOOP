@@ -166,23 +166,12 @@
   right: 2px;
 }
 
-/* Khu vực hiển thị nút cười (Picker) - Thường hiện khi hover vào tin nhắn */
 .picker-wrapper {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
   opacity: 0;
-  transition: opacity 0.2s;
+  transition: opacity 0.2s ease;
 }
 
-.myMsg .picker-wrapper {
-  left: -35px;
-}
-.otherMsg .picker-wrapper {
-  right: -35px;
-}
-
-.messageContent:hover .picker-wrapper {
+.messageRow:hover .picker-wrapper {
   opacity: 1;
 }
 
@@ -285,4 +274,56 @@
     opacity: 1;
     transform: translateY(0);
   }
+}
+
+/* =========================================================
+   CSS CHO PHẦN TIN NHẮN TRÍCH DẪN (REPLY BÊN TRONG BONG BÓNG)
+   ========================================================= */
+
+.replyQuote {
+  background-color: rgba(0, 0, 0, 0.06); /* Nền mờ nhẹ nhàng */
+  border-left: 3px solid #0084ff; /* Vạch màu xanh lam phân cách */
+  padding: 8px 10px;
+  border-radius: 8px;
+  margin-bottom: 6px;
+  max-width: 100%;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+/* Khi tin nhắn là CỦA BẠN (nền xanh), mình đổi vạch kẻ và chữ sang màu tối cho dễ đọc */
+.myMsg .replyQuote {
+  background-color: rgba(0, 0, 0, 0.1);
+  border-left-color: rgba(0, 0, 0, 0.4);
+}
+
+.replyQuote:hover {
+  opacity: 0.8; /* Cảm giác bấm được khi hover chuột */
+}
+
+/* Tên người được trả lời */
+.replyQuoteName {
+  display: block;
+  font-size: 11px;
+  font-weight: 700;
+  margin-bottom: 4px;
+  color: #0084ff; /* Màu xanh nổi bật cho tên */
+}
+
+.myMsg .replyQuoteName {
+  color: rgba(0, 0, 0, 0.6); /* Tránh chói màu trên nền xanh */
+}
+
+/* Nội dung tin nhắn bị trích dẫn */
+.replyQuoteText {
+  margin: 0;
+  font-size: 13px;
+  opacity: 0.75; /* Chữ hơi mờ để phân biệt với tin nhắn chính */
+
+  /* Cụm này giúp nội dung nếu dài quá 2 dòng sẽ tự động thêm dấu ... */
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  word-wrap: break-word;
 }

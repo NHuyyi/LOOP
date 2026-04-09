@@ -55,3 +55,74 @@
 .sendBtn:not(:disabled):hover {
   background-color: #f0f2f5;
 }
+/* =========================================================
+   KHU VỰC PREVIEW TRẢ LỜI TIN NHẮN
+   ========================================================= */
+
+.reply-preview-box {
+  position: relative; /* Quan trọng: Làm mỏ neo để gắn nút X lên góc */
+  display: flex;
+  flex-direction: column; /* Xếp lùi từ trên xuống dưới */
+  align-items: flex-start; /* Căn mọi thứ sang bên trái */
+  background-color: #f8f9fa; /* Nền xám thật nhạt để làm nổi bật tên người gửi */
+  padding: 12px 40px 12px 16px; /* Chừa lề phải 40px để không bị chữ đè lên nút X */
+  border-left: 4px solid #0084ff;
+  border-top-right-radius: 12px;
+  margin: 0;
+  border-bottom: 1px solid #e4e6eb;
+}
+
+.reply-info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start; /* Ép cả tên và chữ bám sát lề trái */
+  overflow: hidden;
+  width: 100%;
+}
+
+/* 1. TÊN NGƯỜI GỬI: Có Background và Hiệu ứng nổi */
+.reply-name {
+  font-size: 12px;
+  font-weight: 700;
+  color: #0084ff; /* Chữ màu xanh lam */
+  background-color: #ffffff; /* Nền trắng */
+  padding: 4px 10px; /* Tạo độ rộng cho cái nền */
+  border-radius: 12px; /* Bo tròn xịn xò như một cái tag */
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08); /* Đổ bóng nhẹ tạo cảm giác nổi 3D */
+  margin-bottom: 8px; /* Cách nội dung bên dưới 1 chút */
+  display: inline-block; /* Ôm sát chiều dài của chữ */
+}
+
+/* 2. NỘI DUNG TIN NHẮN: Căn trái, hiệu ứng trong suốt */
+.reply-text {
+  font-size: 13px;
+  color: #1c1e21;
+  opacity: 0.55; /* Tạo hiệu ứng mờ/trong suốt (giảm độ đậm của chữ) */
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis; /* Vẫn giữ tính năng tự động cắt chữ (...) */
+  width: 100%;
+  text-align: left; /* Đảm bảo căn trái */
+}
+
+/* 3. NÚT X: Góc trên cùng bên phải & Hiệu ứng Hover */
+.close-reply-btn {
+  position: absolute; /* Đẩy nút X văng ra khỏi luồng nội dung */
+  top: 10px; /* Cách mép trên 10px */
+  right: 10px; /* Cách mép phải 10px */
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease; /* Chuyển động mượt */
+  color: #8e8e93;
+}
+
+.close-reply-btn:hover {
+  background-color: #e4e6eb; /* Hiện nền xám khi đưa chuột vào */
+}

@@ -188,18 +188,18 @@ function MessageInput() {
     >
       {/* Khung preview trả lời */}
       {replyMessage && (
-        <div className="reply-preview-box">
-          <div className="reply-info">
-            <span className="reply-name">
+        <div className={cx("reply-preview-box")}>
+          <div className={cx("reply-info")}>
+            <span className={cx("reply-name")}>
               Đang trả lời {replyMessage.senderName}
             </span>
-            <p className="reply-text">{replyMessage.text}</p>
+            <p className={cx("reply-text")}>{replyMessage.text}</p>
           </div>
           <button
-            className="close-reply-btn"
+            className={cx("close-reply-btn")}
             onClick={() => dispatch(clearReplyMessage())} // ĐÃ SỬA CHỮ 'R' VIẾT HOA
           >
-            ❌
+            X
           </button>
         </div>
       )}

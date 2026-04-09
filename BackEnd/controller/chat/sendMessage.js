@@ -40,11 +40,8 @@ exports.sendMessage = async (req, res) => {
     if (onlineUsers[receiverId]) {
       // Nhớ populate thêm phần replyTo để hiển thị nội dung tin bị reply
       const populatedMessage = await message
-        .populate("senderId", "name avatar")
-        .populate({
-          path: "replyTo",
-          select: "text senderId",
-        });
+        .populate({ path: "senderId", select: "name avatar" })
+        .populate({ path: "replyTo", select: "text senderId" });
 
       io.to(onlineUsers[receiverId]).emit("newMessage", {
         conversationId: conversation._id,

@@ -1,0 +1,105 @@
+/* =========================================================
+   1. KHUNG MENU TỔNG THỂ
+   ========================================================= */
+
+/* Lớp vỏ ngoài cùng để làm mỏ neo */
+.message-menu-wrapper {
+  position: relative;
+  z-index: 50; /* Đảm bảo menu luôn nổi lên trên các tin nhắn khác */
+}
+
+/* Khung thả xuống của Menu */
+.message-menu-dropdown {
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15); /* Đổ bóng tạo cảm giác lơ lửng */
+  border: 1px solid rgba(0, 0, 0, 0.08); /* Viền cực mỏng cho tinh tế */
+  min-width: 220px; /* Tăng độ rộng để chữ "Chuyển tiếp" không bị rớt dòng */
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* =========================================================
+   2. PHẦN HEADER (TIÊU ĐỀ & NÚT ĐÓNG)
+   ========================================================= */
+
+.menu-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 16px;
+  border-bottom: 1px solid #e5e5e5; /* Đường gạch xám nhạt ngăn cách với phần dưới */
+  background-color: #f8f9fa; /* Nền xám rất nhẹ cho phần header phân biệt với các nút */
+}
+
+.menu-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #65676b;
+}
+
+.close-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: #65676b;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+}
+
+.close-btn:hover {
+  background-color: #e4e6eb;
+  color: #f02849; /* Chuyển màu đỏ nhẹ khi hover vào nút X */
+}
+
+/* =========================================================
+   3. KHU VỰC CÁC NÚT CHỨC NĂNG
+   ========================================================= */
+
+/* Khung bọc các nút */
+.menu-actions {
+  display: flex;
+  flex-direction: column; /* Quan trọng: Ép các nút xếp dọc */
+  width: 100%;
+  padding: 4px 0; /* Tạo khoảng lề trên/dưới một chút cho thoáng */
+}
+
+/* Định dạng cho TỪNG NÚT bên trong (Reply, Forward...) */
+.menu-actions > * {
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid #f0f2f5; /* Gạch xám phân cách giữa các nút */
+  width: 100%;
+  text-align: left;
+  padding: 12px 16px; /* Không gian bấm rộng rãi */
+  font-size: 14px;
+  font-weight: 500;
+  color: #1c1e21;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  transition: background-color 0.2s ease;
+  outline: none;
+  white-space: nowrap; /* BẮT BUỘC: Ép chữ phải nằm trên 1 dòng */
+}
+
+/* Xóa đường kẻ viền của nút cuối cùng cho đẹp mắt */
+.menu-actions > *:last-child {
+  border-bottom: none;
+}
+
+/* Hiệu ứng khi lướt chuột qua (Hover) */
+.menu-actions > *:hover {
+  background-color: #e4e6eb; /* Chuyển sang nền xám đậm hơn chút giống Facebook */
+}
+
+/* Hiệu ứng khi nhấn chuột xuống (Click) */
+.menu-actions > *:active {
+  background-color: #d8dadf;
+}
