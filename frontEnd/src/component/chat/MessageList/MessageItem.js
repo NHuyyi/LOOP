@@ -60,9 +60,8 @@ function MessageItem({
               <div className={cx("replyQuote")}>
                 <span className={cx("replyQuoteName")}>
                   {/* Kiểm tra xem người bị trả lời có phải là người gửi tin nhắn hiện tại không */}
-                  {msg.replyTo.senderId?._id === msg.senderId?._id
-                    ? "Đã trả lời chính mình"
-                    : `Đã trả lời ${msg.replyTo.senderId?.name}`}
+
+                  {msg.replyTo.senderId?.name}
                 </span>
                 <p className={cx("replyQuoteText")}>{msg.replyTo.text}</p>
               </div>

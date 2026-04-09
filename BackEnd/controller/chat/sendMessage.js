@@ -37,19 +37,31 @@ exports.sendMessage = async (req, res) => {
 
     //socket.io sẽ lắng nghe sự kiện "newMessage" và gửi tin nhắn mới đến người nhận
     const io = getIO();
+    const populatedMessage = await message.populate([
+      {
+        path: "senderId",
+        select: "name avatar",
+      },
+      {
+        path: "replyTo",
+        select: "text senderId",
+        populate: {
+          path: "senderId",
+          select: "name avatar", // Lấy tên và avatar của người gửi tin nhắn bị reply
+        },
+      },
+    ]);
     if (onlineUsers[receiverId]) {
       // Nhớ populate thêm phần replyTo để hiển thị nội dung tin bị reply
-      const populatedMessage = await message
-        .populate({ path: "senderId", select: "name avatar" })
-        .populate({ path: "replyTo", select: "text senderId" });
 
       io.to(onlineUsers[receiverId]).emit("newMessage", {
         conversationId: conversation._id,
         message: populatedMessage,
       });
     }
+    console.log("Tin nhắn mới đã được gửi:", populatedMessage);
 
-    return res.status(200).json({ success: true, message });
+    return res.status(200).json({ success: true, message: populatedMessage });
   } catch (err) {
     console.error("Lỗi sendMessage:", err);
     return res.status(500).json({ message: "Lỗi server", success: false });

@@ -191,7 +191,7 @@ function MessageInput() {
         <div className={cx("reply-preview-box")}>
           <div className={cx("reply-info")}>
             <span className={cx("reply-name")}>
-              Đang trả lời {replyMessage.senderName}
+              Đang trả lời {replyMessage.name}
             </span>
             <p className={cx("reply-text")}>{replyMessage.text}</p>
           </div>

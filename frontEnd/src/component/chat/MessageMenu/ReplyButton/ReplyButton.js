@@ -10,7 +10,7 @@ const ReplyButton = ({ message, closeMenu }) => {
       setReplyMessage({
         _id: message._id,
         text: message.text,
-        senderName: message.senderId?.name || "Người dùng", // Lấy tên người gửi
+        name: message.senderId?.name || "Người dùng", // Lấy tên người gửi
       }),
     );
     closeMenu(); // Đóng menu sau khi click

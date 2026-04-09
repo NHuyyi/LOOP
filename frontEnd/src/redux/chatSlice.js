@@ -172,6 +172,7 @@ const chatSlice = createSlice({
 
     setReplyMessage: (state, action) => {
       state.replyMessage = action.payload; // Lưu tin nhắn đang trả lời vào state
+      console.log("Tin nhắn được chọn để trả lời:", state.replyMessage);
     },
 
     clearReplyMessage: (state) => {
