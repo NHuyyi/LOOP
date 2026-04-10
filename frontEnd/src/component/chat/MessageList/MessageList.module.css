@@ -71,12 +71,16 @@
   background-color: #8ef0d7;
   color: #000;
   border-bottom-right-radius: 4px;
+  align-items: flex-end;
+  text-align: right;
 }
 
 .otherMsg .bubble {
   color: #050505;
   border-bottom-left-radius: 4px;
   border: 1px solid #000;
+  align-items: flex-start;
+  text-align: left;
 }
 
 /* Container chứa trạng thái nằm dưới bong bóng */
@@ -154,16 +158,6 @@
   transition: all 0.2s ease-in-out;
   z-index: 5;
   bottom: -12px;
-}
-
-/* Tin nhắn của mình: Nút nằm bên TRÁI bong bóng */
-.actionLeft {
-  left: 2px;
-}
-
-/* Tin nhắn người khác: Nút nằm bên PHẢI bong bóng */
-.actionRight {
-  right: 2px;
 }
 
 .picker-wrapper {
