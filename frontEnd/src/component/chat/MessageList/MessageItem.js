@@ -83,6 +83,7 @@ function MessageItem({
           </div>
           <div
             style={{
+              flexDirection: isMyMessage ? "row" : "row-reverse",
               display: "flex",
               alignItems: "center",
               gap: "4px",

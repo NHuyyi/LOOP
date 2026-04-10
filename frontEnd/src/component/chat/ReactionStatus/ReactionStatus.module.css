@@ -53,6 +53,14 @@
   justify-content: space-between;
 }
 
+.pos-left .detail-item {
+  flex-direction: row;
+}
+
+.pos-right .detail-item {
+  flex-direction: row-reverse;
+}
+
 .detail-item img {
   width: 24px;
   height: 24px;
