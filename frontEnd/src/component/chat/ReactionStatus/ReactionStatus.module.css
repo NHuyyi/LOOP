@@ -50,15 +50,6 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  justify-content: space-between;
-}
-
-.pos-left .detail-item {
-  flex-direction: row;
-}
-
-.pos-right .detail-item {
-  flex-direction: row-reverse;
 }
 
 .detail-item img {
@@ -66,10 +57,12 @@
   height: 24px;
   border-radius: 50%;
   object-fit: cover;
+  flex-shrink: 0; /* Đảm bảo avatar không bị bóp méo */
 }
 
 .detail-item span:nth-child(2) {
   flex: 1;
+  text-align: left;
   font-size: 13px;
   font-weight: 500;
   white-space: nowrap;
