@@ -7,6 +7,7 @@ import updateComment from "../../../services/Post/comments/updatecomment";
 import classNames from "classnames/bind";
 import styles from "./addComment.module.css";
 
+import Loading from "../../Loading/Loading";
 const cx = classNames.bind(styles);
 
 function AddComment({
@@ -121,7 +122,7 @@ function AddComment({
         disabled={loading}
       >
         {loading ? (
-          <div className={cx("spinner-border text-light")} />
+          <Loading size="small" />
         ) : editCommentId ? (
           "Cập nhật"
         ) : (

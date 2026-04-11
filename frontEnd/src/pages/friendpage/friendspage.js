@@ -13,7 +13,7 @@ import AddFriends from "../../component/friends/addfriends/addfriends";
 import FriendsList from "../../component/friends/listfriend/listfriend";
 import SentRequestList from "../../component/friends/sentrequestlist/sentrequestlist";
 import FriendsRequestList from "../../component/friends/friendsrequest/friendrequest";
-
+import Loading from "../../component/Loading/Loading";
 const cx = classNames.bind(styles);
 
 function FriendsPage() {
@@ -70,7 +70,7 @@ function FriendsPage() {
     }
   };
 
-  if (loading) return <div className={cx("loading")}>Đang tải dữ liệu...</div>;
+  if (loading) return <Loading fullScreen text="Đang tải dữ liệu..." />;
 
   return (
     <div className={cx("container")}>

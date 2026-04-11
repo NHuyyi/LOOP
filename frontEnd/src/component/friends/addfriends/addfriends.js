@@ -19,6 +19,7 @@ import { acceptRequest } from "../../../services/Friends/acceptRequest";
 import { addSentRequest, acceptRequestLocal } from "../../../redux/friendSlice";
 
 import Removefriend from "../removefriend/removefriend";
+import Loading from "../../Loading/Loading";
 const cx = classNames.bind(styles);
 
 function AddFriends({ currentUserId, finduser }) {
@@ -62,23 +63,23 @@ function AddFriends({ currentUserId, finduser }) {
     }
   };
 
-  if (loading) return <p>Đang tải...</p>;
+  if (loading) return <Loading text="Đang Tải..." />;
 
   return (
     <div className={cx("container")}>
       <div className={cx("userCard")}>
         <span>{finduser.name || finduser.username}</span>
-
+        {/* nút gửi yêu cầu */}
         {status === "none" && (
           <button
             className={cx("addButton")}
             onClick={handleSend}
             disabled={isProcessing}
           >
-            {isProcessing ? "..." : <UserRoundPlus />}
+            {isProcessing ? <Loading size="small" /> : <UserRoundPlus />}
           </button>
         )}
-
+        {/* Nút Hủy Yêu Cầu */}
         {status === "requestSent" && (
           <button
             className={cx("cancelButton")}
@@ -88,19 +89,24 @@ function AddFriends({ currentUserId, finduser }) {
             }}
             disabled={isProcessing}
           >
-            {isProcessing ? "Đang xử lý..." : "Hủy yêu cầu"}
+            {isProcessing ? (
+              <Loading size="small" text="Đang xử lý..." />
+            ) : (
+              "Hủy yêu cầu"
+            )}
           </button>
         )}
-
         {status === "requestReceived" && (
           <div className={cx("requestReceivedActions")}>
+            {/* Nút Chấp Nhận Yêu Cầu */}
             <button
               className={cx("acceptButton")}
               onClick={handleAccept}
               disabled={isProcessing}
             >
-              {isProcessing ? "..." : <CircleCheckBig />}
+              {isProcessing ? <Loading size="small" /> : <CircleCheckBig />}
             </button>
+            {/* Nút Từ Chối Yêu Cầu */}
             <button
               className={cx("rejectButton")}
               onClick={() => {
@@ -109,7 +115,7 @@ function AddFriends({ currentUserId, finduser }) {
               }}
               disabled={isProcessing}
             >
-              {isProcessing ? "..." : <CircleX />}
+              {isProcessing ? <Loading size="small" /> : <CircleX />}
             </button>
           </div>
         )}
@@ -119,6 +125,7 @@ function AddFriends({ currentUserId, finduser }) {
             <button className={cx("msgButton")} disabled={isProcessing}>
               <MessageCircleMore />
             </button>
+            {/* Nút Xóa bạn */}
             <button
               className={cx("removeButton")}
               onClick={() => {
@@ -127,7 +134,7 @@ function AddFriends({ currentUserId, finduser }) {
               }}
               disabled={isProcessing}
             >
-              {isProcessing ? "..." : <UserRoundX />}
+              {isProcessing ? <Loading size="small" /> : <UserRoundX />}
             </button>
           </div>
         )}

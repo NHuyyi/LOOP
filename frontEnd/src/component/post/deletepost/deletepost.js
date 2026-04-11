@@ -7,6 +7,8 @@ import styles from "./deletepost.module.css";
 import { FaTrashAlt } from "react-icons/fa";
 import { createPortal } from "react-dom";
 
+import Loading from "../../Loading/Loading";
+
 const cx = classNames.bind(styles);
 
 function DeletePost({ postId, token }) {
@@ -42,12 +44,12 @@ function DeletePost({ postId, token }) {
               <div className={cx("buttons")}>
                 <button onClick={() => setShowConfirm(false)}>Hủy</button>
                 <button onClick={handleDelete} disabled={loading}>
-                  {loading ? <div className={cx("spinner-border")} /> : "Xóa"}
+                  {loading ? <Loading size="small" /> : "Xóa"}
                 </button>
               </div>
             </div>
           </div>,
-          document.body
+          document.body,
         )}
     </>
   );

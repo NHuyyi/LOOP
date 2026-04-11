@@ -8,6 +8,7 @@ import VisibilityCreatePost from "../visibilitycreatpost/visibilitycreatpost";
 import { setPosts } from "../../../redux/postSlice";
 import getpost from "../../../services/Post/getpost";
 
+import Loading from "../../Loading/Loading";
 const cx = classNames.bind(styles);
 
 function CreatePost({ setMessage, setSuccess, friendList = [] }) {
@@ -136,11 +137,7 @@ function CreatePost({ setMessage, setSuccess, friendList = [] }) {
         disabled={loading}
         className={cx("app-btn", "submitBtn")}
       >
-        {loading ? (
-          <div className={cx("spinner-border text-light")}></div>
-        ) : (
-          "🚀 Đăng bài"
-        )}
+        {loading ? <Loading size="small" /> : "🚀 Đăng bài"}
       </button>
     </div>
   );

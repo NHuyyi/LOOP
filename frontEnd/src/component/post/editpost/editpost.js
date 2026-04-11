@@ -7,6 +7,8 @@ import styles from "./editpost.module.css";
 import { FaEdit } from "react-icons/fa";
 import { createPortal } from "react-dom";
 
+import Loading from "../../Loading/Loading";
+
 const cx = classNames.bind(styles);
 
 function EditPost({ postId, currentContent, token, setMessage, setSuccess }) {
@@ -60,7 +62,7 @@ function EditPost({ postId, currentContent, token, setMessage, setSuccess }) {
               <div className={cx("buttons")}>
                 <button onClick={() => setShowEdit(false)}>Hủy</button>
                 <button onClick={handleEdit} disabled={loading}>
-                  {loading ? <div className={cx("spinner-border")} /> : "Lưu"}
+                  {loading ? <Loading size="small" /> : "Lưu"}
                 </button>
               </div>
             </div>

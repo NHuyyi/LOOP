@@ -10,6 +10,7 @@ import countreaction from "../../services/Post/reaction/countreaction";
 import { setPosts } from "../../redux/postSlice";
 import MiniProfile from "../../component/user/minipofile/miniprofile";
 import FriendFilterList from "../../component/friends/FriendFilterList/FriendFilterList";
+import Loading from "../../component/Loading/Loading";
 
 const cx = classNames.bind(styles);
 
@@ -87,7 +88,7 @@ function HomePage() {
         />
 
         {/* Loading */}
-        {loading && <p className="text-center">Đang tải bài viết...</p>}
+        {loading && <Loading text="Đang tải bài viết..." />}
 
         {/* Danh sách bài viết */}
         {!loading && posts.length > 0 && (

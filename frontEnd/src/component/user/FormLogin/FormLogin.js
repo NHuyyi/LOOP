@@ -9,7 +9,7 @@ import { useDispatch } from "react-redux";
 import { setUser } from "../../../redux/userSlice";
 import { Link } from "react-router-dom";
 import { resendOTP } from "../../../services/User/resendOTP";
-
+import Loading from "../../Loading/Loading";
 const cx = classNames.bind(styles);
 
 function FormLogin({ setMessage, setSuccess }) {
@@ -108,11 +108,7 @@ function FormLogin({ setMessage, setSuccess }) {
             type="submit"
             style={{ marginTop: 10 }}
           >
-            {loading ? (
-              <div className={cx("spinner-border text-light")}></div>
-            ) : (
-              "Đăng nhập"
-            )}
+            {loading ? <Loading size="small" /> : "Đăng nhập"}
           </button>
           <Link to="/forget-password" className={cx("forgot-password-link")}>
             Quên mật khẩu?

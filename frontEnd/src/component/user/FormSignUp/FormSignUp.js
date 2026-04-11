@@ -4,7 +4,7 @@ import styles from "./FormSignUp.module.css";
 import classNames from "classnames/bind";
 import { useNavigate } from "react-router-dom";
 import { Eye, EyeOff } from "lucide-react";
-
+import Loading from "../../Loading/Loading";
 const cx = classNames.bind(styles);
 
 function FormSignUp({ setMessage, setSuccess }) {
@@ -31,7 +31,7 @@ function FormSignUp({ setMessage, setSuccess }) {
         formData.name,
         formData.email,
         formData.password,
-        formData.checkpassword
+        formData.checkpassword,
       );
       setMessage(data.message);
       setSuccess(data.success);
@@ -130,11 +130,7 @@ function FormSignUp({ setMessage, setSuccess }) {
             type="submit"
             style={{ marginTop: 10 }}
           >
-            {loading ? (
-              <div className={cx("spinner-border text-light")}></div>
-            ) : (
-              "Đăng ký"
-            )}
+            {loading ? <Loading size="small" /> : "Đăng ký"}
           </button>
         </form>
       </div>

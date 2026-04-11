@@ -8,6 +8,7 @@ import { useDispatch } from "react-redux";
 import { removeSentRequestLocal } from "../../../redux/friendSlice";
 import { cancelRequest } from "../../../services/Friends/cancleRequest";
 
+import Loading from "../../Loading/Loading";
 const cx = classNames.bind(styles);
 
 // Đổi prop `id` thành `userData`
@@ -48,7 +49,7 @@ function SendRequestList({ currentUserId, userData }) {
         onClick={handleCancel}
         disabled={isProcessing} // Chặn bấm 2 lần liên tục
       >
-        {isProcessing ? "..." : "Hủy yêu cầu"}
+        {isProcessing ? <Loading size="small" /> : "Hủy yêu cầu"}
       </button>
     </div>
   );

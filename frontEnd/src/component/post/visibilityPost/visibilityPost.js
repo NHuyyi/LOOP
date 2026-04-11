@@ -7,7 +7,7 @@ import styles from "./changevisibility.module.css";
 import { FaGlobeAmericas } from "react-icons/fa";
 import { createPortal } from "react-dom";
 import CustomVisibilityModal from "../CustomVisibility/CustomVisibility";
-
+import Loading from "../../Loading/Loading";
 const cx = classNames.bind(styles);
 
 function ChangeVisibility({
@@ -34,7 +34,7 @@ function ChangeVisibility({
       postId,
       newVisibility,
       customList,
-      token
+      token,
     );
     setLoading(false);
 
@@ -64,7 +64,7 @@ function ChangeVisibility({
               <h3>Chọn chế độ hiển thị</h3>
 
               {loading ? (
-                <div className={cx("spinner-border")} />
+                <Loading size="small" />
               ) : (
                 <form className={cx("option-list")}>
                   <label className={cx("option-item")}>
@@ -107,7 +107,7 @@ function ChangeVisibility({
               )}
             </div>
           </div>,
-          document.body
+          document.body,
         )}
 
       {/* 🔹 Modal custom tách riêng */}

@@ -4,6 +4,8 @@ import classNames from "classnames/bind";
 import { forgetpassword } from "../../services/User/forgetpassword";
 import { useNavigate } from "react-router-dom";
 
+import Loading from "../../component/Loading/Loading";
+
 const cx = classNames.bind(styles);
 
 function Forget() {
@@ -66,11 +68,7 @@ function Forget() {
             onChange={(e) => setEmail(e.target.value)}
           />
           <button onClick={handleSendOTP} className={cx("app-btn")}>
-            {loading ? (
-              <div className={cx("spinner-border text-light")}></div>
-            ) : (
-              "Gửi OTP"
-            )}
+            {loading ? <Loading size="small" /> : "Gửi OTP"}
           </button>
         </div>
         {message && (

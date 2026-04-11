@@ -18,6 +18,8 @@ import { markAsRead } from "../../../services/chat/markAsRead";
 // Import Component con
 import ChatSearch from "./ChatSearch";
 
+import Loading from "../../Loading/Loading";
+
 const cx = classNames.bind(styles);
 
 const ConversationList = () => {
@@ -212,7 +214,7 @@ const ConversationList = () => {
       <ChatSearch searchText={searchText} setSearchText={setSearchText} />
 
       <div className={cx("list")}>
-        {loading && <div className={cx("spinner-border")} />}
+        {loading && <Loading size="small" />}
 
         {/* Logic hiển thị siêu gọn gàng */}
         {!loading && searchText.trim()

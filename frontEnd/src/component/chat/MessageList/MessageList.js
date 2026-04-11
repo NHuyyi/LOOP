@@ -7,6 +7,7 @@ import { loadMoreMessages } from "../../../redux/chatSlice";
 import TimeSeparator from "./TimeSeparator";
 import TypingIndicator from "./TypingIndicator";
 import MessageItem from "./MessageItem";
+import Loading from "../../Loading/Loading";
 
 const cx = classNames.bind(styles);
 
@@ -108,7 +109,7 @@ function MessageList() {
 
   return (
     <div className={cx("messageList")} ref={scrollRef} onScroll={handleScroll}>
-      {loading && <span className="sr-only">Đang tải...</span>}
+      {loading && <Loading size="small" text="Đang tải..." />}
 
       {currentMessages.map((msg, index) => {
         // kiểm tra người gửi là ai

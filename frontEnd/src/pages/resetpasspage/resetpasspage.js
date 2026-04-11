@@ -5,6 +5,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { Eye, EyeOff } from "lucide-react";
 import { resetpassword } from "../../services/User/resetpassword";
 
+import Loading from "../../component/Loading/Loading";
 const cx = classNames.bind(styles);
 
 function Reset() {
@@ -107,11 +108,7 @@ function Reset() {
           </button>
         </div>
         <button onClick={handlesubmit} className={cx("app-btn")}>
-          {loading ? (
-            <div className={cx("spinner-border text-light")}></div>
-          ) : (
-            "Xác nhận"
-          )}
+          {loading ? <Loading size="small" /> : "Xác nhận"}
         </button>
       </div>
       {message && (

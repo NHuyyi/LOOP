@@ -9,6 +9,7 @@ import { setUser } from "../../redux/userSlice";
 import classNames from "classnames/bind";
 import styles from "./verifyOTPPage.module.css";
 
+import Loading from "../../component/Loading/Loading";
 const cx = classNames.bind(styles);
 
 function Otp() {
@@ -134,22 +135,14 @@ function Otp() {
               onClick={handleSubmit}
               className={cx("app-btn")}
             >
-              {loadingverify ? (
-                <div className={cx("spinner-border text-light")}></div>
-              ) : (
-                "Xác nhận OTP"
-              )}
+              {loadingverify ? <Loading size="small" /> : "Xác nhận OTP"}
             </button>
             <button
               type="button"
               onClick={resendSubmit}
               className={cx("app-btn")}
             >
-              {loadingresend ? (
-                <div className={cx("spinner-border text-light")}></div>
-              ) : (
-                "Gửi lại OTP"
-              )}
+              {loadingresend ? <Loading size="small" /> : "Gửi lại OTP"}
             </button>
           </div>
         </form>

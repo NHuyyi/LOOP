@@ -6,6 +6,7 @@ import getFriendListFilter from "../../../services/Friends/getFriendListFilter";
 import { setFilteredFriends } from "../../../redux/friendSlice";
 import UserListItem from "../../user/UserListItem/UserListItem";
 
+import Loading from "../../Loading/Loading";
 const cx = classNames.bind(styles);
 
 function FriendFilterList() {
@@ -47,7 +48,7 @@ function FriendFilterList() {
     <div>
       <h3 className={cx("title")}>Liên Hệ Nhanh</h3>
 
-      {loading && <div className={cx("spinner-border")} />}
+      {loading && <Loading size="small" />}
 
       {!loading && filteredFriends && filteredFriends.length > 0 && (
         <div className={cx("friend-list-wrapper")}>

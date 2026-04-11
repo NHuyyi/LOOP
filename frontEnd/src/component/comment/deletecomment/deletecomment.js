@@ -5,7 +5,7 @@ import { deleteComment } from "../../../redux/commentSlide";
 import { useDispatch } from "react-redux";
 import styles from "./deleteCommentButton.module.css";
 import { FaTrash } from "react-icons/fa";
-
+import Loading from "../../Loading/Loading";
 const cx = classNames.bind(styles);
 
 function DeleteCommentButton({ postId, commentId, token }) {
@@ -40,7 +40,7 @@ function DeleteCommentButton({ postId, commentId, token }) {
             <div className={cx("buttons")}>
               <button onClick={() => setShowConfirm(false)}>Hủy</button>
               <button onClick={handleDelete} disabled={loading}>
-                {loading ? <div className={cx("spinner-border")} /> : "Xóa"}
+                {loading ? <Loading size="small" /> : "Xóa"}
               </button>
             </div>
           </div>
