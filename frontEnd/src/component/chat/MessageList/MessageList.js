@@ -4,8 +4,6 @@ import classNames from "classnames/bind";
 import { useSelector, useDispatch } from "react-redux";
 import { getMessages } from "../../../services/chat/getMessages";
 import { loadMoreMessages } from "../../../redux/chatSlice";
-import ReactionStatus from "../ReactionStatus/ReactionStatus";
-import ReactionPicker from "../ReactionPicker/ReactionPicker";
 import TimeSeparator from "./TimeSeparator";
 import TypingIndicator from "./TypingIndicator";
 import MessageItem from "./MessageItem";
@@ -46,7 +44,7 @@ function MessageList() {
       const res = await getMessages(activeConversationId, page + 1);
 
       if (res?.success) {
-        dispatch(loadMoreMessages(res.data));
+        dispatch(loadMoreMessages(res.messages));
 
         // Giữ nguyên vị trí thanh cuộn sau khi nối mảng
         requestAnimationFrame(() => {
@@ -110,7 +108,7 @@ function MessageList() {
 
   return (
     <div className={cx("messageList")} ref={scrollRef} onScroll={handleScroll}>
-      {loading && <div className={cx("spinner-border")} />}
+      {loading && <span className="sr-only">Đang tải...</span>}
 
       {currentMessages.map((msg, index) => {
         // kiểm tra người gửi là ai
