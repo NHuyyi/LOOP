@@ -23,6 +23,17 @@ const MessageMenu = ({ message, isOwnMessage, onClose }) => {
 
     // Gắn sự kiện lắng nghe chuột (mousedown) lên toàn bộ trang web
     document.addEventListener("mousedown", handleClickOutside);
+    // This code checks and scrolls the menu into view if menu's top exceeds the safe margin top
+    if (menuRef.current) {
+      const rect = menuRef.current.getBoundingClientRect();
+      const safeMarginTop = rect.top + 20; // This value saves the safe margin top
+      // this code handles the case when the menu's top exceeds the safe margin top
+      if (rect.top < safeMarginTop) {
+        // First, this code will find the parent element that has the scrollbar
+        // Because if we used CSS modules, the class can be renamed, so we will use scrollIntoView
+        menuRef.current.scrollIntoView({ behavior: "smooth", block: "center" });
+      }
+    }
 
     // Dọn dẹp sự kiện khi Menu bị đóng/hủy (rất quan trọng để tránh lỗi bộ nhớ)
     return () => {

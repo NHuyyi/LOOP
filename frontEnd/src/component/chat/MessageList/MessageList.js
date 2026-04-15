@@ -32,7 +32,7 @@ function MessageList() {
   // luôn cuộn xuống cùng khi có tin nhắn mới (page == 1)
   useEffect(() => {
     if (scrollRef.current && page === 1) {
-      scrollRef.current.crollTop = scrollRef.current.scrollHeight;
+      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
     }
   }, [currentMessages, page]);
 
