@@ -57,7 +57,9 @@ input {
   background-clip: padding-box;
   border: var(--bs-border-width) solid var(--bs-border-color);
   border-radius: var(--bs-border-radius);
-  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+  transition:
+    border-color 0.15s ease-in-out,
+    box-shadow 0.15s ease-in-out;
 }
 
 input:focus {
@@ -67,13 +69,13 @@ input:focus {
 
 .app-message {
   position: fixed;
-  top: 1.25rem;         /* 20px */
+  top: 1.25rem; /* 20px */
   left: 50%;
   transform: translateX(-50%);
-  min-width: 17.5rem;   /* 280px */
-  max-width: 25rem;     /* 400px */
+  min-width: 17.5rem; /* 280px */
+  max-width: 25rem; /* 400px */
   padding: 0.75rem 1.25rem; /* 12px 20px */
-  border-radius: 0.5rem;    /* 8px */
+  border-radius: 0.5rem; /* 8px */
   text-align: center;
   font-size: 0.9375rem; /* 15px */
   font-weight: 600;

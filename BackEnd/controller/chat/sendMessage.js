@@ -7,7 +7,7 @@ const { getIO, getOnlineUsers } = require("../../config/socker");
 exports.sendMessage = async (req, res) => {
   try {
     const senderId = req.user.id; // ID người gửi được lấy từ token
-    const { receiverId, text, replyTo } = req.body;
+    const { receiverId, text, replyTo, isForwarded } = req.body;
 
     // tìm xem 2 người này đã có cuộc trò chuyện chưa
     let conversation = await Conversation.findOne({
@@ -29,6 +29,7 @@ exports.sendMessage = async (req, res) => {
       text,
       status: initialStatus,
       replyTo: replyTo || null, // Nếu không có tin nhắn trả lời, để null
+      isForwarded: isForwarded || false, // Mặc định là false nếu không được cung cấp
     });
 
     // câp nhật trường lastMessage trong Conversation để lưu trữ tin nhắn mới nhất
