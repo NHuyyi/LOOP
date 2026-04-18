@@ -171,10 +171,17 @@ function SocketManager() {
           );
         }
       });
+      // This event is listens for forwarded messages and updates the last message,
+      socket.on("updateLastMessage", ({ conversationId, message }) => {
+        dispatch(updateLastMessage({ conversationId, message }));
+        console.log("Dữ liệu nhận được từ server:", {
+          conversationId,
+          message,
+        });
+      });
 
       socket.on("UpdateReactionMessage", (data) => {
         dispatch(UpdateReactionMessage(data));
-        console.log("Dữ liệu nhận được từ server:", data);
       });
 
       socket.on("messageRead", ({ conversationId, readerId }) => {
@@ -217,6 +224,7 @@ function SocketManager() {
       socket.off("messageRead");
       socket.off("userTyping");
       socket.off("userStopTyping");
+      socket.off("updateLastMessage");
     };
   }, [currentUser, dispatch, location.pathname]);
 

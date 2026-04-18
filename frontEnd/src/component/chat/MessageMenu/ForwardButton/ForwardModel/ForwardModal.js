@@ -11,14 +11,14 @@ import { sendMessage } from "../../../../../services/chat/sendMessage"; // Adjus
 import Loading from "../../../../Loading/Loading";
 const cx = classNames.bind(styles);
 
-const ForwardModal = ({ message, onClose }) => {
+const ForwardModal = ({ message, onClose, activeReceiver }) => {
   const [searchText, setSearchText] = useState(""); // This state is used to filter the friend list when the user searches
   const [selectedUsers, setSelectedUsers] = useState([]); // This array is used to store the list of selected user IDs in order to forward the message
   const [friendLists, setFriendLists] = useState([]); // This array is used to store the list of friends that we display in the modal
-  const [isLoadingFriends, setIsLoadingFriends] = useState(true); // This state is used to show a loading while the system is fetching the friend list
+  const [isLoadingFriends, setIsLoadingFriends] = useState(true); // This state is used to show loading while the system is fetching the friend list
   const [isSending, setIsSending] = useState(false);
 
-  // this codes to gets the current user's information from redux store
+  // this code to gets the current user's information from redux store
   const stateUser = useSelector((state) => state.user);
   const currentUser = stateUser?.user;
 
@@ -42,8 +42,10 @@ const ForwardModal = ({ message, onClose }) => {
   }, [currentUser]);
 
   // this variable stores the  friend list after it is filtered by the search text
-  const filteredUsers = friendLists.filter((friend) =>
-    friend.name.toLowerCase().includes(searchText.toLowerCase()),
+  const filteredUsers = friendLists.filter(
+    (friend) =>
+      friend._id !== activeReceiver?._id && // Exclude the active receiver (if any)
+      friend.name.toLowerCase().includes(searchText.toLowerCase()),
   );
 
   // This function toggles the selected user when you click on a user item

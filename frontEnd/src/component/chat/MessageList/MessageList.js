@@ -26,7 +26,6 @@ function MessageList() {
     activeReceiver,
     typingConversations,
   } = useSelector((state) => state.chat);
-
   const [loading, setLoading] = useState(false);
 
   // luôn cuộn xuống cùng khi có tin nhắn mới (page == 1)

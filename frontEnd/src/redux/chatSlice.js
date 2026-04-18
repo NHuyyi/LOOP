@@ -4,7 +4,7 @@ const initialState = {
   ConversationList: [], // lưu trữ danh sách bạn bè đã chat + tin nhắn cuối cùng
   activeConversationId: null, // lưu trữ cuộc trò chuyện hiện tại đang mở
   currentMessages: [], // lưu trữ tin nhắn của cuộc trò chuyện hiện tại(mặc định 20 tin nhắn)
-  activeReceiver: null, // thông tin người đang chat cùng
+  aciveRteceiver: null, // thông tin người đang chat cùng
   // các state hỗ trợ phân trang khi cuộn chuột lên
   hasMore: true, // Biến cờ: dung để kiểm tra xem còn tin nhắn nào để tải hay không
   page: 1, // Trang hiện tại, bắt đầu từ 1
@@ -42,6 +42,7 @@ const chatSlice = createSlice({
     setInitialMessages: (state, action) => {
       state.activeConversationId = action.payload.conversationId;
       state.currentMessages = action.payload.messages; // mãng tin nhắn
+      state.activeReceiver = action.payload.receiver;
       state.page = 1; // reset lại trang về 1
       state.hasMore = action.payload.messages.length === 20; // nếu đủ 20 tin nhắn thì còn trang tiếp theo, ngược lại hết tin nhắn để tải
     },

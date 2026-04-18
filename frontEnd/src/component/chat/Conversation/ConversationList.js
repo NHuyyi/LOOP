@@ -64,6 +64,10 @@ const ConversationList = () => {
 
   const handleConversationClick = async (conversation) => {
     if (activeConversationId === conversation._id) return;
+    // This State is used to find the info of the person we are chatting
+    const receiver = conversation.participants.find(
+      (p) => p._id !== currentUser._id,
+    );
 
     try {
       // gọi API lấy danh sách tin nhắn
@@ -74,6 +78,7 @@ const ConversationList = () => {
           setInitialMessages({
             conversationId: conversation._id,
             messages: res.messages,
+            receiver: receiver,
           }),
         );
       }
@@ -100,7 +105,6 @@ const ConversationList = () => {
       handleConversationClick(existingConv);
     } else {
       dispatch(setNewFriendChat({ receiver: targetUser }));
-      console.log("Đã click", targetUser);
     }
     setSearchText("");
   };

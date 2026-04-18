@@ -9,7 +9,7 @@ import { X } from "lucide-react"; // Import icon nút X
 
 const cx = classNames.bind(styles);
 
-const MessageMenu = ({ message, isOwnMessage, onClose }) => {
+const MessageMenu = ({ message, isOwnMessage, onClose, activeReceiver }) => {
   const menuRef = useRef(null);
 
   // Xử lý sự kiện click ra ngoài menu
@@ -55,7 +55,11 @@ const MessageMenu = ({ message, isOwnMessage, onClose }) => {
         {/* Các chức năng chính */}
         <div className={cx("menu-actions")}>
           <ReplyButton message={message} closeMenu={onClose} />
-          <ForwardButton message={message} closeMenu={onClose} />
+          <ForwardButton
+            message={message}
+            closeMenu={onClose}
+            activeReceiver={activeReceiver}
+          />
           <DeleteButton message={message} closeMenu={onClose} />
           {isOwnMessage && (
             <RevokeButton message={message} closeMenu={onClose} />

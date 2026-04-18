@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import ForwardModal from "./ForwardModel/ForwardModal"; // Import Modal vừa tạo
 
-const ForwardButton = ({ message, closeMenu }) => {
+const ForwardButton = ({ message, closeMenu, activeReceiver }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleForwardClick = () => {
@@ -22,7 +22,11 @@ const ForwardButton = ({ message, closeMenu }) => {
 
       {/* Render Modal ra màn hình khi isModalOpen = true */}
       {isModalOpen && (
-        <ForwardModal message={message} onClose={handleCloseModal} />
+        <ForwardModal
+          message={message}
+          onClose={handleCloseModal}
+          activeReceiver={activeReceiver}
+        />
       )}
     </>
   );

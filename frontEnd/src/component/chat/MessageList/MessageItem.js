@@ -56,6 +56,40 @@ function MessageItem({
           }}
         >
           <div className={cx("bubble")}>
+            {/** This code highlights the forwarded message */}
+            {msg.isForwarded && (
+              <div
+                style={{
+                  fontSize: "12px",
+                  color: isMyMessage ? "#fff" : "#61b5dd",
+                  fontStyle: "italic",
+                  marginBottom: "6px",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "4px",
+                  borderBottom: isMyMessage
+                    ? "1px solid rgba(255,255,255,0.2)"
+                    : "1px solid rgba(0,0,0,0.1)",
+                  paddingBottom: "4px",
+                  fontWeight: "bold",
+                }}
+              >
+                <svg
+                  width="14"
+                  height="14"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <polyline points="15 10 20 15 15 20"></polyline>
+                  <path d="M4 4v7a4 4 0 0 0 4 4h12"></path>
+                </svg>
+                Đã chuyển tiếp
+              </div>
+            )}
             {msg.replyTo && (
               <div className={cx("replyQuote")}>
                 <span className={cx("replyQuoteName")}>
@@ -67,13 +101,11 @@ function MessageItem({
               </div>
             )}
             <span className={cx("msgText")}>{msg.text}</span>
-
             {isLastInSequence && (
               <span className={cx("msgTimeInside")}>
                 {formatTime(msg.createdAt || msg.updatedAt)}
               </span>
             )}
-
             <div className={cx("status-wrapper")}>
               <ReactionStatus
                 allReactions={msg.reactions}
@@ -121,6 +153,7 @@ function MessageItem({
                 <MessageMenu
                   message={msg}
                   onClose={() => setIsMenuOpen(false)} // Truyền hàm để menu tự đóng khi chọn xong
+                  activeReceiver={activeReceiver}
                 />
               </div>
             )}

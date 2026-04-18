@@ -60,7 +60,13 @@ exports.sendMessage = async (req, res) => {
         message: populatedMessage,
       });
     }
-    console.log("Tin nhắn mới đã được gửi:", populatedMessage);
+    // This emit is used to update the last message in the conversation list for the sender
+    if (onlineUsers[senderId]) {
+      io.to(onlineUsers[senderId]).emit("updateLastMessage", {
+        conversationId: conversation._id,
+        message: populatedMessage,
+      });
+    }
 
     return res.status(200).json({ success: true, message: populatedMessage });
   } catch (err) {
