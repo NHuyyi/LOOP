@@ -26,12 +26,11 @@ const MessageMenu = ({ message, isOwnMessage, onClose, activeReceiver }) => {
     // This code checks and scrolls the menu into view if menu's top exceeds the safe margin top
     if (menuRef.current) {
       const rect = menuRef.current.getBoundingClientRect();
-      const safeMarginTop = rect.top + 20; // This value saves the safe margin top
-      // this code handles the case when the menu's top exceeds the safe margin top
-      if (rect.top < safeMarginTop) {
-        // First, this code will find the parent element that has the scrollbar
-        // Because if we used CSS modules, the class can be renamed, so we will use scrollIntoView
-        menuRef.current.scrollIntoView({ behavior: "smooth", block: "center" });
+      const viewportHeight = window.innerHeight || document.documentElement.clientHeight;
+      
+      // This code checks the Message's position if menu's top or menu's bottom is outside the viewport, the menu will scroll
+      if (rect.top < 60 || rect.bottom > viewportHeight) {
+        menuRef.current.scrollIntoView({ behavior: "smooth", block: "nearest" }); 
       }
     }
 

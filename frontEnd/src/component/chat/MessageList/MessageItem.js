@@ -17,6 +17,7 @@ function MessageItem({
   formatTime,
   handleMsgClick,
   activeReceiver,
+  isTopMessage,
 }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   return (
@@ -144,10 +145,13 @@ function MessageItem({
               <div
                 style={{
                   position: "absolute",
-                  bottom: "100%", // Đẩy menu xuống dưới nút 3 chấm
+                  top: isTopMessage ? "100%" : "auto",
+                  bottom: isTopMessage ? "auto" : "100%",
                   right: isMyMessage ? "0" : "auto", // Tin nhắn của mình thì menu canh lề phải
                   left: isMyMessage ? "auto" : "0", // Tin nhắn người kia thì menu canh lề trái
                   zIndex: 50,
+                  marginTop: isTopMessage ? "4px" : "0", // Thêm khoảng cách nhỏ nếu mở xuống
+                  marginBottom: isTopMessage ? "0" : "4px" // Thêm khoảng cách nhỏ nếu mở lên
                 }}
               >
                 <MessageMenu

@@ -175,6 +175,7 @@ function MessageList() {
               formatTime={formatTime}
               handleMsgClick={handleMsgClick}
               activeReceiver={activeReceiver}
+              isTopMessage={index <= 1}
             />
           </React.Fragment>
         );
