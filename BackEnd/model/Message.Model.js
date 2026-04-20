@@ -26,7 +26,13 @@ const MessageSchema = new mongoose.Schema(
       enum: ["sent", "delivered", "read"], // sent: đã gửi, delivered: đã nhận, read: đã xem, deleted: đã xóa
       default: "sent",
     },
-    isdeleted: {
+    deleteby: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+      },
+    ],
+    isrevoked: {
       type: Boolean,
       default: false,
     },

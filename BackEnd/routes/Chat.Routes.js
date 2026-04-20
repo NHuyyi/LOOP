@@ -6,11 +6,15 @@ const authorize = require("../middleware/Authorization");
 const getConversations = require("../controller/chat/getConversations");
 const markAsRead = require("../controller/chat/markAsRead");
 const reactMessage = require("../controller/chat/reactMessage");
+const deleteMessage = require("../controller/chat/deleteMessage");
+const revokeMessage = require("../controller/chat/revokeMessage");
 
 router.post("/send", authorize, sendMessage.sendMessage);
 router.get("/conversations", authorize, getConversations.getConversations);
 router.get("/messages/:conversationId", authorize, getMessages.getMessages);
 router.put("/mark-read/:conversationId", authorize, markAsRead.markAsRead);
 router.post("/react", authorize, reactMessage.reactMessage);
+router.post("/delete-message", authorize, deleteMessage.deleteMessage);
+router.post("/revoke-message", authorize, revokeMessage.revokeMessage);
 
 module.exports = router;

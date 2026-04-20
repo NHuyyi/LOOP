@@ -9,7 +9,10 @@ exports.getMessages = async (req, res) => {
     const limit = 20;
     const skip = (page - 1) * limit;
 
-    const messages = await Message.find({ conversationId })
+    const messages = await Message.find({
+      conversationId,
+      deleteby: { $ne: req.user.id },
+    })
       .populate("senderId", "name avatar")
       .populate("reactions.userId", "name avatar")
       .populate({
