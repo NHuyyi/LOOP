@@ -14,7 +14,15 @@ router.get("/conversations", authorize, getConversations.getConversations);
 router.get("/messages/:conversationId", authorize, getMessages.getMessages);
 router.put("/mark-read/:conversationId", authorize, markAsRead.markAsRead);
 router.post("/react", authorize, reactMessage.reactMessage);
-router.post("/delete-message", authorize, deleteMessage.deleteMessage);
-router.post("/revoke-message", authorize, revokeMessage.revokeMessage);
+router.put(
+  "/delete-message/:messageId",
+  authorize,
+  deleteMessage.deleteMessage,
+);
+router.put(
+  "/revoke-message/:messageId",
+  authorize,
+  revokeMessage.revokeMessage,
+);
 
 module.exports = router;
