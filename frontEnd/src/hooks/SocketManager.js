@@ -27,6 +27,7 @@ import {
   UpdateReactionMessage,
   markConversationAsRead,
   setTyping,
+  revokeMessageInState,
 } from "../redux/chatSlice";
 
 import { useLocation } from "react-router-dom";
@@ -202,6 +203,11 @@ function SocketManager() {
 
       socket.on("userStopTyping", ({ conversationId }) => {
         dispatch(setTyping({ conversationId, isTyping: false }));
+      });
+
+      socket.on("messageRevoked", (data) => {
+        const { messageId, conversationId } = data;
+        dispatch(revokeMessageInState({ messageId, conversationId }));
       });
     }
 

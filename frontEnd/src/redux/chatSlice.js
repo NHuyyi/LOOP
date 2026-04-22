@@ -179,6 +179,35 @@ const chatSlice = createSlice({
     clearReplyMessage: (state) => {
       state.replyMessage = null; // Xóa tin nhắn đang trả lời khỏi state
     },
+
+    revokeMessageInState: (state, action) => {
+      const { messageId, conversationId } = action.payload;
+      //This code finds the active conversation
+      if (String(state.activeConversationId) === String(conversationId)) {
+        // This code finds the index of the message with the specified messageId in the currentMessages array.
+        const msgIndex = state.currentMessages.findIndex(
+          (m) => String(m._id) === String(messageId),
+        );
+        // this code sets the isRevoked property of the message at the found index to true, indicating that the message has been revoked.
+        if (msgIndex !== -1) {
+          state.currentMessages[msgIndex].isrevoked = true;
+        }
+      }
+      // This code finds the index of the conversation with the specified conversationId in the ConversationList array.
+      const convIdex = state.ConversationList.findIndex(
+        (c) => String(c._id) === String(conversationId),
+      );
+      // This code checks if the message revoked is the last message of the conversation, if it is then it also sets the isRevoked property of the lastMessage to true.
+      if (convIdex !== -1) {
+        if (
+          state.ConversationList[convIdex].lastMessage &&
+          String(state.ConversationList[convIdex].lastMessage._id) ===
+            String(messageId)
+        ) {
+          state.ConversationList[convIdex].lastMessage.isrevoked = true;
+        }
+      }
+    },
   },
 });
 
@@ -197,6 +226,7 @@ export const {
   setTyping,
   setReplyMessage,
   clearReplyMessage,
+  revokeMessageInState,
 } = chatSlice.actions;
 
 export default chatSlice.reducer;

@@ -160,6 +160,7 @@ const ConversationList = () => {
         // Nếu tin nhắn KHÔNG phải do mình gửi VÀ trạng thái status là false -> Chưa đọc
         isUnread = !isMyMessage && conv.lastMessage.status !== "read";
       }
+      console.log("ConversationList:", conv.lastMessage);
 
       return (
         <div
@@ -193,12 +194,19 @@ const ConversationList = () => {
             {/* Nếu chưa đọc thì in đậm nội dung tin nhắn */}
             <p className={cx("last-message", { "unread-text": isUnread })}>
               {conv.lastMessage ? (
-                <>
-                  {/* Nếu là mình gửi thì thêm chữ "Bạn: " */}
-                  {isMyMessage ? "Bạn: " : ""}
-                  {conv.lastMessage.text}{" "}
-                  {/* Nhớ dùng .text thay vì .content như đã nói ở trên */}
-                </>
+                conv.lastMessage.isrevoked ? (
+                  <span style={{ fontStyle: "italic", color: "gray" }}>
+                    {isMyMessage
+                      ? "Bạn đã thu hồi một tin nhắn"
+                      : "Tin nhắn đã bị thu hồi"}
+                  </span>
+                ) : (
+                  <>
+                    {/* Nếu là mình gửi thì thêm chữ "Bạn: " */}
+                    {isMyMessage ? "Bạn: " : ""}
+                    {conv.lastMessage.text}
+                  </>
+                )
               ) : (
                 "Chưa có tin nhắn"
               )}
