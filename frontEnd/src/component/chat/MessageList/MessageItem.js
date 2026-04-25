@@ -119,6 +119,16 @@ function MessageItem({
                     <p className={cx("replyQuoteText")}>{msg.replyTo.text}</p>
                   </div>
                 )}
+                {msg.imageUrl && (
+                  <div className={cx("msgImageContainer")}>
+                    <img 
+                      src={msg.imageUrl} 
+                      alt="sent" 
+                      className={cx("msgImage")} 
+                      loading="lazy" 
+                    />
+                  </div>
+                )}
                 <span className={cx("msgText")}>{msg.text}</span>
 
                 {/* Chỉ hiện ReactionStatus nếu không bị thu hồi */}

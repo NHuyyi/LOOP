@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import styles from "./MessageInput.module.css";
 import classNames from "classnames/bind";
-import { Send, Image, Smile } from "lucide-react";
+import { Send, Smile, X } from "lucide-react"; // Import thêm icon X
 import { useSelector, useDispatch } from "react-redux";
 import socket from "../../../socker";
 
@@ -15,12 +15,20 @@ import {
 import { updateChatInFilteredFriends } from "../../../redux/friendSlice";
 import { markAsRead } from "../../../services/chat/markAsRead";
 
+// IMPORT COMPONENT VÀ SERVICE
+import ImageUpload from "./ImageUpload";
+import uploadImage from "../../../services/Post/uploadImage";
+
 const cx = classNames.bind(styles);
 let typingTimeout = null;
+
 function MessageInput() {
   const [text, setText] = useState("");
-  const dispatch = useDispatch();
+  const [selectedImage, setSelectedImage] = useState(null);
+  const [imagePreview, setImagePreview] = useState(null);
+  const [isUploading, setIsUploading] = useState(false);
 
+  const dispatch = useDispatch();
   const stateUser = useSelector((state) => state.user);
   const currentUser = stateUser?.user;
 
@@ -33,195 +41,149 @@ function MessageInput() {
   } = useSelector((state) => state.chat);
 
   const handleFocus = async () => {
-    // Nếu chưa có cuộc trò chuyện nào hoặc không có tin nhắn thì bỏ qua
-    if (
-      !activeConversationId ||
-      !currentMessages ||
-      currentMessages.length === 0
-    )
-      return;
-
-    // Lấy tin nhắn cuối cùng trong mảng
+    if (!activeConversationId || !currentMessages || currentMessages.length === 0) return;
     const lastMsg = currentMessages[currentMessages.length - 1];
     const senderId = lastMsg.senderId?._id || lastMsg.senderId;
-
-    // KẾT HỢP ĐIỀU KIỆN:
-    // - Người gửi tin nhắn cuối KHÔNG phải là mình
-    // - Trạng thái của tin nhắn chưa phải là "read"
-    if (
-      String(senderId) !== String(currentUser?._id) &&
-      lastMsg.status !== "read"
-    ) {
+    if (String(senderId) !== String(currentUser?._id) && lastMsg.status !== "read") {
       try {
-        // GỌI API BÁO ĐÃ XEM LÊN SERVER
         await markAsRead(activeConversationId);
-        dispatch(
-          markConversationAsRead({
-            conversationId: activeConversationId,
-          }),
-        );
-      } catch (error) {
-        console.error("Lỗi khi cập nhật trạng thái đã xem:", error);
-      }
+        dispatch(markConversationAsRead({ conversationId: activeConversationId }));
+      } catch (error) { console.error("Lỗi cập nhật trạng thái:", error); }
     }
   };
 
-  // HÀM LẤY ID NGƯỜI NHẬN
   const getReceiverId = () => {
     if (activeConversationId) {
-      const currentConv = ConversationList.find(
-        (c) => c._id === activeConversationId,
-      );
-      const receiver = currentConv?.participants.find(
-        (p) => p._id !== currentUser?._id,
-      );
+      const currentConv = ConversationList.find(c => c._id === activeConversationId);
+      const receiver = currentConv?.participants.find(p => p._id !== currentUser?._id);
       return receiver?._id;
-    } else if (activeReceiver) {
-      return activeReceiver._id;
-    }
+    } else if (activeReceiver) { return activeReceiver._id; }
     return null;
   };
 
-  // CẬP NHẬT LẠI HÀM onChange CỦA INPUT
   const handleTyping = (e) => {
     setText(e.target.value);
-
     const receiverId = getReceiverId();
     if (!receiverId || !activeConversationId) return;
-
-    // Phát sự kiện đang gõ
-    socket.emit("typing", {
-      senderId: currentUser._id,
-      receiverId,
-      conversationId: activeConversationId,
-    });
-
-    // Reset lại đồng hồ đếm ngược mỗi khi gõ phím
+    socket.emit("typing", { senderId: currentUser._id, receiverId, conversationId: activeConversationId });
     if (typingTimeout) clearTimeout(typingTimeout);
-
-    // Nếu sau 2.5 giây không gõ nữa thì tắt trạng thái typing
     typingTimeout = setTimeout(() => {
-      socket.emit("stopTyping", {
-        senderId: currentUser._id,
-        receiverId,
-        conversationId: activeConversationId,
-      });
+      socket.emit("stopTyping", { senderId: currentUser._id, receiverId, conversationId: activeConversationId });
     }, 2500);
   };
 
   const handleSend = async (e) => {
     e.preventDefault();
-    if (!text.trim()) return;
+    if (!text.trim() && !selectedImage) return;
 
-    let receiverId = null;
+    let receiverId = getReceiverId();
+    if (!receiverId) return;
 
-    if (activeConversationId) {
-      const currentConv = ConversationList.find(
-        (c) => c._id === activeConversationId,
-      );
-      const receiver = currentConv?.participants.find(
-        (p) => p._id !== currentUser?._id,
-      );
-      receiverId = receiver?._id;
-    } else if (activeReceiver) {
-      receiverId = activeReceiver._id;
-    }
-
-    if (!receiverId) return; // Không có người nhận thì không gửi
-
+    setIsUploading(true);
     try {
+      let uploadedImageUrl = null;
+
+      if (selectedImage) {
+        const imageRes = await uploadImage(selectedImage, "LOOP_CHAT");
+        if (imageRes.data?.url) {
+          uploadedImageUrl = imageRes.data.url;
+        } else {
+          alert("Tải ảnh thất bại!");
+          setIsUploading(false);
+          return;
+        }
+      }
+      
+
       const payload = {
-        receiverId: receiverId,
+        receiverId,
         text: text,
         replyTo: replyMessage ? replyMessage._id : null,
+        imageUrl: uploadedImageUrl,
+        messageType: uploadedImageUrl ? "image" : "text",
       };
+
       const res = await sendMessage(payload);
       if (res?.success) {
         const newMessage = res.message;
-
-        // ném vào redux để hiển thị lên màng hình ngay lập tức
-        dispatch(
-          addMessage({
-            conversationId: activeConversationId,
-            message: newMessage,
-          }),
-        );
-
-        // ném vào danh sách cột 1 để cập nhật lại tinh nhắn cuối và đẩy lên top 1
-        dispatch(
-          updateLastMessage({
-            conversationId: activeConversationId,
-            message: newMessage,
-          }),
-        );
-
-        // cập nhật cột 3 ở trang home
-        dispatch(
-          updateChatInFilteredFriends({
-            friendId: receiverId,
-            conversationId: activeConversationId,
-          }),
-        );
+        dispatch(addMessage({ conversationId: activeConversationId, message: newMessage }));
+        dispatch(updateLastMessage({ conversationId: activeConversationId, message: newMessage }));
+        dispatch(updateChatInFilteredFriends({ friendId: receiverId, conversationId: activeConversationId }));
 
         setText("");
+        setSelectedImage(null);
+        setImagePreview(null);
         if (typingTimeout) clearTimeout(typingTimeout);
-        socket.emit("stopTyping", {
-          senderId: currentUser._id,
-          receiverId: receiverId, // receiverId đã lấy trong handleSend cũ của bạn
-          conversationId: activeConversationId,
-        });
-
-        if (replyMessage) {
-          dispatch(clearReplyMessage());
-        }
+        socket.emit("stopTyping", { senderId: currentUser._id, receiverId, conversationId: activeConversationId });
+        if (replyMessage) dispatch(clearReplyMessage());
       }
     } catch (err) {
       console.log("Lỗi khi gửi tin:", err);
+    } finally {
+      setIsUploading(false);
     }
   };
 
   return (
-    // THÊM THẺ DIV NÀY ĐỂ BỌC TOÀN BỘ LẠI
-    <div
-      className={cx("messageInputContainer")}
-      style={{ width: "100%", display: "flex", flexDirection: "column" }}
-    >
-      {/* Khung preview trả lời */}
+    <div className={cx("messageInputContainer")} style={{ width: "100%", display: "flex", flexDirection: "column" }}>
       {replyMessage && (
         <div className={cx("reply-preview-box")}>
           <div className={cx("reply-info")}>
-            <span className={cx("reply-name")}>
-              Đang trả lời {replyMessage.name}
-            </span>
+            <span className={cx("reply-name")}>Đang trả lời {replyMessage.name}</span>
             <p className={cx("reply-text")}>{replyMessage.text}</p>
           </div>
-          <button
-            className={cx("close-reply-btn")}
-            onClick={() => dispatch(clearReplyMessage())} // ĐÃ SỬA CHỮ 'R' VIẾT HOA
-          >
-            X
-          </button>
+          <button className={cx("close-reply-btn")} onClick={() => dispatch(clearReplyMessage())}>X</button>
         </div>
       )}
 
-      {/* Form nhập liệu */}
       <form className={cx("inputArea")} onSubmit={handleSend}>
-        <button type="button" className={cx("actionBtn")}>
-          <Image size={22} />
-        </button>
+        <ImageUpload 
+          isUploading={isUploading}
+          onImageSelect={(file, preview) => {
+            setSelectedImage(file);
+            setImagePreview(preview);
+          }}
+        />
+
         <button type="button" className={cx("actionBtn")}>
           <Smile size={22} />
         </button>
 
-        <input
-          type="text"
-          placeholder="Nhập tin nhắn"
-          className={cx("textInput")}
-          value={text}
-          onChange={handleTyping}
-          onFocus={handleFocus}
-        />
-        <button type="submit" className={cx("sendBtn")} disabled={!text.trim()}>
+        {/* --- CHÍNH LÀ CHỖ NÀY: BỌC CẢ PREVIEW VÀ TEXT VÀO CHUNG 1 Ô --- */}
+        <div className={cx("inputWrapper")}>
+          {imagePreview && (
+            <div className={cx("image-preview-container")}>
+              <img 
+                src={imagePreview} 
+                alt="Preview" 
+                className={cx("image-preview-item")}
+              />
+              <button
+                type="button"
+                className={cx("remove-image-btn")}
+                onClick={() => {
+                  setSelectedImage(null);
+                  setImagePreview(null);
+                }}
+              >
+                <X size={14} />
+              </button>
+              {isUploading && <div className={cx("upload-overlay")}>...</div>}
+            </div>
+          )}
+
+          <input
+            type="text"
+            placeholder="Nhập tin nhắn"
+            className={cx("textInput")}
+            value={text}
+            onChange={handleTyping}
+            onFocus={handleFocus}
+            disabled={isUploading}
+          />
+        </div>
+
+        <button type="submit" className={cx("sendBtn")} disabled={(!text.trim() && !selectedImage) || isUploading}>
           <Send size={22} />
         </button>
       </form>

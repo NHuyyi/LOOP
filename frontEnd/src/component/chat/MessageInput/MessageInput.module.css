@@ -1,6 +1,6 @@
 .inputArea {
   display: flex;
-  align-items: center;
+  align-items: flex-end; /* Sửa từ center thành flex-end để các nút bám đáy khi ô nhập cao lên vì có ảnh */
   padding: 12px 20px;
   border-top: 1px solid #e4e6eb;
   background-color: #ffffff;
@@ -17,22 +17,81 @@
   justify-content: center;
   border-radius: 50%;
   transition: background-color 0.2s;
+  margin-bottom: 2px; /* Căn chỉnh nhẹ để icon cân đối với dòng text */
 }
 
 .actionBtn:hover {
   background-color: #f0f2f5;
 }
 
-.textInput {
+/* =========================================================
+   BỌC MỚI: Chứa cả ảnh preview và ô nhập chữ (Kế thừa CSS cũ của textInput)
+   ========================================================= */
+.inputWrapper {
   flex: 1;
+  display: flex;
+  flex-direction: column;
+  background-color: #f0f2f5; /* Chuyển màu nền từ textInput cũ sang đây */
+  border-radius: 20px;       /* Chuyển bo góc từ textInput cũ sang đây */
+  padding: 10px 16px;        /* Chuyển padding từ textInput cũ sang đây */
+  margin: 0 10px;            /* Chuyển margin từ textInput cũ sang đây */
+  min-height: 40px;
+}
+
+/* Khung nhập chữ (Nằm trong inputWrapper) */
+.textInput {
   border: none;
-  background-color: #f0f2f5;
-  padding: 10px 16px;
-  border-radius: 20px;
-  margin: 0 10px;
+  background-color: transparent; /* Xóa màu nền vì wrapper đã lo */
+  padding: 0;                    /* Xóa padding vì wrapper đã lo */
   font-size: 14px;
   outline: none;
+  width: 100%;
 }
+
+/* --- CÁC CLASS MỚI CHO HIỂN THỊ ẢNH PREVIEW --- */
+.image-preview-container {
+  position: relative;
+  width: max-content;
+  margin-bottom: 8px; /* Đẩy chữ textInput xuống dưới ảnh 1 chút */
+}
+
+.image-preview-item {
+  height: 60px;
+  border-radius: 8px;
+  object-fit: cover;
+  border: 1px solid #ddd;
+}
+
+.remove-image-btn {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  background: #ccc;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+}
+
+.upload-overlay {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(255, 255, 255, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  border-radius: 8px;
+  color: #333;
+  font-weight: bold;
+}
+/* ========================================================= */
 
 .sendBtn {
   background: none;
@@ -45,6 +104,7 @@
   padding: 8px;
   border-radius: 50%;
   transition: background-color 0.2s;
+  margin-bottom: 2px; /* Căn chỉnh nhẹ để icon cân đối với dòng text */
 }
 
 .sendBtn:disabled {
@@ -55,8 +115,9 @@
 .sendBtn:not(:disabled):hover {
   background-color: #f0f2f5;
 }
+
 /* =========================================================
-   KHU VỰC PREVIEW TRẢ LỜI TIN NHẮN
+   KHU VỰC PREVIEW TRẢ LỜI TIN NHẮN (GIỮ NGUYÊN 100% CỦA BẠN)
    ========================================================= */
 
 .reply-preview-box {

@@ -7,7 +7,7 @@ const { getIO, getOnlineUsers } = require("../../config/socker");
 exports.sendMessage = async (req, res) => {
   try {
     const senderId = req.user.id; // ID người gửi được lấy từ token
-    const { receiverId, text, replyTo, isForwarded } = req.body;
+    const { receiverId, text, replyTo, isForwarded, messageType, imageUrl } = req.body;
 
     // tìm xem 2 người này đã có cuộc trò chuyện chưa
     let conversation = await Conversation.findOne({
@@ -24,9 +24,11 @@ exports.sendMessage = async (req, res) => {
     const initialStatus = onlineUsers[receiverId] ? "delivered" : "sent";
     // tạo tin nhắn mới
     const message = await Message.create({
-      conversationId: conversation._id,
+     conversationId: conversation._id,
       senderId,
-      text,
+      text: text || "", // ĐÃ SỬA: Nếu text bị undefined thì gán chuỗi rỗng
+      messageType: messageType || "text",
+      imageUrl: imageUrl || null,
       status: initialStatus,
       replyTo: replyTo || null, // Nếu không có tin nhắn trả lời, để null
       isForwarded: isForwarded || false, // Mặc định là false nếu không được cung cấp

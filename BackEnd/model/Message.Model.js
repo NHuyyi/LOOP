@@ -15,7 +15,16 @@ const MessageSchema = new mongoose.Schema(
     },
     text: {
       type: String,
-      required: true,
+      default:""
+    },
+    messageType: {
+      type: String,
+      enum: ["text", "image"], 
+      default: "text", 
+    },
+    imageUrl: {
+      type: String,
+      default: null, 
     },
     isForwarded: {
       type: Boolean,

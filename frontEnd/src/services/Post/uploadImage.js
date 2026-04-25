@@ -1,10 +1,11 @@
 // services/uploadImage.js
 const API_URL = process.env.REACT_APP_API_URL || "http://localhost:3001/api";
 
-const uploadImage = async (imageFile) => {
+const uploadImage = async (imageFile, folder = "LOOP_POST") => {
   const token = localStorage.getItem("token");
   const formData = new FormData();
   formData.append("image", imageFile);
+  formData.append("folder", folder);
   try {
     const res = await fetch(`${API_URL}/posts/uploadImage`, {
       method: "POST",

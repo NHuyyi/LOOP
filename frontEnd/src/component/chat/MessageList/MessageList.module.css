@@ -38,7 +38,7 @@
 
 .bubble {
   position: relative;
-  padding: 8px 12px 14px;
+  padding: 10px 14px;
   border-radius: 18px;
   font-size: 14px;
   line-height: 1.4;
@@ -320,4 +320,24 @@
   -webkit-box-orient: vertical;
   overflow: hidden;
   word-wrap: break-word;
+}
+
+
+.msgImageContainer {
+  margin: -4px -4px 4px -4px; /* Giãn ảnh sát lề bong bóng nếu muốn, hoặc chỉnh margin phù hợp */
+  overflow: hidden;
+  border-radius: 8px;
+}
+
+.msgImage {
+  max-width: 100%;
+  max-height: 300px; /* Giới hạn chiều cao để không chiếm quá nhiều màn hình */
+  display: block;
+  object-fit: cover; /* Đảm bảo ảnh không bị méo */
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.msgImage:hover {
+  opacity: 0.9;
 }

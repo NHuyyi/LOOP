@@ -160,7 +160,6 @@ const ConversationList = () => {
         // Nếu tin nhắn KHÔNG phải do mình gửi VÀ trạng thái status là false -> Chưa đọc
         isUnread = !isMyMessage && conv.lastMessage.status !== "read";
       }
-      console.log("ConversationList:", conv.lastMessage);
 
       return (
         <div

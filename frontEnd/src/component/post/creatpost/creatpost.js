@@ -44,7 +44,7 @@ function CreatePost({ setMessage, setSuccess, friendList = [] }) {
     setLoading(true);
     try {
       // Upload ảnh
-      const imageRes = await uploadImage(image);
+      const imageRes = await uploadImage(image, "LOOP_POST");
       const imageUrl = imageRes.data.url;
 
       // Tạo bài viết mới

@@ -12,11 +12,11 @@ const uploadImage = async (req, res) => {
 
     const fileBuffer = req.file.buffer; // chuyển hệ nhị phân
     const fileBase64 = `data:${req.file.mimetype};base64,${fileBuffer.toString(
-      "base64"
+      "base64",
     )}`; // chuyển thành chuổi base64
-
+    const targetFolder = req.body.folder || "LOOP_POST";
     const result = await cloudinary.uploader.upload(fileBase64, {
-      folder: "LOOP",
+      folder: targetFolder,
       resource_type: "image",
     });
     // nếu muốn thêm ảnh cho sản phẩm thây vì xuất giá trị của result.secure_url thì ta tiến hành API tạo sản phẩm mới với cột hình ảnh của sản phầm sẽ là url.secure_url
