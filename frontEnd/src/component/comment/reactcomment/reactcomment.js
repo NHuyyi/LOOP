@@ -2,14 +2,8 @@ import { useState, useRef, useEffect } from "react";
 import classNames from "classnames/bind";
 import styles from "./ReactComment.module.css";
 import reactComment from "../../../services/Post/comments/reactcomment";
-import {
-  FaThumbsUp,
-  FaHeart,
-  FaLaugh,
-  FaSurprise,
-  FaSadTear,
-  FaAngry,
-} from "react-icons/fa";
+import { useReactions } from "../../../hooks/useReactions";
+import { FaLaugh } from "react-icons/fa";
 
 const cx = classNames.bind(styles);
 
@@ -20,7 +14,7 @@ function ReactComment({
   reactionType: initialReaction,
 }) {
   const [currentReaction, setCurrentReaction] = useState(
-    initialReaction || null
+    initialReaction || null,
   );
   useEffect(() => {
     setCurrentReaction(initialReaction || null);
@@ -29,38 +23,7 @@ function ReactComment({
   // ref để lưu timer đóng menu
   const closeTimer = useRef(null);
 
-  const reactions = [
-    {
-      type: "like",
-      icon: <FaThumbsUp color="#1877F2" />,
-      color: "#1877F2",
-    },
-    {
-      type: "love",
-      icon: <FaHeart color="#F02849" />,
-      color: "#F02849",
-    },
-    {
-      type: "haha",
-      icon: <FaLaugh color="#FFD93D" />,
-      color: "#FFD93D",
-    },
-    {
-      type: "wow",
-      icon: <FaSurprise color="#2ECC71" />,
-      color: "#2ECC71",
-    },
-    {
-      type: "sad",
-      icon: <FaSadTear color="#1C8EFB" />,
-      color: "#1C8EFB",
-    },
-    {
-      type: "angry",
-      icon: <FaAngry color="#E9710F" />,
-      color: "#E9710F",
-    },
-  ];
+  const { reactions, getReactionByType } = useReactions();
 
   const handleReaction = async (type) => {
     if (!userId) {
@@ -107,10 +70,15 @@ function ReactComment({
   if (!currentReaction) {
     currentReactionObj = {
       type: "none",
-      icon: <FaLaugh />,
+      icon: <FaLaugh color="#888" size={16} />,
+      color: "#888",
     };
   } else {
-    currentReactionObj = reactions.find((r) => r.type === currentReaction);
+    currentReactionObj = getReactionByType(currentReaction) || {
+      type: "none",
+      icon: <FaLaugh color="#888" size={16} />,
+      color: "#888",
+    };
   }
 
   const handleMainClick = () => {
@@ -134,7 +102,15 @@ function ReactComment({
         style={{ color: currentReactionObj.color }}
         onClick={handleMainClick}
       >
-        {currentReactionObj.icon}
+        {currentReactionObj.type !== "none" ? (
+          <img
+            src={currentReactionObj.icon}
+            alt={currentReactionObj.type}
+            style={{ width: "25px", height: "25px", objectFit: "contain" }}
+          />
+        ) : (
+          currentReactionObj.icon
+        )}
       </button>
 
       {/* Menu reactions */}
@@ -149,7 +125,11 @@ function ReactComment({
               onClick={() => handleReaction(reaction.type)}
               title={reaction.label}
             >
-              {reaction.icon}
+              <img
+                src={reaction.icon}
+                alt={reaction.type}
+                style={{ width: "42px", height: "42px", objectFit: "contain" }}
+              />
             </button>
           ))}
         </div>

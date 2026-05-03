@@ -6,7 +6,7 @@
 .main-button {
   background: #f0f2f5;
   border: none;
-  padding: 0.275rem 0.75rem;
+  padding: 0.2rem 0.75rem;
   border-radius: 1.25rem;
   cursor: pointer;
   font-size: 1rem;
@@ -24,7 +24,7 @@
 .reaction-menu {
   position: absolute;
   bottom: 120%; /* nằm trên nút chính */
-  left: 50%;
+  left: 60%;
   transform: translateX(-50%);
   display: flex;
   gap: 0.5rem;

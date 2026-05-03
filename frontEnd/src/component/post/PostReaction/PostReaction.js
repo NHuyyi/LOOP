@@ -4,68 +4,25 @@ import classNames from "classnames/bind";
 import styles from "./PostReaction.module.css";
 import addreaction from "../../../services/Post/reaction/addreaction";
 
-import {
-  FaThumbsUp,
-  FaHeart,
-  FaLaugh,
-  FaSurprise,
-  FaSadTear,
-  FaAngry,
-} from "react-icons/fa";
+import { FaStar } from "react-icons/fa";
+
+import { useReactions } from "../../../hooks/useReactions";
 
 const cx = classNames.bind(styles);
 
 function PostReaction({ postId, userID, onReacted }) {
   const [showMenu, setShowMenu] = useState(false);
   const closeTimer = useRef(null);
+  const { reactions, getReactionByType } = useReactions();
 
   // ✅ Lấy post từ Redux --> tự động re-render khi Redux update
   const post = useSelector((state) =>
-    state.posts?.posts?.find((p) => p._id === postId)
+    state.posts?.posts?.find((p) => p._id === postId),
   );
 
   // ✅ Lấy reaction hiện tại của user trên post này
   const currentReaction =
     post?.reactions?.find((r) => r.user === userID)?.type || null;
-
-  const reactions = [
-    {
-      type: "like",
-      icon: <FaThumbsUp color="#1877F2" size={25} />,
-      label: "Like",
-      color: "#1877F2",
-    },
-    {
-      type: "love",
-      icon: <FaHeart color="#F02849" size={25} />,
-      label: "Love",
-      color: "#F02849",
-    },
-    {
-      type: "haha",
-      icon: <FaLaugh color="#FFD93D" size={25} />,
-      label: "Haha",
-      color: "#FFD93D",
-    },
-    {
-      type: "wow",
-      icon: <FaSurprise color="#2ECC71" size={25} />,
-      label: "Wow",
-      color: "#2ECC71",
-    },
-    {
-      type: "sad",
-      icon: <FaSadTear color="#1C8EFB" size={25} />,
-      label: "Sad",
-      color: "#1C8EFB",
-    },
-    {
-      type: "angry",
-      icon: <FaAngry color="#E9710F" size={25} />,
-      label: "Angry",
-      color: "#E9710F",
-    },
-  ];
 
   // ✅ Không lưu reaction trong local state -> Redux upd là UI tự đổi
   const handleReaction = async (type) => {
@@ -101,8 +58,8 @@ function PostReaction({ postId, userID, onReacted }) {
   };
 
   const currentObj = currentReaction
-    ? reactions.find((r) => r.type === currentReaction)
-    : { label: "Like", icon: <FaThumbsUp size={25} />, color: "gray" };
+    ? getReactionByType(currentReaction)
+    : null;
 
   return (
     <div
@@ -113,11 +70,24 @@ function PostReaction({ postId, userID, onReacted }) {
       {/* Nút chính */}
       <button
         className={cx("main-button")}
-        style={{ color: currentObj.color }}
+        style={{ color: currentObj ? currentObj.color : "gray" }}
         onClick={handleMainClick}
       >
-        {currentObj.icon}
-        <span style={{ color: currentObj.color }}>{currentObj.label}</span>
+        {currentObj ? (
+          <img
+            src={currentObj.icon}
+            alt={currentObj.type}
+            style={{ width: "32px", height: "32px", objectFit: "contain" }}
+            translate="scale(1.4)"
+          />
+        ) : (
+          <FaStar size={25} />
+        )}
+        <span style={{ color: "gray" }}>
+          {currentObj?.type
+            ? currentObj.type.charAt(0).toUpperCase() + currentObj.type.slice(1)
+            : "Like"}
+        </span>
       </button>
 
       {/* Menu lựa chọn reaction */}
@@ -130,9 +100,14 @@ function PostReaction({ postId, userID, onReacted }) {
                 active: currentReaction === r.type,
               })}
               onClick={() => handleReaction(r.type)}
-              title={r.label}
+              title={r.type}
             >
-              {r.icon}
+              <img
+                src={r.icon}
+                alt={r.type}
+                style={{ width: "42px", height: "42px", objectFit: "contain" }}
+                translate="scale(1.4)"
+              />
             </button>
           ))}
         </div>

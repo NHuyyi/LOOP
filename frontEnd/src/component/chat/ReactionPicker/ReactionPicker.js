@@ -2,15 +2,10 @@ import React, { useState, useRef } from "react";
 import classNames from "classnames/bind";
 import styles from "./ReactionPicker.module.css";
 import { reactMessage } from "../../../services/chat/reactMessage";
-import {
-  FaRegSmile,
-  FaThumbsUp,
-  FaHeart,
-  FaLaugh,
-  FaSurprise,
-  FaSadTear,
-  FaAngry,
-} from "react-icons/fa";
+import { FaRegSmile } from "react-icons/fa";
+
+// import dùng chung
+import { useReactions } from "../../../hooks/useReactions";
 
 // IMPORT REDUX
 import { useDispatch, useSelector } from "react-redux";
@@ -18,18 +13,12 @@ import { UpdateReactionMessage } from "../../../redux/chatSlice";
 
 const cx = classNames.bind(styles);
 
-const reactions = [
-  { type: "like", icon: <FaThumbsUp />, color: "#1877F2" },
-  { type: "love", icon: <FaHeart />, color: "#F02849" },
-  { type: "haha", icon: <FaLaugh />, color: "#FFD93D" },
-  { type: "wow", icon: <FaSurprise />, color: "#2ECC71" },
-  { type: "sad", icon: <FaSadTear />, color: "#1C8EFB" },
-  { type: "angry", icon: <FaAngry />, color: "#E9710F" },
-];
-
 function ReactionPicker({ messageId, currentReaction, isMine }) {
   const [showMenu, setShowMenu] = useState(false);
   const closeTimer = useRef(null);
+
+  // values called from hook
+  const { reactions } = useReactions();
 
   // KẾT NỐI REDUX
   const dispatch = useDispatch();
@@ -99,7 +88,11 @@ function ReactionPicker({ messageId, currentReaction, isMine }) {
               onClick={() => handleReaction(r.type)}
               style={{ color: r.color }}
             >
-              {r.icon}
+              <img
+                src={r.icon}
+                alt={r.type}
+                style={{ width: "42px", height: "42px", objectFit: "contain" }}
+              />
             </button>
           ))}
         </div>

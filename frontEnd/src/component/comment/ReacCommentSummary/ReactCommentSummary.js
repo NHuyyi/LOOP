@@ -1,26 +1,10 @@
 import { useState } from "react";
 import classNames from "classnames/bind";
 import styles from "./ReactCommentSummary.module.css";
-import {
-  FaThumbsUp,
-  FaHeart,
-  FaLaugh,
-  FaSurprise,
-  FaSadTear,
-  FaAngry,
-} from "react-icons/fa";
+import { useReactions } from "../../../hooks/useReactions";
 import ReactionList from "../../post/ReactionList/ReactionList";
 import { getReactCommentList } from "../../../services/Post/comments/getreactcommentlist";
 const cx = classNames.bind(styles);
-
-const reactionIcons = {
-  like: <FaThumbsUp color="#1877F2" />,
-  love: <FaHeart color="#F02849" />,
-  haha: <FaLaugh color="#FFD93D" />,
-  wow: <FaSurprise color="#2ECC71" />,
-  sad: <FaSadTear color="#1C8EFB" />,
-  angry: <FaAngry color="#E9710F" />,
-};
 
 function ReactCommentSummary({
   reactionCounts,
@@ -33,6 +17,7 @@ function ReactCommentSummary({
   const [showPopup, setShowPopup] = useState(false);
   const [reactionList, setReactionList] = useState([]);
   const [error, setError] = useState("");
+  const { getReactionByType } = useReactions();
   if (!reactionCounts || Object.keys(reactionCounts).length === 0) return null;
 
   const topReactions = Object.entries(reactionCounts)
@@ -41,7 +26,7 @@ function ReactCommentSummary({
 
   const total = Object.values(reactionCounts).reduce(
     (sum, val) => sum + val,
-    0
+    0,
   );
   const handleClick = async () => {
     if (userID !== commentuser && userID !== AuthorId) return; // ❌ không phải tác giả thì thôi
@@ -74,11 +59,17 @@ function ReactCommentSummary({
         }}
       >
         <div className={cx("icons")}>
-          {topReactions.map(([type]) => (
-            <span key={type} className={cx("icon")}>
-              {reactionIcons[type]}
-            </span>
-          ))}
+          {topReactions.map(([type]) => {
+            const rInfo = getReactionByType(type);
+            return rInfo ? (
+              <img
+                key={type}
+                src={rInfo.icon}
+                alt={rInfo.type}
+                className={cx("icon")}
+              />
+            ) : null;
+          })}
         </div>
         <span className={cx("total")}>{total}</span>
       </div>

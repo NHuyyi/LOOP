@@ -1,29 +1,13 @@
 import { useState } from "react";
 import classNames from "classnames/bind";
 import styles from "./ReactionList.module.css";
-import {
-  FaThumbsUp,
-  FaHeart,
-  FaLaugh,
-  FaSurprise,
-  FaSadTear,
-  FaAngry,
-} from "react-icons/fa";
+import { useReactions } from "../../../hooks/useReactions";
 const cx = classNames.bind(styles);
-
-// Map type -> emoji
-const reactionIcons = {
-  like: <FaThumbsUp color="#1877F2" size={16} />,
-  love: <FaHeart color="#F02849" size={16} />,
-  haha: <FaLaugh color="#FFD93D" size={16} />,
-  wow: <FaSurprise color="#2ECC71" size={16} />,
-  sad: <FaSadTear color="#1C8EFB" size={16} />,
-  angry: <FaAngry color="#E9710F" size={16} />,
-};
 
 function ReactionList({ reactions, onClose }) {
   const [activeTab, setActiveTab] = useState("all");
 
+  const { getReactionByType } = useReactions();
   // Gom nhóm reaction theo type
   const grouped = reactions.reduce((acc, r) => {
     if (!acc[r.type]) acc[r.type] = [];
@@ -56,15 +40,30 @@ function ReactionList({ reactions, onClose }) {
           >
             Tất cả ({reactions.length})
           </button>
-          {Object.keys(grouped).map((type) => (
-            <button
-              key={type}
-              className={cx("tab", { active: activeTab === type })}
-              onClick={() => setActiveTab(type)}
-            >
-              {reactionIcons[type]} ({grouped[type].length})
-            </button>
-          ))}
+          {Object.keys(grouped).map((type) => {
+            const rInfo = getReactionByType(type);
+            return (
+              <button
+                key={type}
+                className={cx("tab", { active: activeTab === type })}
+                onClick={() => setActiveTab(type)}
+              >
+                {rInfo && (
+                  <img
+                    src={rInfo.icon}
+                    alt={type}
+                    style={{
+                      width: "25px",
+                      height: "25px",
+                      objectFit: "contain",
+                      marginRight: "4px",
+                    }}
+                  />
+                )}
+                ({grouped[type].length})
+              </button>
+            );
+          })}
         </div>
 
         {/* Body */}
@@ -72,17 +71,30 @@ function ReactionList({ reactions, onClose }) {
           {displayReactions.length === 0 ? (
             <p>Không có reaction</p>
           ) : (
-            displayReactions.map((r) => (
-              <div key={r.userId} className={cx("item")}>
-                <img
-                  src={r.avatar || "https://placehold.co/40x40"}
-                  alt={r.name}
-                  className={cx("avatar")}
-                />
-                <span className={cx("name")}>{r.name}</span>
-                <span className={cx("emoji")}>{reactionIcons[r.type]}</span>
-              </div>
-            ))
+            displayReactions.map((r) => {
+              const rInfo = getReactionByType(r.type);
+              return (
+                <div key={r.userId} className={cx("item")}>
+                  <img
+                    src={r.avatar || "https://placehold.co/40x40"}
+                    alt={r.name}
+                    className={cx("avatar")}
+                  />
+                  <span className={cx("name")}>{r.name}</span>
+                  <span className={cx("emoji")}>
+                    <img
+                      src={rInfo.icon}
+                      alt={r.type}
+                      style={{
+                        width: "25px",
+                        height: "25px",
+                        objectFit: "contain",
+                      }}
+                    />
+                  </span>
+                </div>
+              );
+            })
           )}
         </div>
       </div>

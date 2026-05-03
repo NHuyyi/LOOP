@@ -1,30 +1,16 @@
 // ReactionStatus.js
 import React, { useState, useRef, useEffect } from "react";
-import {
-  FaThumbsUp,
-  FaHeart,
-  FaLaugh,
-  FaSurprise,
-  FaSadTear,
-  FaAngry,
-} from "react-icons/fa";
+
+import { useReactions } from "../../../hooks/useReactions";
 import classNames from "classnames/bind";
 import styles from "./ReactionStatus.module.css";
 
 const cx = classNames.bind(styles);
-const reactionIcons = {
-  like: { icon: <FaThumbsUp />, color: "#1877F2" },
-  love: { icon: <FaHeart />, color: "#F02849" },
-  haha: { icon: <FaLaugh />, color: "#FFD93D" },
-  wow: { icon: <FaSurprise />, color: "#2ECC71" },
-  sad: { icon: <FaSadTear />, color: "#1C8EFB" },
-  angry: { icon: <FaAngry />, color: "#E9710F" },
-};
 
 function ReactionStatus({ allReactions, isMine }) {
   const [showDetails, setShowDetails] = useState(false);
   const statusRef = useRef(null);
-
+  const { getReactionByType } = useReactions();
   useEffect(() => {
     function handleClickOutside(event) {
       // Nếu popup đang mở VÀ click chuột không nằm trong statusRef thì mới đóng
@@ -58,25 +44,46 @@ function ReactionStatus({ allReactions, isMine }) {
           setShowDetails((prev) => !prev); // Cập nhật state an toàn hơn
         }}
       >
-        {uniqueTypes.slice(0, 3).map((type) => (
-          <span key={type} style={{ color: reactionIcons[type].color }}>
-            {reactionIcons[type].icon}
-          </span>
-        ))}
+        {uniqueTypes.slice(0, 3).map((type) => {
+          const reactionInfo = getReactionByType(type);
+          return reactionInfo ? (
+            <span key={type}>
+              {/* SỬ DỤNG ẢNH THAY CHO ICON */}
+              <img
+                src={reactionInfo.icon}
+                alt={reactionInfo.type}
+                style={{ width: "20px", height: "20px", objectFit: "contain" }}
+              />
+            </span>
+          ) : null;
+        })}
         <span className={cx("count")}>{allReactions.length}</span>
       </div>
 
       {showDetails && (
         <div className={cx("details-popup", isMine ? "pos-right" : "pos-left")}>
-          {allReactions.map((r, idx) => (
-            <div key={idx} className={cx("detail-item")}>
-              <img src={r.userId?.avatar} alt="avatar" />
-              <span>{r.userId?.name}</span>
-              <span style={{ color: reactionIcons[r.type]?.color }}>
-                {reactionIcons[r.type]?.icon}
-              </span>
-            </div>
-          ))}
+          {allReactions.map((r, idx) => {
+            const reactionInfo = getReactionByType(r.type);
+            return (
+              <div key={idx} className={cx("detail-item")}>
+                <img src={r.userId?.avatar} alt="avatar" />
+                <span>{r.userId?.name}</span>
+                <span>
+                  {reactionInfo && (
+                    <img
+                      src={reactionInfo.icon}
+                      alt={reactionInfo.type}
+                      style={{
+                        width: "20px",
+                        height: "20px",
+                        objectFit: "contain",
+                      }}
+                    />
+                  )}
+                </span>
+              </div>
+            );
+          })}
         </div>
       )}
     </div>
