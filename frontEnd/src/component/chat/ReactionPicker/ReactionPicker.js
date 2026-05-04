@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import classNames from "classnames/bind";
 import styles from "./ReactionPicker.module.css";
 import { reactMessage } from "../../../services/chat/reactMessage";
@@ -48,6 +48,22 @@ function ReactionPicker({ messageId, currentReaction, isMine }) {
     }
   };
 
+  const pickerRef = useRef(null);
+
+  useEffect(() => {
+    // Chỉ tính toán khi menu được hiển thị và ref đã bắt được phần tử DOM
+    if (showMenu && pickerRef.current) {
+      const rect = pickerRef.current.getBoundingClientRect();
+
+      if (rect.top < 140) {
+        pickerRef.current.scrollIntoView({
+          behavior: "smooth",
+          block: "nearest",
+        });
+      }
+    }
+  }, [showMenu]);
+
   return (
     <div
       className={cx("picker-wrapper")}
@@ -77,6 +93,7 @@ function ReactionPicker({ messageId, currentReaction, isMine }) {
 
       {showMenu && (
         <div
+          ref={pickerRef}
           className={cx("reaction-menu", isMine ? "menu-right" : "menu-left")}
         >
           {reactions.map((r) => (

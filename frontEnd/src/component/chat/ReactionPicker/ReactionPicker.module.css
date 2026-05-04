@@ -32,6 +32,7 @@
   z-index: 10;
   margin-bottom: 8px;
   animation: fadeInScale 0.2s ease-out;
+  scroll-margin-top: 20px;
 }
 
 .menu-left {
