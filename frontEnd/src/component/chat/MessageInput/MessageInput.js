@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styles from "./MessageInput.module.css";
 import classNames from "classnames/bind";
 import { Send, Smile, X } from "lucide-react"; // Import thêm icon X
@@ -19,12 +19,11 @@ import { markAsRead } from "../../../services/chat/markAsRead";
 import ImageUpload from "./ImageUpload";
 import uploadImage from "../../../services/Post/uploadImage";
 import EmojiStickerPicker from "./EmojiStickerPicker";
-
+import { useRichTextEditor } from "../../../hooks/useRichTextEditor";
 const cx = classNames.bind(styles);
 let typingTimeout = null;
 
 function MessageInput() {
-  const [text, setText] = useState("");
   const [selectedImage, setSelectedImage] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
   const [isUploading, setIsUploading] = useState(false);
@@ -80,28 +79,12 @@ function MessageInput() {
     return null;
   };
 
-  const handleTyping = (e) => {
-    setText(e.target.value);
-    const receiverId = getReceiverId();
-    if (!receiverId || !activeConversationId) return;
-    socket.emit("typing", {
-      senderId: currentUser._id,
-      receiverId,
-      conversationId: activeConversationId,
-    });
-    if (typingTimeout) clearTimeout(typingTimeout);
-    typingTimeout = setTimeout(() => {
-      socket.emit("stopTyping", {
-        senderId: currentUser._id,
-        receiverId,
-        conversationId: activeConversationId,
-      });
-    }, 2500);
-  };
-
   const handleSend = async (e) => {
     e.preventDefault();
-    if (!text.trim() && !selectedImage) return;
+
+    const textToSend = getParsedText();
+
+    if (!textToSend.trim() && !selectedImage) return;
 
     let receiverId = getReceiverId();
     if (!receiverId) return;
@@ -123,7 +106,7 @@ function MessageInput() {
 
       const payload = {
         receiverId,
-        text: text,
+        text: textToSend,
         replyTo: replyMessage ? replyMessage._id : null,
         imageUrl: uploadedImageUrl,
         messageType: uploadedImageUrl ? "image" : "text",
@@ -151,9 +134,10 @@ function MessageInput() {
           }),
         );
 
-        setText("");
+        clearEditor();
         setSelectedImage(null);
         setImagePreview(null);
+        setShowPicker(false);
         if (typingTimeout) clearTimeout(typingTimeout);
         socket.emit("stopTyping", {
           senderId: currentUser._id,
@@ -169,10 +153,59 @@ function MessageInput() {
     }
   };
 
-  const handleSelectMyIcon = (iconObj) => {
-    setText((prev) => prev + `[${iconObj.type}]`);
+  const { editorRef, insertTextAtcursor, getParsedText, clearEditor } =
+    useRichTextEditor();
+
+  const handleTyping = () => {
+    const receiverId = getReceiverId();
+    if (!receiverId || !activeConversationId) return;
+    socket.emit("typing", {
+      senderId: currentUser._id,
+      receiverId,
+      conversationId: activeConversationId,
+    });
+    if (typingTimeout) clearTimeout(typingTimeout);
+    typingTimeout = setTimeout(() => {
+      socket.emit("stopTyping", {
+        senderId: currentUser._id,
+        receiverId,
+        conversationId: activeConversationId,
+      });
+    }, 2500);
   };
 
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      handleSend(e);
+    }
+  };
+
+  useEffect(() => {
+    clearEditor(); // Quét sạch chữ/icon trong ô nhập
+    setSelectedImage(null); // Xóa ảnh đang chọn (nếu có)
+    setImagePreview(null);
+    if (replyMessage) {
+      dispatch(clearReplyMessage()); // Xóa luôn trạng thái "Đang trả lời"
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeConversationId]);
+
+  const handleInputEvent = (e) => {
+    if (editorRef.current) {
+      const html = editorRef.current.innerHTML;
+      // Trình duyệt thường để lại <br> hoặc <div><br></div> khi xóa hết text
+      if (
+        html === "<br>" ||
+        html === "<div><br></div>" ||
+        html === "<br><br>"
+      ) {
+        editorRef.current.innerHTML = ""; // Xóa trắng tuyệt đối để CSS :empty hoạt động
+      }
+    }
+    // Sau khi dọn rác xong, vẫn gọi hàm handleTyping cũ của bạn để báo đang gõ
+    handleTyping();
+  };
   return (
     <div
       className={cx("messageInputContainer")}
@@ -219,7 +252,7 @@ function MessageInput() {
           {/* GỌI BẢNG TỐI GIẢN RA */}
           {showPicker && (
             <EmojiStickerPicker
-              onSelectMyIcon={handleSelectMyIcon}
+              onSelectMyIcon={(icon) => insertTextAtcursor(icon, handleTyping)}
               onClose={() => setShowPicker(false)}
             />
           )}
@@ -248,22 +281,18 @@ function MessageInput() {
             </div>
           )}
 
-          <input
-            type="text"
-            placeholder="Nhập tin nhắn"
-            className={cx("textInput")}
-            value={text}
-            onChange={handleTyping}
+          <div
+            className={cx("textInput", "editableInput")}
+            contentEditable={!isUploading}
+            ref={editorRef}
+            onInput={handleInputEvent}
+            onKeyDown={handleKeyDown}
             onFocus={handleFocus}
-            disabled={isUploading}
-          />
+            data-placeholder="Nhập tin nhắn..."
+          ></div>
         </div>
 
-        <button
-          type="submit"
-          className={cx("sendBtn")}
-          disabled={(!text.trim() && !selectedImage) || isUploading}
-        >
+        <button type="submit" className={cx("sendBtn")} disabled={isUploading}>
           <Send size={22} />
         </button>
       </form>

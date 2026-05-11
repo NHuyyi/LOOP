@@ -259,3 +259,31 @@
   transform: scale(1.2); /* Phóng to nhẹ */
   background-color: #f0f2f5; /* Thêm nền xám nhạt như Facebook */
 }
+
+.editableInput {
+  flex: 1;
+  min-height: 20px;
+  max-height: 100px;
+  overflow-y: auto;
+  outline: none;
+  word-wrap: break-word;
+  white-space: pre-wrap;
+
+  /* ĐÃ XÓA display: flex; và align-items: center; */
+
+  /* SỬ DỤNG PADDING VÀ LINE-HEIGHT ĐỂ CĂN GIỮA TỰ NHIÊN */
+  padding: 10px 12px;
+  line-height: 1.4;
+  font-size: 15px;
+  text-align: left; /* Đảm bảo căn trái */
+  display: block; /* Đổi thành block để nó chiếm hết chiều rộng và padding hoạt động tốt */
+}
+
+/* Tạo Placeholder giả bằng CSS khi thẻ div rỗng */
+.editableInput:empty::before {
+  content: attr(data-placeholder);
+  color: #999;
+  pointer-events: none;
+  /* Đổi thành inline-block để placeholder không bị rớt dòng */
+  display: inline-block;
+}
