@@ -14,7 +14,7 @@ import {
   markConversationAsRead,
 } from "../../../redux/chatSlice";
 import { markAsRead } from "../../../services/chat/markAsRead";
-
+import { useEmojiParser } from "../../../hooks/useEmojiParser";
 // Import Component con
 import ChatSearch from "./ChatSearch";
 
@@ -31,6 +31,7 @@ const ConversationList = () => {
   const stateUser = useSelector((state) => state.user);
   const currentUser = stateUser?.user;
 
+  const { parseEmojis } = useEmojiParser();
   const { ConversationList = [], activeConversationId } = useSelector(
     (state) => state.chat || [],
   );
@@ -203,7 +204,7 @@ const ConversationList = () => {
                   <>
                     {/* Nếu là mình gửi thì thêm chữ "Bạn: " */}
                     {isMyMessage ? "Bạn: " : ""}
-                    {conv.lastMessage.text}
+                    {parseEmojis(conv.lastMessage.text, true)}
                   </>
                 )
               ) : (

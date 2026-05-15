@@ -33,7 +33,7 @@
   flex-direction: column;
   background-color: #f0f2f5; /* Chuyển màu nền từ textInput cũ sang đây */
   border-radius: 20px; /* Chuyển bo góc từ textInput cũ sang đây */
-  padding: 10px 16px; /* Chuyển padding từ textInput cũ sang đây */
+  padding: 5px 12px; /* Chuyển padding từ textInput cũ sang đây */
   margin: 0 10px; /* Chuyển margin từ textInput cũ sang đây */
   min-height: 40px;
 }
@@ -272,7 +272,7 @@
   /* ĐÃ XÓA display: flex; và align-items: center; */
 
   /* SỬ DỤNG PADDING VÀ LINE-HEIGHT ĐỂ CĂN GIỮA TỰ NHIÊN */
-  padding: 10px 12px;
+  padding: 8px;
   line-height: 1.4;
   font-size: 15px;
   text-align: left; /* Đảm bảo căn trái */

@@ -38,7 +38,7 @@
 
 .bubble {
   position: relative;
-  padding: 10px 14px;
+  padding: 10px;
   border-radius: 18px;
   font-size: 14px;
   line-height: 1.4;
@@ -321,7 +321,6 @@
   overflow: hidden;
   word-wrap: break-word;
 }
-
 
 .msgImageContainer {
   margin: -4px -4px 4px -4px; /* Giãn ảnh sát lề bong bóng nếu muốn, hoặc chỉnh margin phù hợp */

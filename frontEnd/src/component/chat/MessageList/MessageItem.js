@@ -5,6 +5,7 @@ import ReactionStatus from "../ReactionStatus/ReactionStatus";
 import ReactionPicker from "../ReactionPicker/ReactionPicker";
 import { MoreVertical } from "lucide-react";
 import MessageMenu from "../MessageMenu/MessageMenu";
+import { useEmojiParser } from "../../../hooks/useEmojiParser";
 
 const cx = classNames.bind(styles);
 
@@ -20,6 +21,8 @@ function MessageItem({
   isTopMessage,
 }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  const { parseEmojis } = useEmojiParser();
 
   return (
     <div className={cx("messageRow", isMyMessage ? "myMsg" : "otherMsg")}>
@@ -116,20 +119,24 @@ function MessageItem({
                     <span className={cx("replyQuoteName")}>
                       {msg.replyTo.senderId?.name}
                     </span>
-                    <p className={cx("replyQuoteText")}>{msg.replyTo.text}</p>
+                    <p className={cx("replyQuoteText")}>
+                      {parseEmojis(msg.replyTo.text, false)}
+                    </p>
                   </div>
                 )}
                 {msg.imageUrl && (
                   <div className={cx("msgImageContainer")}>
-                    <img 
-                      src={msg.imageUrl} 
-                      alt="sent" 
-                      className={cx("msgImage")} 
-                      loading="lazy" 
+                    <img
+                      src={msg.imageUrl}
+                      alt="sent"
+                      className={cx("msgImage")}
+                      loading="lazy"
                     />
                   </div>
                 )}
-                <span className={cx("msgText")}>{msg.text}</span>
+                <span className={cx("msgText")}>
+                  {parseEmojis(msg.text, false)}
+                </span>
 
                 {/* Chỉ hiện ReactionStatus nếu không bị thu hồi */}
                 <div className={cx("status-wrapper")}>

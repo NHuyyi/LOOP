@@ -43,12 +43,17 @@ export const useRichTextEditor = () => {
   const getParsedText = () => {
     let textToSend = "";
     if (editorRef.current) {
+      // lấy toàn bộ thành phần bên trong ô nhập
       const nodes = editorRef.current.childNodes;
+      // duyệt qua từng thành phần để xây dựng chuỗi text cuối cùng
       nodes.forEach((node) => {
+        // nếu là text thuần tí thì cộng dồn vào chuỗi text
         if (node.nodeType === Node.TEXT_NODE) {
           textToSend += node.textContent;
+          // nếu là thẻ img có thuộc tính data-emoji thì thay thế bằng text tương ứng
         } else if (node.nodeName === "IMG" && node.hasAttribute("data-emoji")) {
           textToSend += node.getAttribute("data-emoji");
+          // nếu là thẻ br hoặc div thì thêm ký tự xuống dòng
         } else if (node.nodeName === "BR" || node.nodeName === "DIV") {
           textToSend += "\n";
         }
