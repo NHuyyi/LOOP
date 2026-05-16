@@ -8,11 +8,18 @@ exports.getMessages = async (req, res) => {
     const page = parseInt(req.query.page) || 1;
     const limit = 20;
     const skip = (page - 1) * limit;
+    const keyword = req.query.keyword || "";
 
-    const messages = await Message.find({
+    const query = {
       conversationId,
       deleteby: { $ne: req.user.id },
-    })
+    };
+
+    if (keyword) {
+      query.text = { $regex: new RegExp(keyword, "i") };
+    }
+
+    const messages = await Message.find(query)
       .populate("senderId", "name avatar")
       .populate("reactions.userId", "name avatar")
       .populate({
@@ -28,7 +35,7 @@ exports.getMessages = async (req, res) => {
       .limit(limit);
 
     // tuy nhiên mặc dù ta lấy mãng tin nhắn theo thứ tự mới nhất trước nhưng khi trả về client thì ta sẽ đảo ngược lại để hiển thị tin nhắn cũ trước
-    const formattedMessages = messages.reverse();
+    const formattedMessages = keyword ? messages : messages.reverse();
 
     return res.status(200).json({
       success: true,

@@ -1,0 +1,63 @@
+/* MessageSearch.module.css */
+
+.resultsWrapper {
+  margin-top: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px; /* Khoảng cách giữa các thẻ */
+  padding-right: 4px; /* Tránh thanh cuộn cắn vào nội dung */
+}
+
+/* Giao diện Thẻ (Card) */
+.resultCard {
+  background-color: #e6f9f8; /* Nền xanh ngọc siêu nhạt để dễ đọc chữ */
+  border: 1px solid #b2dfdb; /* Viền xanh ngọc đậm hơn một chút */
+  border-radius: 10px;
+  padding: 12px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column; /* Xếp lính theo cột dọc */
+  transition: all 0.25s ease-in-out; /* Hiệu ứng mượt mà */
+}
+
+/* Hiệu ứng khi Hover chuột vào thẻ */
+.resultCard:hover {
+  background-color: #ccf2f0; /* Đậm màu xanh ngọc lên 1 tông */
+  transform: translateY(-3px); /* Nhấc thẻ nổi lên trên */
+  box-shadow: 0 6px 12px rgba(0, 150, 136, 0.15); /* Đổ bóng xanh ngọc */
+  border-color: #009688;
+}
+
+/* Tên người gửi (Sát lề trái) */
+.senderName {
+  font-size: 14px;
+  font-weight: 700;
+  color: #00796b; /* Chữ tên màu xanh ngọc đậm để nổi bật */
+  text-align: left;
+  margin-bottom: 4px;
+}
+
+/* Nội dung tin nhắn (Sát lề trái) */
+.messageText {
+  font-size: 14px;
+  color: #333333;
+  text-align: left;
+  margin: 0 0 8px 0; /* Đẩy ngày tháng xuống dưới 1 chút */
+  line-height: 1.4;
+  word-break: break-word; /* Chống tràn chữ khi gõ quá dài */
+}
+
+/* Ngày tháng (Góc dưới, bên phải, nhỏ lại) */
+.timeText {
+  font-size: 11px;
+  color: #757575;
+  align-self: flex-end; /* Ép riêng phần tử này chạy sang sát lề phải */
+  font-style: italic;
+}
+
+.statusText {
+  padding: 15px;
+  text-align: center;
+  color: #888;
+  font-size: 14px;
+}

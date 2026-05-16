@@ -73,6 +73,7 @@ function Chat() {
         onClose={() => setIsMenuOpen(false)}
         otherUser={otherUser}
         isOnline={isOnline}
+        conversationId={activeConversationId}
       />
     </div>
   );
