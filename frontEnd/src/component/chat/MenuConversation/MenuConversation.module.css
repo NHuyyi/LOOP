@@ -1,0 +1,281 @@
+/* Lớp phủ mờ toàn màn hình */
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.4);
+  display: flex;
+  justify-content: flex-end; /* Đẩy menu trượt ra từ bên phải */
+  z-index: 1000;
+  animation: fadeIn 0.25s ease-out;
+}
+
+/* Thanh Menu thông tin chi tiết */
+.menu {
+  background-color: #ffffff;
+  width: 360px;
+  max-width: 100%;
+  height: 100%;
+  box-shadow: -4px 0 16px rgba(0, 0, 0, 0.08);
+  display: flex;
+  flex-direction: column;
+  animation: slideIn 0.28s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+/* Header của Menu */
+.header {
+  padding: 18px 16px;
+  font-size: 17px;
+  font-weight: 600;
+  color: #050505;
+  border-bottom: 1px solid #e5e5e5;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* Nút đóng X */
+.closeBtn {
+  background: none;
+  border: none;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #65676b;
+  cursor: pointer;
+  transition:
+    background-color 0.2s,
+    color 0.2s;
+}
+
+.closeBtn:hover {
+  background-color: #f0f2f5;
+  color: #050505;
+}
+
+/* Vùng nội dung bên trong Menu (Cuộn dọc độc lập nếu dài) */
+.content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 24px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+/* Khối thông tin User */
+.userInfo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+/* Bọc Avatar & chấm Online/Offline */
+.avatarWrapper {
+  position: relative;
+  width: 84px;
+  height: 84px;
+}
+
+.avatar {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid #e5e5e5;
+}
+.avatar.offline {
+  filter: grayscale(90%);
+}
+/* Chấm trạng thái hoạt động */
+.statusDot {
+  position: absolute;
+  bottom: 4px;
+  right: 4px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 2px solid #ffffff; /* Tạo viền trắng tách biệt với avatar */
+}
+
+.online {
+  background-color: #4caf50; /* Xanh lá */
+}
+
+.offline {
+  background-color: #9e9e9e; /* Xám */
+}
+
+/* Container chứa Tên + Icon bút sửa */
+.details {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.name {
+  font-size: 19px;
+  font-weight: 600;
+  color: #050505;
+  word-break: break-word;
+}
+
+.editIcon {
+  color: #65676b;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* Đặt padding và bo tròn ngay từ đầu */
+  width: 32px;
+  height: 32px;
+  padding: 2px;
+  border-radius: 50%;
+  /* Khai báo rõ box-sizing để padding không làm co icon */
+  box-sizing: content-box;
+  transition: all 0.2s;
+}
+
+.editIcon:hover {
+  color: #fff;
+  background-color: #0084ff;
+  opacity: 0.8;
+}
+
+/* Khối 3 nút Tròn hành động (Chuông, User, Kính lúp) */
+.actions {
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  margin: 4px 0;
+}
+
+.actionBtn {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  border: none;
+  background-color: #f0f2f5;
+  color: #050505;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition:
+    background-color 0.2s,
+    transform 0.1s;
+}
+
+.actionBtn:hover {
+  background-color: #e7f3ff;
+  border-color: #0084ff;
+  color: #0084ff;
+}
+
+.actionBtn:active {
+  transform: scale(0.96);
+}
+
+/* Khu vực hiển thị Ảnh đã gửi */
+.images {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.sectionTitle {
+  font-size: 14px;
+  font-weight: 600;
+  color: #000;
+  margin-left: 16px;
+  align-self: flex-start;
+  font-size: 18px;
+}
+.line {
+  display: block;
+  height: 2px;
+  background-color: #e5e5e5;
+  margin: 0 16px;
+}
+
+/* Grid lưới hiển thị danh sách ảnh */
+.imageGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+}
+
+/* Bọc nhóm nút dưới đáy sử dụng CSS Grid */
+.Btn-group {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); /* Chia khối thành 2 cột bằng nhau */
+  gap: 10px; /* Khoảng cách giữa các nút */
+  margin-top: auto; /* Đẩy toàn bộ nhóm nút xuống sát đáy menu */
+  padding-top: 16px;
+}
+
+/* Thuộc tính chung cho cả 4 nút: Đều có bo góc và viền */
+.reportBtn,
+.cancelBtn,
+.deleteBtn,
+.blockBtn {
+  width: 100%;
+  padding: 11px 16px;
+  font-size: 14px;
+  font-weight: 500;
+  text-align: center; /* Căn giữa chữ cho cân đối khi chia cột */
+  border-radius: 8px; /* Bo góc theo yêu cầu */
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+/* --- HÀNG 1: Nút Báo cáo (Cột 1) và Hạn chế (Cột 2) nằm thẳng hàng nhau --- */
+.reportBtn,
+.cancelBtn {
+  border: 1px solid #ccd0d5; /* Tạo viền xám nhẹ */
+  background-color: #ffffff;
+  color: #050505;
+}
+
+.reportBtn:hover,
+.cancelBtn:hover {
+  background-color: #f0f2f5;
+  border-color: #8a8d91;
+}
+
+/* --- HÀNG 2 & 3: Các nút nguy hiểm chiếm hết cả 2 cột để tự xuống hàng và full-width --- */
+.deleteBtn,
+.blockBtn {
+  grid-column: span 2; /* Trải rộng qua cả 2 cột */
+}
+
+/* Nút Xóa cuộc trò chuyện (Viền đỏ nhạt, chữ đỏ) */
+.deleteBtn {
+  border: 1px solid #ffccd2;
+  background-color: #ffffff;
+  color: #fa3e3e;
+}
+
+.deleteBtn:hover {
+  background-color: #ffebebfb;
+  border-color: #fa3e3e;
+}
+
+/* Nút Chặn người dùng (Viền đỏ đậm) */
+.blockBtn {
+  border: 1px solid #fa3e3e;
+  background-color: #ffffff;
+  color: #fa3e3e;
+}
+
+.blockBtn:hover {
+  background-color: #fa3e3e;
+  color: #ffffff; /* Khi di chuột vào sẽ đầy nền đỏ chữ trắng để nhấn mạnh */
+}

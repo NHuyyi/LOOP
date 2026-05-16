@@ -3,31 +3,57 @@ import styles from "./ChatPage.module.css";
 import classNames from "classnames/bind";
 import { useSelector } from "react-redux";
 
-import ConversationList from "../../component/chat/Conversation/ConversationList";
+import ConversationListComponent from "../../component/chat/Conversation/ConversationList";
 import ChatHeader from "../../component/chat/ChatHeader/ChatHeader";
 import MessageList from "../../component/chat/MessageList/MessageList";
 import MessageInput from "../../component/chat/MessageInput/MessageInput";
+import MenuConverSation from "../../component/chat/MenuConversation/MenuConversation";
 
 const cx = classNames.bind(styles);
 
 function Chat() {
   // lấy trạng thái xem đã có cuộc trò chuyện nào đã được chọn chưa
-  const { activeConversationId, activeReceiver } = useSelector(
-    (state) => state.chat,
-  );
+  const {
+    activeConversationId,
+    activeReceiver,
+    ConversationList = [],
+  } = useSelector((state) => state.chat);
 
+  const [isMenuOpen, setIsMenuOpen] = React.useState(false);
+  const currentUser = useSelector((state) => state.user);
+  const onlineUsers = useSelector((state) => state.online);
+
+  let otherUser = null;
+  let isOnline = false;
+
+  if (activeConversationId) {
+    const currentConv = ConversationList.find(
+      (conv) => conv._id === activeConversationId,
+    );
+    if (currentConv) {
+      otherUser = currentConv.participants.find(
+        (user) => user._id !== currentUser._id,
+      );
+    }
+  } else if (activeReceiver) {
+    otherUser = activeReceiver;
+  }
+
+  if (otherUser) {
+    isOnline = onlineUsers.includes(otherUser._id);
+  }
   return (
     <div className={cx("container")}>
       {/* cột trái: nơi hiện danh sách cuộc trò chuyện*/}
       <div className={cx("sidebar")}>
-        <ConversationList />
+        <ConversationListComponent />
       </div>
 
       {/* Cột phải: khu vực hiển thị tin nhắn*/}
       <div className={cx("chatArea")}>
         {activeConversationId || activeReceiver ? (
           <>
-            <ChatHeader onOpenModal={() => console.log("Open Info")} />
+            <ChatHeader onOpenModal={() => setIsMenuOpen(true)} />
             <MessageList />
             <MessageInput />
           </>
@@ -42,6 +68,12 @@ function Chat() {
           </div>
         )}
       </div>
+      <MenuConverSation
+        isOpen={isMenuOpen}
+        onClose={() => setIsMenuOpen(false)}
+        otherUser={otherUser}
+        isOnline={isOnline}
+      />
     </div>
   );
 }
