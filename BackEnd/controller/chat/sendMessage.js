@@ -7,7 +7,8 @@ const { getIO, getOnlineUsers } = require("../../config/socker");
 exports.sendMessage = async (req, res) => {
   try {
     const senderId = req.user.id; // ID người gửi được lấy từ token
-    const { receiverId, text, replyTo, isForwarded, messageType, imageUrl } = req.body;
+    const { receiverId, text, replyTo, isForwarded, messageType, imageUrl } =
+      req.body;
 
     // tìm xem 2 người này đã có cuộc trò chuyện chưa
     let conversation = await Conversation.findOne({
@@ -24,7 +25,7 @@ exports.sendMessage = async (req, res) => {
     const initialStatus = onlineUsers[receiverId] ? "delivered" : "sent";
     // tạo tin nhắn mới
     const message = await Message.create({
-     conversationId: conversation._id,
+      conversationId: conversation._id,
       senderId,
       text: text || "", // ĐÃ SỬA: Nếu text bị undefined thì gán chuỗi rỗng
       messageType: messageType || "text",
@@ -36,6 +37,7 @@ exports.sendMessage = async (req, res) => {
 
     // câp nhật trường lastMessage trong Conversation để lưu trữ tin nhắn mới nhất
     conversation.lastMessage = message._id;
+    conversation.deleteBy = []; // Reset deleteBy khi có tin nhắn mới
     await conversation.save();
 
     //socket.io sẽ lắng nghe sự kiện "newMessage" và gửi tin nhắn mới đến người nhận

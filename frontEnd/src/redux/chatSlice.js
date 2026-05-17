@@ -33,6 +33,20 @@ const chatSlice = createSlice({
         // đẩy cuộc trò chuyện lên top 1
         const updatedConversation = state.ConversationList.splice(index, 1)[0];
         state.ConversationList.unshift(updatedConversation);
+      } else {
+        const newConversation = {
+          _id: conversationId,
+          participants: [message.senderId, state.activeReceiver],
+          lastMessage: message,
+          updatedAt: new Date().toISOString(),
+        };
+        // đẩy hội thoai mới lên top 1
+        state.ConversationList.unshift(newConversation);
+
+        // cập nhật luôn activeConversationId để UI nhận diện được đây là khung chat đang mở
+        if (!state.activeConversationId) {
+          state.activeConversationId = conversationId;
+        }
       }
     },
 
@@ -208,6 +222,23 @@ const chatSlice = createSlice({
         }
       }
     },
+
+    removeConversationInState: (state, action) => {
+      const conversationIdRemove = action.payload;
+
+      // Xóa cuộc trò chuyện khỏi ConversationList
+      state.ConversationList = state.ConversationList.filter(
+        (c) => String(c._id) !== String(conversationIdRemove),
+      );
+      if (String(state.activeConversationId) === String(conversationIdRemove)) {
+        // Nếu cuộc trò chuyện đang mở bị xóa, reset lại state về mặc định
+        state.activeConversationId = null;
+        state.currentMessages = [];
+        state.activeReceiver = null;
+        state.page = 1;
+        state.hasMore = true;
+      }
+    },
   },
 });
 
@@ -227,6 +258,7 @@ export const {
   setReplyMessage,
   clearReplyMessage,
   revokeMessageInState,
+  removeConversationInState,
 } = chatSlice.actions;
 
 export default chatSlice.reducer;

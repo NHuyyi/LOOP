@@ -1,0 +1,99 @@
+/* Lớp phủ đen mờ toàn màn hình */
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999; /* Luôn nằm trên cùng */
+  animation: fadeIn 0.2s ease-out;
+}
+
+/* Khung nội dung hộp thoại */
+.modalContent {
+  background: #fff;
+  border-radius: 12px;
+  padding: 24px;
+  width: 90%;
+  max-width: 400px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  animation: slideDown 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.title {
+  margin: 0 0 12px 0;
+  font-size: 20px;
+  font-weight: 600;
+  color: #1a1a1a;
+}
+
+.message {
+  margin: 0 0 24px 0;
+  font-size: 15px;
+  color: #65676b;
+  line-height: 1.5;
+}
+
+/* Khu vực nút bấm */
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.btn {
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  transition: all 0.2s;
+}
+
+.cancelBtn {
+  background-color: #f0f2f5;
+  color: #050505;
+}
+
+.cancelBtn:hover {
+  background-color: #e4e6eb;
+}
+
+.confirmBtn {
+  background-color: #fa3e3e;
+  color: white;
+}
+
+.confirmBtn:hover {
+  background-color: #e03535;
+}
+
+.btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideDown {
+  from {
+    transform: translateY(-20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}

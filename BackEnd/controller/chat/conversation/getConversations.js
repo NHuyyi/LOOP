@@ -1,4 +1,4 @@
-const Conversation = require("../../model/Conversation.Model");
+const Conversation = require("../../../model/Conversation.Model");
 
 // api lấy danh sách cuộc trò chuyện của người dùng, bao gồm thông tin người chat cùng và tin nhắn cuối cùng
 exports.getConversations = async (req, res) => {
@@ -7,6 +7,7 @@ exports.getConversations = async (req, res) => {
 
     const conversations = await Conversation.find({
       participants: { $in: [userId] },
+      deleteBy: { $ne: userId }, // Loại bỏ những cuộc trò chuyện đã bị người dùng xóa
     })
       .populate("participants", "name avatar friendCode username") // Lấy thông tin người chat cùng
       .populate("lastMessage") // Lấy nội dung tin nhắn cuối cùng
@@ -17,7 +18,7 @@ exports.getConversations = async (req, res) => {
       conversations,
     });
   } catch (err) {
-    console.error("Lỗi getConversations:", error);
+    console.error("Lỗi getConversations:", err);
     return res.status(500).json({ message: "Lỗi server", success: false });
   }
 };
