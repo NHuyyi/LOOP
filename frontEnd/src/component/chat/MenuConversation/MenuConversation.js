@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import style from "./MenuConversation.module.css";
 import classNames from "classnames/bind";
 // Thêm ArrowLeft để làm nút quay lại
@@ -9,6 +9,8 @@ import { useDeleteConversation } from "../../../hooks/useDeleteConversation";
 import ConfirmModal from "../../common/ConfirmModal/ConfirmModal";
 import { useDispatch } from "react-redux";
 import { removeConversationInState } from "../../../redux/chatSlice";
+import { getConversationImages } from "../../../services/chat/getConversationImages";
+import SharedImages from "./SharedImages/SharedImages";
 
 const cx = classNames.bind(style);
 
@@ -23,9 +25,12 @@ function MenuConverSation({
   // State quản lý việc đang ở màn hình menu hay màn hình tìm kiếm
   const [isSearchMode, setIsSearchMode] = useState(false);
 
+  const [isImageMode, setIsmageMode] = useState(false);
+
   // Xử lý khi đóng menu thì reset lại state tìm kiếm luôn
   const handleCloseMenu = () => {
     setIsSearchMode(false);
+    setIsmageMode(false);
     onClose();
   };
 
@@ -34,6 +39,22 @@ function MenuConverSation({
   const { executeDelete, isDeleting } = useDeleteConversation();
 
   const dispatch = useDispatch();
+
+  const [chatImages, setChatImages] = useState([]);
+
+  useEffect(() => {
+    if (isOpen && conversationId) {
+      const fetchImages = async () => {
+        const res = await getConversationImages(conversationId);
+        if (res.success) {
+          setChatImages(res.images.map((img) => img.imageUrl));
+        }
+      };
+      fetchImages();
+    }
+  }, [isOpen, conversationId]);
+
+  const recentImagePreview = chatImages.slice(0, 3);
 
   if (!isOpen || !otherUser) return null;
 
@@ -65,11 +86,28 @@ function MenuConverSation({
                 {/* Nút quay lại menu chính */}
                 <button
                   className={cx("closeBtn")}
-                  onClick={() => setIsSearchMode(false)}
+                  onClick={() => {
+                    setIsSearchMode(false);
+                  }}
                 >
                   <ArrowLeft size={24} />
                 </button>
                 <span style={{ fontSize: "16px" }}>Tìm kiếm tin nhắn</span>
+                <div style={{ width: "36px" }}></div>{" "}
+                {/* Thẻ div rỗng để cân bằng UI */}
+              </>
+            ) : isImageMode ? (
+              <>
+                {/* Nút quay lại menu chính */}
+                <button
+                  className={cx("closeBtn")}
+                  onClick={() => {
+                    setIsmageMode(false);
+                  }}
+                >
+                  <ArrowLeft size={24} />
+                </button>
+                <span style={{ fontSize: "16px" }}>Danh sách ảnh</span>
                 <div style={{ width: "36px" }}></div>{" "}
                 {/* Thẻ div rỗng để cân bằng UI */}
               </>
@@ -92,6 +130,8 @@ function MenuConverSation({
               <div className={cx("searchWrapper")}>
                 <SearchOldMessages conversationId={conversationId} />
               </div>
+            ) : isImageMode ? (
+              <SharedImages chatImages={chatImages} />
             ) : (
               /* ========================================= */
               /* GIAO DIỆN MENU BÌNH THƯỜNG        */
@@ -141,7 +181,64 @@ function MenuConverSation({
                 <div className={cx("images")}>
                   <h4 className={cx("sectionTitle")}>Ảnh</h4>
                   <div className={cx("line")}></div>
-                  <div className={cx("imageGrid")}></div>
+                  <div className={cx("imageGrid")}>
+                    {recentImagePreview.length > 0 ? (
+                      recentImagePreview.map((url, index) => (
+                        <img
+                          key={index}
+                          src={url}
+                          alt={`img-${index}`}
+                          className={cx("gridImage")}
+                        />
+                      ))
+                    ) : (
+                      <span
+                        style={{
+                          fontSize: "13px",
+                          color: "gray",
+                          paddingBottom: "10px",
+                        }}
+                      >
+                        Chưa có ảnh nào
+                      </span>
+                    )}
+                  </div>
+                  {chatImages.length > 3 && (
+                    <div
+                      style={{
+                        display: "flex",
+                        justifyContent: "center",
+                        marginTop: "12px",
+                        marginBottom: "8px",
+                      }}
+                    >
+                      <button
+                        style={{
+                          background:
+                            "rgba(0, 132, 255, 0.1)" /* Thêm chút nền xanh nhạt cho giống Facebook/Zalo */,
+                          border: "none",
+                          color: "#0084ff",
+                          cursor: "pointer",
+                          fontSize: "14px",
+                          fontWeight: "500",
+                          padding: "8px 16px",
+                          borderRadius: "6px",
+                          width:
+                            "100%" /* Nếu muốn nút trải dài hết chiều ngang thì giữ width 100%, không thì bỏ đi */,
+                          transition: "0.2s",
+                        }}
+                        onClick={() => setIsmageMode(true)}
+                        onMouseOver={(e) =>
+                          (e.target.style.background = "rgba(0, 132, 255, 0.2)")
+                        }
+                        onMouseOut={(e) =>
+                          (e.target.style.background = "rgba(0, 132, 255, 0.1)")
+                        }
+                      >
+                        Xem tất cả
+                      </button>
+                    </div>
+                  )}
                 </div>
 
                 <div className={cx("Btn-group")}>

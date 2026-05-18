@@ -9,6 +9,7 @@ const reactMessage = require("../controller/chat/reactMessage");
 const deleteMessage = require("../controller/chat/deleteMessage");
 const revokeMessage = require("../controller/chat/revokeMessage");
 const deleteConversation = require("../controller/chat/conversation/deleteCoversation");
+const getConversationImages = require("../controller/chat/conversation/getConversationImages");
 
 router.post("/send", authorize, sendMessage.sendMessage);
 router.get("/conversations", authorize, getConversations.getConversations);
@@ -29,6 +30,11 @@ router.put(
   "/delete-conversation/:conversationId",
   authorize,
   deleteConversation.deleteConversation,
+);
+router.get(
+  "/conversation-images/:conversationId",
+  authorize,
+  getConversationImages.getConversationImages,
 );
 
 module.exports = router;

@@ -208,8 +208,17 @@
 /* Grid lưới hiển thị danh sách ảnh */
 .imageGrid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 6px;
+  grid-template-columns: repeat(3, 1fr); /* Hiển thị 3 ảnh 1 hàng */
+  gap: 8px;
+  padding: 10px 0;
+}
+
+.gridImage {
+  width: 90%;
+  aspect-ratio: 1 / 1; /* Cho ảnh thành hình vuông */
+  object-fit: cover;
+  border-radius: 8px;
+  cursor: pointer;
 }
 
 /* Bọc nhóm nút dưới đáy sử dụng CSS Grid */
