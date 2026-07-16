@@ -10,6 +10,7 @@ const deleteMessage = require("../controller/chat/deleteMessage");
 const revokeMessage = require("../controller/chat/revokeMessage");
 const deleteConversation = require("../controller/chat/conversation/deleteCoversation");
 const getConversationImages = require("../controller/chat/conversation/getConversationImages");
+const toggleMuteConversation = require("../controller/chat/conversation/toggleMuteConversation");
 
 router.post("/send", authorize, sendMessage.sendMessage);
 router.get("/conversations", authorize, getConversations.getConversations);
@@ -35,6 +36,12 @@ router.get(
   "/conversation-images/:conversationId",
   authorize,
   getConversationImages.getConversationImages,
+);
+
+router.put(
+  "/toggle-mute/:conversationId",
+  authorize,
+  toggleMuteConversation.toggleMuteConversation,
 );
 
 module.exports = router;

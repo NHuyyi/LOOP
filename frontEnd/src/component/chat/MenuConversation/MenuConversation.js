@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from "react";
 import style from "./MenuConversation.module.css";
 import classNames from "classnames/bind";
-// Thêm ArrowLeft để làm nút quay lại
-import { X, Pen, Search, Bell, User, ArrowLeft } from "lucide-react";
-// Import Component tìm kiếm (Đổi đường dẫn cho đúng với project của bạn)
+import { X, Pen, Search, User, ArrowLeft } from "lucide-react";
 import SearchOldMessages from "./SearchOldMessages/SearchOldMessages";
 import { useDeleteConversation } from "../../../hooks/useDeleteConversation";
 import ConfirmModal from "../../common/ConfirmModal/ConfirmModal";
@@ -11,16 +9,17 @@ import { useDispatch } from "react-redux";
 import { removeConversationInState } from "../../../redux/chatSlice";
 import { getConversationImages } from "../../../services/chat/getConversationImages";
 import SharedImages from "./SharedImages/SharedImages";
+import ToggleMuteButton from "./ToggleMuteButton/ToggleMuteButton";
 
 const cx = classNames.bind(style);
 
-// LƯU Ý: Thêm prop 'conversationId' để truyền vào cho MessageSearch
 function MenuConverSation({
   isOpen,
   onClose,
   otherUser,
   isOnline,
   conversationId,
+  initialIsMuted,
 }) {
   // State quản lý việc đang ở màn hình menu hay màn hình tìm kiếm
   const [isSearchMode, setIsSearchMode] = useState(false);
@@ -163,9 +162,10 @@ function MenuConverSation({
                 </div>
 
                 <div className={cx("actions")}>
-                  <button className={cx("actionBtn")}>
-                    <Bell size={24} />
-                  </button>
+                  <ToggleMuteButton
+                    conversationId={conversationId}
+                    initialIsMuted={initialIsMuted}
+                  />
                   <button className={cx("actionBtn")}>
                     <User size={24} />
                   </button>

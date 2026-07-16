@@ -38,6 +38,11 @@ function SocketManager() {
 
   const location = useLocation();
 
+  const conversationList = useSelector((state) => state.chat.ConversationList);
+  const activeConversationId = useSelector(
+    (state) => state.chat.activeConversationId,
+  );
+
   useEffect(() => {
     socket.on("testEvent", (data) => {
       alert(`Nhận testEvent: ${data.msg}`);
@@ -144,26 +149,41 @@ function SocketManager() {
       });
 
       socket.on("newMessage", ({ conversationId, message }) => {
-        // 1. Nếu đang mở khung chat của người này, thêm tin nhắn mới vào mảng hiện tại
-        dispatch(addMessage({ conversationId, message }));
+        const conversation = conversationList.find(
+          (conv) => String(conv._id) === String(conversationId),
+        );
 
-        // 2. Cập nhật tin nhắn cuối cùng ở danh sách hội thoại và đẩy người đó lên Top 1
-        dispatch(updateLastMessage({ conversationId, message }));
+        const isMuted = conversation?.mutedBy?.includes(currentUser._id);
+        const isActiveConversation =
+          String(activeConversationId) === String(conversationId);
+        const isChatpage = location.pathname.startsWith("/chat");
 
-        const senderId = message.senderId;
+        if (isActiveConversation) {
+          dispatch(addMessage({ conversationId, message }));
+        }
 
-        if (senderId) {
+        if (isMuted) {
+          dispatch(
+            updateLastMessage({
+              conversationId,
+              message,
+              reorder: false,
+            }),
+          );
+        } else {
+          dispatch(updateLastMessage({ conversationId, message }));
+        }
+
+        if (message.senderId) {
           dispatch(
             updateChatInFilteredFriends({
-              friendId: senderId,
-              conversationId: conversationId,
+              friendId: message.senderId,
+              conversationId,
             }),
           );
         }
 
-        // mở minichat khi không ở trang chat chính mà có người gửi tin nhắn đến
-        const isChatpage = location.pathname.startsWith("/chat");
-        if (!isChatpage && message.senderId) {
+        if (!isChatpage && message.senderId && !isMuted) {
           dispatch(
             OpenMiniChat({
               receiver: { _id: message.senderId },
@@ -232,7 +252,13 @@ function SocketManager() {
       socket.off("userStopTyping");
       socket.off("updateLastMessage");
     };
-  }, [currentUser, dispatch, location.pathname]);
+  }, [
+    currentUser,
+    dispatch,
+    location.pathname,
+    activeConversationId,
+    conversationList,
+  ]);
 
   return null; // component này không render gì, chỉ để quản lý socket
 }

@@ -25,6 +25,7 @@ function Chat() {
 
   let otherUser = null;
   let isOnline = false;
+  let isMuted = false;
 
   if (activeConversationId) {
     const currentConv = ConversationList.find(
@@ -32,8 +33,14 @@ function Chat() {
     );
     if (currentConv) {
       otherUser = currentConv.participants.find(
-        (user) => user._id !== currentUser._id,
+        (user) => user._id !== currentUser.user._id,
       );
+      if (
+        currentConv.mutedBy &&
+        currentConv.mutedBy.includes(currentUser.user._id)
+      ) {
+        isMuted = true;
+      }
     }
   } else if (activeReceiver) {
     otherUser = activeReceiver;
@@ -74,6 +81,7 @@ function Chat() {
         otherUser={otherUser}
         isOnline={isOnline}
         conversationId={activeConversationId}
+        initialIsMuted={isMuted}
       />
     </div>
   );

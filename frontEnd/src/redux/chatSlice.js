@@ -22,17 +22,21 @@ const chatSlice = createSlice({
     },
     // Khi có tin nhắn mới (mình gửi hoặc người ta gửi), cập nhật lại "tin nhắn cuối" và đẩy người đó lên top 1
     updateLastMessage: (state, action) => {
-      const { conversationId, message } = action.payload;
+      const { conversationId, message, reorder = true } = action.payload;
       const index = state.ConversationList.findIndex(
         (c) => c._id === conversationId,
       );
 
       if (index !== -1) {
-        // cập nhật tin nhắn cuối
         state.ConversationList[index].lastMessage = message;
-        // đẩy cuộc trò chuyện lên top 1
-        const updatedConversation = state.ConversationList.splice(index, 1)[0];
-        state.ConversationList.unshift(updatedConversation);
+
+        if (reorder) {
+          const updatedConversation = state.ConversationList.splice(
+            index,
+            1,
+          )[0];
+          state.ConversationList.unshift(updatedConversation);
+        }
       } else {
         const newConversation = {
           _id: conversationId,
@@ -40,10 +44,7 @@ const chatSlice = createSlice({
           lastMessage: message,
           updatedAt: new Date().toISOString(),
         };
-        // đẩy hội thoai mới lên top 1
         state.ConversationList.unshift(newConversation);
-
-        // cập nhật luôn activeConversationId để UI nhận diện được đây là khung chat đang mở
         if (!state.activeConversationId) {
           state.activeConversationId = conversationId;
         }
@@ -239,6 +240,38 @@ const chatSlice = createSlice({
         state.hasMore = true;
       }
     },
+
+    updateConversationMuteStatus: (state, action) => {
+      const { conversationId, userId, isMuted } = action.payload;
+
+      console.log("updateConversationMuteStatus called with:", {
+        conversationId,
+        userId,
+        isMuted,
+      });
+
+      // 1. Tìm cuộc trò chuyện cần cập nhật
+      const conversation = state.ConversationList.find(
+        (c) => c._id === conversationId,
+      );
+
+      if (conversation) {
+        // Đảm bảo mảng mutedBy tồn tại
+        if (!conversation.mutedBy) conversation.mutedBy = [];
+
+        if (isMuted) {
+          // Bật tắt thông báo -> Thêm ID user vào mảng nếu chưa có
+          if (!conversation.mutedBy.includes(userId)) {
+            conversation.mutedBy.push(userId);
+          }
+        } else {
+          // Bật thông báo -> Xóa ID user khỏi mảng
+          conversation.mutedBy = conversation.mutedBy.filter(
+            (id) => id !== userId,
+          );
+        }
+      }
+    },
   },
 });
 
@@ -259,6 +292,7 @@ export const {
   clearReplyMessage,
   revokeMessageInState,
   removeConversationInState,
+  updateConversationMuteStatus,
 } = chatSlice.actions;
 
 export default chatSlice.reducer;
