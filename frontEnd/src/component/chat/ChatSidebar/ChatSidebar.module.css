@@ -1,0 +1,114 @@
+﻿.sidebar-container {
+  height: 100%;
+  background-color: #1e1f22; /* Màu Dark Theme */
+  color: #e3e3e3;
+  display: flex;
+  flex-direction: column;
+  transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  width: 68px; /* Kích thước khi thu gọn */
+  overflow: hidden;
+  border-right: 1px solid #2b2d31;
+}
+
+.sidebar-container.expanded {
+  width: 260px; /* Kích thước khi mở rộng - không cần quá bự vì không chứa chat list */
+}
+
+/* Nút 3 gạch */
+.top-header {
+  display: flex;
+  align-items: center;
+  padding: 16px 12px;
+  height: 64px;
+}
+
+.toggle-btn {
+  background: transparent;
+  border: none;
+  color: #e3e3e3;
+  cursor: pointer;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s;
+  flex-shrink: 0;
+}
+
+.toggle-btn:hover {
+  background-color: #2b2d31;
+}
+
+.brand-name {
+  font-size: 18px;
+  font-weight: 600;
+  margin-left: 12px;
+  white-space: nowrap;
+}
+
+/* Các Nút Chức năng */
+.nav-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 0 12px;
+  margin-top: 10px;
+  flex: 1;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  padding: 10px 11px;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.nav-item:hover {
+  background-color: #2b2d31;
+}
+
+.nav-item.active {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+}
+
+.icon {
+  flex-shrink: 0;
+  color: #b0b3b8;
+}
+
+.nav-item.active .icon {
+  color: #0084ff; /* Icon đổi màu khi active */
+}
+
+.label {
+  margin-left: 16px;
+  font-size: 15px;
+  font-weight: 500;
+}
+
+/* Cài đặt & Avatar dưới cùng */
+.bottom-menu {
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.profile-avatar {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.profile-name {
+  font-weight: 600;
+}

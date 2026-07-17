@@ -7,7 +7,8 @@ exports.getConversations = async (req, res) => {
 
     const conversations = await Conversation.find({
       participants: { $in: [userId] },
-      deleteBy: { $ne: userId }, // Loại bỏ những cuộc trò chuyện đã bị người dùng xóa
+      deleteBy: { $ne: userId },
+      restrictedBy: { $ne: userId },
     })
       .populate("participants", "name avatar friendCode username") // Lấy thông tin người chat cùng
       .populate("lastMessage") // Lấy nội dung tin nhắn cuối cùng

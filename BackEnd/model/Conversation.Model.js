@@ -25,6 +25,12 @@ const ConversationSchema = new mongoose.Schema(
         ref: "User",
       },
     ],
+    restrictedBy: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+      },
+    ],
   },
   { timestamps: true },
 );

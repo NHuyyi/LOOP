@@ -20,6 +20,31 @@ const chatSlice = createSlice({
     setConversations: (state, action) => {
       state.ConversationList = action.payload; // lấy từ API lúc mới vào web
     },
+
+    setRestrictedConversations: (state, action) => {
+      state.RestrictedConversationList = action.payload;
+    },
+    moveConversationToRestricted: (state, action) => {
+      const conversation = action.payload;
+      state.ConversationList = state.ConversationList.filter(
+        (c) => String(c._id) !== String(conversation._id),
+      );
+      const exists = state.RestrictedConversationList.find(
+        (c) => String(c._id) === String(conversation._id),
+      );
+      if (!exists) state.RestrictedConversationList.unshift(conversation);
+    },
+    moveConversationToNormal: (state, action) => {
+      const conversation = action.payload;
+      state.RestrictedConversationList =
+        state.RestrictedConversationList.filter(
+          (c) => String(c._id) !== String(conversation._id),
+        );
+      const exists = state.ConversationList.find(
+        (c) => String(c._id) === String(conversation._id),
+      );
+      if (!exists) state.ConversationList.unshift(conversation);
+    },
     // Khi có tin nhắn mới (mình gửi hoặc người ta gửi), cập nhật lại "tin nhắn cuối" và đẩy người đó lên top 1
     updateLastMessage: (state, action) => {
       const { conversationId, message, reorder = true } = action.payload;
@@ -277,6 +302,9 @@ const chatSlice = createSlice({
 
 export const {
   setConversations,
+  setRestrictedConversations,
+  moveConversationToRestricted,
+  moveConversationToNormal,
   updateLastMessage,
   setInitialMessages,
   loadMoreMessages,

@@ -43,6 +43,10 @@ function SocketManager() {
     (state) => state.chat.activeConversationId,
   );
 
+  const restrictedConversationList = useSelector(
+    (state) => state.chat.RestrictedConversationList,
+  );
+
   useEffect(() => {
     socket.on("testEvent", (data) => {
       alert(`Nhận testEvent: ${data.msg}`);
@@ -149,11 +153,18 @@ function SocketManager() {
       });
 
       socket.on("newMessage", ({ conversationId, message }) => {
-        const conversation = conversationList.find(
-          (conv) => String(conv._id) === String(conversationId),
-        );
+        const conversation =
+          conversationList.find(
+            (conv) => String(conv._id) === String(conversationId),
+          ) ||
+          restrictedConversationList.find(
+            (conv) => String(conv._id) === String(conversationId),
+          );
 
         const isMuted = conversation?.mutedBy?.includes(currentUser._id);
+        const isRestricted = conversation?.restrictedBy?.includes(
+          currentUser._id,
+        );
         const isActiveConversation =
           String(activeConversationId) === String(conversationId);
         const isChatpage = location.pathname.startsWith("/chat");
@@ -183,7 +194,7 @@ function SocketManager() {
           );
         }
 
-        if (!isChatpage && message.senderId && !isMuted) {
+        if (!isChatpage && message.senderId && !isMuted && !isRestricted) {
           dispatch(
             OpenMiniChat({
               receiver: { _id: message.senderId },
@@ -258,6 +269,7 @@ function SocketManager() {
     location.pathname,
     activeConversationId,
     conversationList,
+    restrictedConversationList,
   ]);
 
   return null; // component này không render gì, chỉ để quản lý socket
