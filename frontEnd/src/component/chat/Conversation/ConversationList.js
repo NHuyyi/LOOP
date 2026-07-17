@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import styles from "./ConversationList.module.css";
 import classNames from "classnames/bind";
 import { useSelector, useDispatch } from "react-redux";
+import { BellOff } from "lucide-react";
 
 // Import API và Redux
 import getFriendList from "../../../services/Friends/getFriendList";
@@ -148,6 +149,13 @@ const ConversationList = () => {
       );
       const isActive = conv._id === activeConversationId;
 
+      const isMuted =
+        conv.mutedBy &&
+        Array.isArray(conv.mutedBy) &&
+        conv.mutedBy.includes(currentUser._id);
+
+      const isImageMessage =
+        conv.lastMessage.messageType === "image" || conv.lastMessage.imageUrl;
       // ---- XỬ LÝ LOGIC TRẠNG THÁI TIN NHẮN ----
       let isMyMessage = false;
       let isUnread = "delivered";
@@ -202,9 +210,11 @@ const ConversationList = () => {
                   </span>
                 ) : (
                   <>
-                    {/* Nếu là mình gửi thì thêm chữ "Bạn: " */}
                     {isMyMessage ? "Bạn: " : ""}
-                    {parseEmojis(conv.lastMessage.text, true)}
+
+                    {isImageMessage
+                      ? "Đã gửi một ảnh"
+                      : parseEmojis(conv.lastMessage.text, true)}
                   </>
                 )
               ) : (
@@ -212,6 +222,12 @@ const ConversationList = () => {
               )}
             </p>
           </div>
+
+          {isMuted && (
+            <span className={cx("muted-icon")} title="Tắt thông báo">
+              <BellOff size={14} />
+            </span>
+          )}
 
           {/* Hiển thị một chấm xanh nhỏ góc phải nếu có tin nhắn chưa đọc */}
           {isUnread && <div className={cx("unread-dot")}></div>}

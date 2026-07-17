@@ -1,7 +1,7 @@
 import React, { useRef } from "react";
 import { Image } from "lucide-react";
 import classNames from "classnames/bind";
-import styles from "./MessageInput.module.css"; 
+import styles from "./MessageInput.module.css";
 
 const cx = classNames.bind(styles);
 
@@ -20,7 +20,8 @@ function ImageUpload({ onImageSelect, isUploading }) {
       onImageSelect(file, URL.createObjectURL(file));
     }
     // Reset value để nếu xoá ảnh rồi chọn lại đúng ảnh đó vẫn hoạt động
-    e.target.value = ""; 
+    e.target.value = "";
+    e.target.blur();
   };
 
   return (
@@ -32,9 +33,9 @@ function ImageUpload({ onImageSelect, isUploading }) {
         style={{ display: "none" }}
         onChange={handleFileChange}
       />
-      <button 
-        type="button" 
-        className={cx("actionBtn")} 
+      <button
+        type="button"
+        className={cx("actionBtn")}
         onClick={handleIconClick}
         disabled={isUploading}
       >

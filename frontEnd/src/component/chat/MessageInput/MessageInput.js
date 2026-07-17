@@ -234,6 +234,16 @@ function MessageInput() {
           onImageSelect={(file, preview) => {
             setSelectedImage(file);
             setImagePreview(preview);
+
+            if (editorRef.current) {
+              editorRef.current.focus();
+              const selection = window.getSelection();
+              const range = document.createRange();
+              range.selectNodeContents(editorRef.current);
+              range.collapse(false);
+              selection.removeAllRanges();
+              selection.addRange(range);
+            }
           }}
         />
 
