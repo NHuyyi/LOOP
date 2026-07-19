@@ -10,6 +10,7 @@ import { removeConversationInState } from "../../../redux/chatSlice";
 import { getConversationImages } from "../../../services/chat/getConversationImages";
 import SharedImages from "./SharedImages/SharedImages";
 import ToggleMuteButton from "./ToggleMuteButton/ToggleMuteButton";
+import ToggleRestrictButton from "./ToggleRestrictButton/ToggleRestrictButton";
 
 const cx = classNames.bind(style);
 
@@ -20,6 +21,7 @@ function MenuConverSation({
   isOnline,
   conversationId,
   initialIsMuted,
+  isRestricted,
 }) {
   // State quản lý việc đang ở màn hình menu hay màn hình tìm kiếm
   const [isSearchMode, setIsSearchMode] = useState(false);
@@ -243,7 +245,12 @@ function MenuConverSation({
 
                 <div className={cx("Btn-group")}>
                   <button className={cx("reportBtn")}>Báo cáo</button>
-                  <button className={cx("cancelBtn")}>Hạn chế</button>
+                  <ToggleRestrictButton
+                    conversationId={conversationId}
+                    // logic kiểm tra xem cuộc trò chuyện có nằm trong RestrictedConversationList không
+                    isRestricted={isRestricted} // Truyền biến check trạng thái vào đây
+                    className={cx("cancelBtn")}
+                  />
                   <button
                     className={cx("deleteBtn")}
                     onClick={() => setShowDeleteModal(true)}

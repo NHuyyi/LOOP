@@ -152,7 +152,7 @@ function SocketManager() {
         }
       });
 
-      socket.on("newMessage", ({ conversationId, message }) => {
+      socket.on("newMessage", ({ conversationId, message, isRestricted }) => {
         const conversation =
           conversationList.find(
             (conv) => String(conv._id) === String(conversationId),
@@ -162,9 +162,8 @@ function SocketManager() {
           );
 
         const isMuted = conversation?.mutedBy?.includes(currentUser._id);
-        const isRestricted = conversation?.restrictedBy?.includes(
-          currentUser._id,
-        );
+        const finalIsRestricted =
+          isRestricted || conversation?.restrictedBy?.includes(currentUser._id);
         const isActiveConversation =
           String(activeConversationId) === String(conversationId);
         const isChatpage = location.pathname.startsWith("/chat");
@@ -173,34 +172,36 @@ function SocketManager() {
           dispatch(addMessage({ conversationId, message }));
         }
 
-        if (isMuted) {
-          dispatch(
-            updateLastMessage({
-              conversationId,
-              message,
-              reorder: false,
-            }),
-          );
-        } else {
-          dispatch(updateLastMessage({ conversationId, message }));
-        }
+        if (!finalIsRestricted) {
+          if (isMuted) {
+            dispatch(
+              updateLastMessage({
+                conversationId,
+                message,
+                reorder: false,
+              }),
+            );
+          } else {
+            dispatch(updateLastMessage({ conversationId, message }));
+          }
 
-        if (message.senderId) {
-          dispatch(
-            updateChatInFilteredFriends({
-              friendId: message.senderId,
-              conversationId,
-            }),
-          );
-        }
+          if (message.senderId) {
+            dispatch(
+              updateChatInFilteredFriends({
+                friendId: message.senderId,
+                conversationId,
+              }),
+            );
+          }
 
-        if (!isChatpage && message.senderId && !isMuted && !isRestricted) {
-          dispatch(
-            OpenMiniChat({
-              receiver: { _id: message.senderId },
-              conversationId,
-            }),
-          );
+          if (!isChatpage && message.senderId && !isMuted) {
+            dispatch(
+              OpenMiniChat({
+                receiver: { _id: message.senderId },
+                conversationId,
+              }),
+            );
+          }
         }
       });
       // This event is listens for forwarded messages and updates the last message,

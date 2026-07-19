@@ -23,7 +23,7 @@ import { useRichTextEditor } from "../../../hooks/useRichTextEditor";
 const cx = classNames.bind(styles);
 let typingTimeout = null;
 
-function MessageInput() {
+function MessageInput({ receiverId }) {
   const [selectedImage, setSelectedImage] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
   const [isUploading, setIsUploading] = useState(false);
@@ -32,13 +32,9 @@ function MessageInput() {
   const stateUser = useSelector((state) => state.user);
   const currentUser = stateUser?.user;
 
-  const {
-    ConversationList = [],
-    activeConversationId,
-    activeReceiver,
-    currentMessages,
-    replyMessage,
-  } = useSelector((state) => state.chat);
+  const { activeConversationId, currentMessages, replyMessage } = useSelector(
+    (state) => state.chat,
+  );
 
   const handleFocus = async () => {
     if (
@@ -64,29 +60,13 @@ function MessageInput() {
     }
   };
 
-  const getReceiverId = () => {
-    if (activeConversationId) {
-      const currentConv = ConversationList.find(
-        (c) => c._id === activeConversationId,
-      );
-      const receiver = currentConv?.participants.find(
-        (p) => p._id !== currentUser?._id,
-      );
-      return receiver?._id;
-    } else if (activeReceiver) {
-      return activeReceiver._id;
-    }
-    return null;
-  };
-
   const handleSend = async (e) => {
     e.preventDefault();
 
     const textToSend = getParsedText();
 
-    if (!textToSend.trim() && !selectedImage) return;
+    if ((!textToSend.trim() && !selectedImage) || !receiverId) return;
 
-    let receiverId = getReceiverId();
     if (!receiverId) return;
 
     setIsUploading(true);
@@ -157,7 +137,6 @@ function MessageInput() {
     useRichTextEditor();
 
   const handleTyping = () => {
-    const receiverId = getReceiverId();
     if (!receiverId || !activeConversationId) return;
     socket.emit("typing", {
       senderId: currentUser._id,

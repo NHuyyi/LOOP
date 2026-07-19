@@ -20,6 +20,7 @@ function Chat() {
     activeConversationId,
     activeReceiver,
     ConversationList = [],
+    RestrictedConversationList = [],
   } = useSelector((state) => state.chat);
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -34,11 +35,15 @@ function Chat() {
   let otherUser = null;
   let isOnline = false;
   let isMuted = false;
+  let isRestricted = false;
 
   if (activeConversationId) {
-    const currentConv = ConversationList.find(
-      (conv) => conv._id === activeConversationId,
-    );
+    const currentConv =
+      ConversationList.find((conv) => conv._id === activeConversationId) ||
+      RestrictedConversationList.find(
+        (conv) => conv._id === activeConversationId,
+      );
+
     if (currentConv) {
       otherUser = currentConv.participants.find(
         (user) => user._id !== currentUser._id,
@@ -48,6 +53,12 @@ function Chat() {
         currentConv.mutedBy.includes(currentUser._id)
       ) {
         isMuted = true;
+      }
+      if (
+        currentConv.restrictedBy &&
+        currentConv.restrictedBy.includes(currentUser._id)
+      ) {
+        isRestricted = true;
       }
     }
   } else if (activeReceiver) {
@@ -91,9 +102,12 @@ function Chat() {
       <div className={cx("chatArea")}>
         {activeConversationId || activeReceiver ? (
           <>
-            <ChatHeader onOpenModal={() => setIsMenuOpen(true)} />
+            <ChatHeader
+              onOpenModal={() => setIsMenuOpen(true)}
+              otherUser={otherUser}
+            />
             <MessageList />
-            <MessageInput />
+            <MessageInput receiverId={otherUser?._id} />
           </>
         ) : (
           <div className={cx("noChatSelected")}>
@@ -114,6 +128,7 @@ function Chat() {
         isOnline={isOnline}
         conversationId={activeConversationId}
         initialIsMuted={isMuted}
+        isRestricted={isRestricted}
       />
     </div>
   );

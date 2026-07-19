@@ -39,7 +39,6 @@ exports.sendMessage = async (req, res) => {
     conversation.lastMessage = message._id;
     conversation.deleteBy = []; // Reset deleteBy khi có tin nhắn mới
     await conversation.save();
-
     //socket.io sẽ lắng nghe sự kiện "newMessage" và gửi tin nhắn mới đến người nhận
     const io = getIO();
     const populatedMessage = await message.populate([
@@ -56,12 +55,18 @@ exports.sendMessage = async (req, res) => {
         },
       },
     ]);
+
+    const isRestricted =
+      conversation.restrictedBy &&
+      conversation.restrictedBy.includes(receiverId);
+
     if (onlineUsers[receiverId]) {
       // Nhớ populate thêm phần replyTo để hiển thị nội dung tin bị reply
 
       io.to(onlineUsers[receiverId]).emit("newMessage", {
         conversationId: conversation._id,
         message: populatedMessage,
+        isRestricted: isRestricted,
       });
     }
     // This emit is used to update the last message in the conversation list for the sender

@@ -230,7 +230,7 @@ const ConversationList = () => {
           )}
 
           {/* Hiển thị một chấm xanh nhỏ góc phải nếu có tin nhắn chưa đọc */}
-          {isUnread && <div className={cx("unread-dot")}></div>}
+          {isUnread && !isMuted && <div className={cx("unread-dot")}></div>}
         </div>
       );
     });

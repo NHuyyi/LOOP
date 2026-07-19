@@ -4,7 +4,8 @@ const initialState = {
   ConversationList: [], // lưu trữ danh sách bạn bè đã chat + tin nhắn cuối cùng
   activeConversationId: null, // lưu trữ cuộc trò chuyện hiện tại đang mở
   currentMessages: [], // lưu trữ tin nhắn của cuộc trò chuyện hiện tại(mặc định 20 tin nhắn)
-  aciveRteceiver: null, // thông tin người đang chat cùng
+  activeRteceiver: null, // thông tin người đang chat cùng
+  RestrictedConversationList: [],
   // các state hỗ trợ phân trang khi cuộn chuột lên
   hasMore: true, // Biến cờ: dung để kiểm tra xem còn tin nhắn nào để tải hay không
   page: 1, // Trang hiện tại, bắt đầu từ 1
@@ -33,6 +34,13 @@ const chatSlice = createSlice({
         (c) => String(c._id) === String(conversation._id),
       );
       if (!exists) state.RestrictedConversationList.unshift(conversation);
+      if (String(state.activeConversationId) === String(conversation._id)) {
+        state.activeConversationId = null;
+        state.currentMessages = [];
+        state.activeReceiver = null;
+        state.page = 1;
+        state.hasMore = true; // reset lại state
+      }
     },
     moveConversationToNormal: (state, action) => {
       const conversation = action.payload;
@@ -48,13 +56,14 @@ const chatSlice = createSlice({
     // Khi có tin nhắn mới (mình gửi hoặc người ta gửi), cập nhật lại "tin nhắn cuối" và đẩy người đó lên top 1
     updateLastMessage: (state, action) => {
       const { conversationId, message, reorder = true } = action.payload;
+
+      // 1. TÌM TRONG DANH SÁCH BÌNH THƯỜNG
       const index = state.ConversationList.findIndex(
-        (c) => c._id === conversationId,
+        (c) => String(c._id) === String(conversationId),
       );
 
       if (index !== -1) {
         state.ConversationList[index].lastMessage = message;
-
         if (reorder) {
           const updatedConversation = state.ConversationList.splice(
             index,
@@ -62,17 +71,41 @@ const chatSlice = createSlice({
           )[0];
           state.ConversationList.unshift(updatedConversation);
         }
-      } else {
-        const newConversation = {
-          _id: conversationId,
-          participants: [message.senderId, state.activeReceiver],
-          lastMessage: message,
-          updatedAt: new Date().toISOString(),
-        };
-        state.ConversationList.unshift(newConversation);
-        if (!state.activeConversationId) {
-          state.activeConversationId = conversationId;
+        return; // Cập nhật xong thì thoát
+      }
+
+      // 2. TÌM TRONG DANH SÁCH HẠN CHẾ (Thêm logic này)
+      if (!state.RestrictedConversationList) {
+        state.RestrictedConversationList = [];
+      }
+
+      const restrictedIndex = state.RestrictedConversationList.findIndex(
+        (c) => String(c._id) === String(conversationId),
+      );
+
+      if (restrictedIndex !== -1) {
+        state.RestrictedConversationList[restrictedIndex].lastMessage = message;
+        if (reorder) {
+          const updatedRestricted = state.RestrictedConversationList.splice(
+            restrictedIndex,
+            1,
+          )[0];
+          state.RestrictedConversationList.unshift(updatedRestricted);
         }
+        return; // Cập nhật xong thì thoát
+      }
+
+      // 3. NẾU KHÔNG CÓ Ở ĐÂU CẢ -> Tạo mới và đẩy vào danh sách bình thường
+      const newConversation = {
+        _id: conversationId,
+        participants: [message.senderId, state.activeReceiver],
+        lastMessage: message,
+        updatedAt: new Date().toISOString(),
+      };
+      state.ConversationList.unshift(newConversation);
+
+      if (!state.activeConversationId) {
+        state.activeConversationId = conversationId;
       }
     },
 

@@ -36,7 +36,7 @@ const ConfirmModal = ({
             onClick={onConfirm}
             disabled={isProcessing}
           >
-            {isProcessing ? <Loading size="small" /> : "Xóa"}
+            {isProcessing ? <Loading size="small" /> : "Xác nhận"}
           </button>
         </div>
       </div>
