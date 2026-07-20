@@ -1,5 +1,6 @@
 // controller/post/getCommentsList.js
 const PostModel = require("../../../model/Post.Model");
+const Block = require("../../../model/Block.Model");
 const calculateCounts = require("../../../utils/reaction");
 
 exports.getCommentsList = async (req, res) => {
@@ -17,6 +18,15 @@ exports.getCommentsList = async (req, res) => {
         error: "Không tìm thấy bài đăng",
       });
     }
+    const userBlocks = await Block.find({ blocker: userId }).select("blocked");
+    const userBlockedBy = await Block.find({ blocked: userId }).select(
+      "blocker",
+    );
+
+    const blockedUserIds = new Set([
+      ...userBlocks.map((item) => String(item.blocked)),
+      ...userBlockedBy.map((item) => String(item.blocker)),
+    ]);
 
     const comments = Array.isArray(post.comments) ? post.comments : [];
 
@@ -24,6 +34,11 @@ exports.getCommentsList = async (req, res) => {
     const canView = (c) => {
       if (!c.user) return false;
       if (String(c.user._id) === String(userId)) return true;
+
+      if (blockedUserIds.has(String(c.user._id))) {
+        return false;
+      }
+
       const friends = Array.isArray(c.user.friends)
         ? c.user.friends.map(String)
         : [];
@@ -36,8 +51,11 @@ exports.getCommentsList = async (req, res) => {
     // Normalize + filter
     for (const c of comments) {
       if (!canView(c)) continue;
+      const reactionin = Array.isArray(c.reactions)
+        ? c.reactions.filter((r) => blockedUserIds.has(String(r.user._id)))
+        : [];
 
-      const { counts, total } = calculateCounts(c.reactions || []);
+      const { counts, total } = calculateCounts(reactionin || []);
 
       const normalized = {
         _id: c._id,
@@ -83,7 +101,6 @@ exports.getCommentsList = async (req, res) => {
 
     return res.json({
       success: true,
-      count: map.size,
       data: roots,
       count: countVisible,
     });

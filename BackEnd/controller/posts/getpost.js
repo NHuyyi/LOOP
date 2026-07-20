@@ -1,6 +1,7 @@
 // controller/postController.js
 const PostModel = require("../../model/Post.Model");
 const UserModel = require("../../model/User.Model");
+const Block = require("../../model/Block.Model");
 
 exports.getNewsFeed = async (req, res) => {
   try {
@@ -16,6 +17,17 @@ exports.getNewsFeed = async (req, res) => {
     }
 
     const friendIds = user.friends.map((f) => String(f._id));
+
+    const userBlocks = await Block.find({ blocker: userId }).select("blocked");
+    const userBlockedBy = await Block.find({ blocked: userId }).select(
+      "blocker",
+    );
+
+    const blockedUserIds = new Set([
+      ...userBlocks.map((item) => String(item.blocked)),
+      ...userBlockedBy.map((item) => String(item.blocker)),
+    ]);
+
     const ids = [String(userId), ...friendIds];
 
     // 🔹 Lấy post của chính user + bạn bè
@@ -30,6 +42,10 @@ exports.getNewsFeed = async (req, res) => {
 
     // 🔹 Lọc theo visibility
     posts = posts.filter((p) => {
+      if (blockedUserIds.has(String(p.author._id))) {
+        return false;
+      }
+
       if (p.visibility === "friends") {
         return ids.includes(String(p.author._id));
       }
@@ -49,7 +65,10 @@ exports.getNewsFeed = async (req, res) => {
 
       allComments.forEach((c) => {
         if (String(c.user._id) === String(userId)) return; // chính chủ thấy
-
+        if (blockedUserIds.has(String(c.user._id))) {
+          hiddenIds.add(String(c._id));
+          return;
+        }
         const isFriend = (c.user.friends || [])
           .map(String)
           .includes(String(userId));
@@ -66,7 +85,7 @@ exports.getNewsFeed = async (req, res) => {
       });
 
       const visibleComments = allComments.filter(
-        (c) => !hiddenIds.has(String(c._id)) && !c.isDeleted
+        (c) => !hiddenIds.has(String(c._id)) && !c.isDeleted,
       );
 
       return {

@@ -1,5 +1,6 @@
 const PostModel = require("../../../model/Post.Model");
 const UserModel = require("../../../model/User.Model");
+const Block = require("../../../model/Block.Model");
 const { getIO, getOnlineUsers } = require("../../../config/socker");
 const sanitizeHtml = require("sanitize-html"); // ⚠️ cần cài nếu dùng: npm install sanitize-html
 
@@ -15,6 +16,23 @@ exports.createComment = async (req, res) => {
     const post = await PostModel.findById(postId);
     if (!post) {
       return res.status(404).json({ error: "Không tìm thấy bài viết" });
+    }
+    // kiểm tra xem có chặn hoặc bị chặn không
+    const blockRelation = await Block.findOne({
+      $or: [
+        { blocker: userId, blocked: post.author },
+        { blocker: post.author, blocked: userId },
+      ],
+    });
+
+    if (blockRelation) {
+      return res.status(403).json({
+        success: false,
+        message:
+          String(blockRelation.blocker) === String(userId)
+            ? "Bạn đã block người này"
+            : "Bạn bị block bởi người này",
+      });
     }
 
     // ✅ Làm sạch nội dung HTML comment (chống XSS)
@@ -51,7 +69,7 @@ exports.createComment = async (req, res) => {
       (c) =>
         String(c.user._id) === String(userId) &&
         c.text === cleanText &&
-        String(c.parentId || "") === String(parentId || "")
+        String(c.parentId || "") === String(parentId || ""),
     );
 
     if (!created) {

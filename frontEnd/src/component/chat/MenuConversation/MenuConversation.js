@@ -11,6 +11,7 @@ import { getConversationImages } from "../../../services/chat/getConversationIma
 import SharedImages from "./SharedImages/SharedImages";
 import ToggleMuteButton from "./ToggleMuteButton/ToggleMuteButton";
 import ToggleRestrictButton from "./ToggleRestrictButton/ToggleRestrictButton";
+import BlockButton from "./BlockButton/BlockButton";
 
 const cx = classNames.bind(style);
 
@@ -257,7 +258,7 @@ function MenuConverSation({
                   >
                     Xóa cuộc trò chuyện
                   </button>
-                  <button className={cx("blockBtn")}>Chặn người dùng</button>
+                  <BlockButton targetUserId={otherUser?._id} />
                 </div>
               </>
             )}

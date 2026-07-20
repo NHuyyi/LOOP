@@ -1,5 +1,6 @@
 const Conversation = require("../../model/Conversation.Model");
 const Message = require("../../model/Message.Model");
+const Block = require("../../model/Block.Model");
 const { getIO, getOnlineUsers } = require("../../config/socker");
 
 // API gửi tin nhắn trong một cuộc trò chuyện
@@ -14,6 +15,23 @@ exports.sendMessage = async (req, res) => {
     let conversation = await Conversation.findOne({
       participants: { $all: [senderId, receiverId] },
     });
+    // kiểm tra xem cuộc trò chuyện có bị chặn không
+    const blockRelation = await Block.findOne({
+      $or: [
+        { blocker: senderId, blocked: receiverId },
+        { blocker: receiverId, blocked: senderId },
+      ],
+    });
+
+    if (blockRelation) {
+      return res.status(403).json({
+        success: false,
+        message:
+          String(blockRelation.blocker) === String(senderId)
+            ? "Bạn đã block người này"
+            : "Bạn bị block bởi người này",
+      });
+    }
 
     // nếu chưa có cuộc trò chuyện thì tạo mới
     if (!conversation) {

@@ -7,6 +7,8 @@ const Login = require("../controller/users/LoginController");
 const forgetPassword = require("../controller/users/forgetPassword");
 const resetpassword = require("../controller/users/resetpassword");
 const getUserById = require("../controller/users/getUserbyId");
+const toggleBlockUser = require("../controller/blocks/toggleBlockUser");
+const checkBlockStatus = require("../controller/blocks/checkBlockStatus");
 const authorize = require("../middleware/Authorization");
 
 router.post("/signup", SignUp.SignUp); // Đăng ký người dùng
@@ -16,5 +18,11 @@ router.post("/login", Login.Login); // Đăng nhập
 router.post("/forget", forgetPassword.forgetPassword); // quên mật khẩu
 router.post("/reset", resetpassword.resetpassword); // đặt lại mật khẩu
 router.post("/getUserById", authorize, getUserById.getUserById); // Lấy thông tin người dùng theo ID
+router.post("/toggle-block", authorize, toggleBlockUser.toggleBlockUser);
+router.get(
+  "/check-block/:targetId",
+  authorize,
+  checkBlockStatus.checkBlockStatus,
+);
 
 module.exports = router;
