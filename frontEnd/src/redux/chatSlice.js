@@ -12,6 +12,10 @@ const initialState = {
   miniChat: [], // mảng chứa danh sách bong bóng chat
   typingConversations: [],
   replyMessage: null,
+  blockStatus: {
+    isBlockedByMe: false,
+    isBlockedByThem: false,
+  },
 };
 
 const chatSlice = createSlice({
@@ -330,6 +334,20 @@ const chatSlice = createSlice({
         }
       }
     },
+
+    setInitialBlockStatus: (state, action) => {
+      const { isBlockedByMe, isBlockedByThem } = action.payload;
+
+      state.blockStatus.isBlockedByMe = !!isBlockedByMe;
+      state.blockStatus.isBlockedByThem = !!isBlockedByThem;
+    },
+
+    updateBlockStatusRealtime: (state, action) => {
+      const { isBlockedByMe, isBlockedByThem } = action.payload;
+
+      state.blockStatus.isBlockedByMe = !!isBlockedByMe;
+      state.blockStatus.isBlockedByThem = !!isBlockedByThem;
+    },
   },
 });
 
@@ -354,6 +372,8 @@ export const {
   revokeMessageInState,
   removeConversationInState,
   updateConversationMuteStatus,
+  setInitialBlockStatus,
+  updateBlockStatusRealtime,
 } = chatSlice.actions;
 
 export default chatSlice.reducer;

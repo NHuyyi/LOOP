@@ -28,6 +28,7 @@ import {
   markConversationAsRead,
   setTyping,
   revokeMessageInState,
+  updateBlockStatusRealtime,
 } from "../redux/chatSlice";
 
 import { useLocation } from "react-router-dom";
@@ -241,6 +242,15 @@ function SocketManager() {
         const { messageId, conversationId } = data;
         dispatch(revokeMessageInState({ messageId, conversationId }));
       });
+
+      socket.on("blockStatusChanged", (data) => {
+        dispatch(
+          updateBlockStatusRealtime({
+            isBlockedByMe: data.isBlockedByMe,
+            isBlockedByThem: data.isBlockedByThem,
+          }),
+        );
+      });
     }
 
     return () => {
@@ -263,6 +273,8 @@ function SocketManager() {
       socket.off("userTyping");
       socket.off("userStopTyping");
       socket.off("updateLastMessage");
+      socket.off("messageRevoked");
+      socket.off("blockStatusChanged");
     };
   }, [
     currentUser,

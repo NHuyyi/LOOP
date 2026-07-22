@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styles from "./ChatPage.module.css";
 import classNames from "classnames/bind";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 
 import ChatSidebar from "../../component/chat/ChatSidebar/ChatSidebar";
 import ConversationListComponent from "../../component/chat/Conversation/ConversationList";
@@ -13,9 +13,12 @@ import MessageList from "../../component/chat/MessageList/MessageList";
 import MessageInput from "../../component/chat/MessageInput/MessageInput";
 import MenuConverSation from "../../component/chat/MenuConversation/MenuConversation";
 
+import checkBlockStatus from "../../services/User/checkBlockStatus";
+import { setInitialBlockStatus } from "../../redux/chatSlice";
 const cx = classNames.bind(styles);
 
 function Chat() {
+  const dispatch = useDispatch();
   const {
     activeConversationId,
     activeReceiver,
@@ -68,6 +71,18 @@ function Chat() {
   if (otherUser) {
     isOnline = onlineUsers.includes(otherUser._id);
   }
+
+  useEffect(() => {
+    if (otherUser?._id) {
+      checkBlockStatus(otherUser._id)
+        .then((res) => {
+          if (res.success) {
+            dispatch(setInitialBlockStatus(res.data?.state || "none"));
+          }
+        })
+        .catch((err) => console.error("Lỗi lấy trạng thái block:", err));
+    }
+  }, [otherUser?._id, dispatch]);
 
   return (
     <div className={cx("container")}>

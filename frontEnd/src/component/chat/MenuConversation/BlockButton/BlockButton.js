@@ -1,43 +1,38 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import Loading from "../../../Loading/Loading";
 import ConfirmModal from "../../../common/ConfirmModal/ConfirmModal";
 import blockUser from "../../../../services/User/blockUser";
-import checkBlockStatus from "../../../../services/User/checkBlockStatus";
+import { updateBlockStatusRealtime } from "../../../../redux/chatSlice"; // Import action
 
 function BlockButton({ targetUserId }) {
-  const [isBlocked, setIsBlocked] = useState(false);
+  const dispatch = useDispatch();
+  const currentUser = useSelector((state) => state.user.user);
+
+  // Lấy trạng thái block TỪ REDUX thay vì tự quản lý bằng useState
+  const blockStatus = useSelector((state) => state.chat.blockStatus) || {};
+  const isBlocked = blockStatus.isBlockedByMe; // True nếu mình đang chặn đối phương
+
   const [loading, setLoading] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
-
-  useEffect(() => {
-    const loadStatus = async () => {
-      if (!targetUserId) return;
-
-      try {
-        const result = await checkBlockStatus(targetUserId);
-
-        if (result.success) {
-          setIsBlocked(result.data?.state === "blocked-by-me");
-        }
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
-    loadStatus();
-  }, [targetUserId]);
 
   const handleToggleBlock = async () => {
     try {
       setLoading(true);
-
+      // Gọi API lên Backend
       const result = await blockUser(targetUserId);
+      console.log("Kết quả từ API:", result);
 
       if (!result.success) {
         throw new Error(result.message);
       }
 
-      setIsBlocked(Boolean(result.data?.blocked));
+      dispatch(
+        updateBlockStatusRealtime({
+          isBlockedByMe: result.data.isBlockedByMe,
+          isBlockedByThem: result.data.isBlockedByThem,
+        }),
+      );
     } catch (error) {
       alert(error.message || "Có lỗi xảy ra");
     } finally {

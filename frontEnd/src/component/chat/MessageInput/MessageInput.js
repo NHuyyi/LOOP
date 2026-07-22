@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import styles from "./MessageInput.module.css";
 import classNames from "classnames/bind";
-import { Send, Smile, X } from "lucide-react"; // Import thêm icon X
+import { Send, Smile, X, Ban } from "lucide-react"; // Import thêm icon X
 import { useSelector, useDispatch } from "react-redux";
 import socket from "../../../socker";
 
@@ -60,19 +60,27 @@ function MessageInput({ receiverId }) {
     }
   };
 
+  const blockStatus = useSelector((state) => state.chat.blockStatus) || {};
+  const { isBlockedByMe, isBlockedByThem } = blockStatus;
+  const isChatDisabled = isBlockedByMe || isBlockedByThem;
+
+  let placeholderText = "Nhập tin nhắn...";
+  if (isBlockedByMe) {
+    placeholderText = "Bạn đã chặn đối phương.";
+  } else if (isBlockedByThem) {
+    placeholderText = "Bạn đã bị chặn bởi đối phương.";
+  }
+
   const handleSend = async (e) => {
     e.preventDefault();
+    if (isChatDisabled) return; // Không cho gửi khi bị block
 
     const textToSend = getParsedText();
-
     if ((!textToSend.trim() && !selectedImage) || !receiverId) return;
-
-    if (!receiverId) return;
 
     setIsUploading(true);
     try {
       let uploadedImageUrl = null;
-
       if (selectedImage) {
         const imageRes = await uploadImage(selectedImage, "LOOP_CHAT");
         if (imageRes.data?.url) {
@@ -247,6 +255,29 @@ function MessageInput({ receiverId }) {
           )}
         </div>
 
+        {!isChatDisabled && (
+          <div
+            className={cx("sticker-action-wrapper")}
+            style={{ position: "relative" }}
+          >
+            <button
+              type="button"
+              className={cx("actionBtn")}
+              onClick={() => setShowPicker(!showPicker)}
+            >
+              <Smile size={22} />
+            </button>
+            {showPicker && (
+              <EmojiStickerPicker
+                onSelectMyIcon={(icon) =>
+                  insertTextAtcursor(icon, handleTyping)
+                }
+                onClose={() => setShowPicker(false)}
+              />
+            )}
+          </div>
+        )}
+
         {/* --- CHÍNH LÀ CHỖ NÀY: BỌC CẢ PREVIEW VÀ TEXT VÀO CHUNG 1 Ô --- */}
         <div className={cx("inputWrapper")}>
           {imagePreview && (
@@ -272,17 +303,29 @@ function MessageInput({ receiverId }) {
 
           <div
             className={cx("textInput", "editableInput")}
-            contentEditable={!isUploading}
+            contentEditable={!isUploading && !isChatDisabled} // Khóa ô nhập
             ref={editorRef}
             onInput={handleInputEvent}
             onKeyDown={handleKeyDown}
             onFocus={handleFocus}
-            data-placeholder="Nhập tin nhắn..."
+            data-placeholder={placeholderText} // Text động theo trạng thái block
+            style={{
+              cursor: isChatDisabled ? "not-allowed" : "text",
+              color: isChatDisabled ? "#999" : "inherit",
+            }}
           ></div>
         </div>
 
-        <button type="submit" className={cx("sendBtn")} disabled={isUploading}>
-          <Send size={22} />
+        <button
+          type="submit"
+          className={cx("sendBtn")}
+          disabled={isUploading || isChatDisabled}
+        >
+          {isChatDisabled ? (
+            <Ban size={22} color="#bcc0c4" />
+          ) : (
+            <Send size={22} />
+          )}
         </button>
       </form>
     </div>

@@ -15,13 +15,10 @@ exports.checkBlockStatus = async (req, res) => {
       blocked: currentUserId,
     });
 
-    let state = "none";
-    if (blockByMe) state = "blocked-by-me";
-    if (blockByThem) state = "blocked-by-them";
-
     return res.status(200).json({
       success: true,
-      state,
+      isBlockedByMe: !!blockByMe,
+      isBlockedByThem: !!blockByThem,
     });
   } catch (err) {
     return res.status(500).json({

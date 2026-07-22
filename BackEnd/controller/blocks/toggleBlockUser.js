@@ -1,4 +1,5 @@
 const Block = require("../../model/Block.Model");
+const { getIO, getOnlineUsers } = require("../../config/socker");
 
 exports.toggleBlockUser = async (req, res) => {
   try {
@@ -12,33 +13,70 @@ exports.toggleBlockUser = async (req, res) => {
       });
     }
 
+    // Kiểm tra trạng thái hiện tại
     const existingBlock = await Block.findOne({
       blocker: currentUserId,
       blocked: targetId,
     });
 
+    // Nếu đang block -> bỏ block
     if (existingBlock) {
       await Block.deleteOne({
         blocker: currentUserId,
         blocked: targetId,
       });
-
-      return res.status(200).json({
-        success: true,
-        blocked: false,
-        message: "Đã bỏ chặn",
+    } else {
+      // Nếu chưa block -> block
+      await Block.create({
+        blocker: currentUserId,
+        blocked: targetId,
       });
     }
 
-    await Block.create({
+    const blockByMe = await Block.findOne({
       blocker: currentUserId,
       blocked: targetId,
     });
 
+    const blockByThem = await Block.findOne({
+      blocker: targetId,
+      blocked: currentUserId,
+    });
+
+    const currentUserPayload = {
+      isBlockedByMe: !!blockByMe,
+      isBlockedByThem: !!blockByThem,
+    };
+
+    const targetUserPayload = {
+      isBlockedByMe: !!blockByThem,
+      isBlockedByThem: !!blockByMe,
+    };
+
+    const io = getIO();
+    const onlineUsers = getOnlineUsers();
+
+    const currentUserSocketId = onlineUsers[currentUserId];
+    const targetUserSocketId = onlineUsers[targetId];
+
+    // Gửi trạng thái theo góc nhìn của A
+    if (currentUserSocketId) {
+      io.to(currentUserSocketId).emit("blockStatusChanged", currentUserPayload);
+    }
+
+    // Gửi trạng thái theo góc nhìn của B
+    if (targetUserSocketId) {
+      io.to(targetUserSocketId).emit("blockStatusChanged", targetUserPayload);
+    }
+
     return res.status(200).json({
       success: true,
-      blocked: true,
-      message: "Đã chặn người này",
+      ...currentUserPayload,
+      message: blockByMe
+        ? "Đã chặn người này"
+        : blockByThem
+          ? "Đã bỏ chặn, nhưng bạn vẫn bị chặn"
+          : "Đã bỏ chặn",
     });
   } catch (err) {
     return res.status(500).json({

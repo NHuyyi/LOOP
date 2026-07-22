@@ -52,7 +52,7 @@ exports.getCommentsList = async (req, res) => {
     for (const c of comments) {
       if (!canView(c)) continue;
       const reactionin = Array.isArray(c.reactions)
-        ? c.reactions.filter((r) => blockedUserIds.has(String(r.user._id)))
+        ? c.reactions.filter((r) => !blockedUserIds.has(String(r.user._id)))
         : [];
 
       const { counts, total } = calculateCounts(reactionin || []);

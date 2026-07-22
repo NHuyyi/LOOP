@@ -4,7 +4,7 @@ const checkBlockStatus = async (targetId) => {
   const token = localStorage.getItem("token");
 
   try {
-    const res = await fetch(`${API_URL}/users/block-status/${targetId}`, {
+    const res = await fetch(`${API_URL}/users/check-block/${targetId}`, {
       method: "GET",
       headers: {
         Authorization: `Bearer ${token}`,
