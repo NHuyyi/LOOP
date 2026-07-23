@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import styles from "./ChatPage.module.css";
 import classNames from "classnames/bind";
 import { useSelector, useDispatch } from "react-redux";
-
+import BlockedUserList from "../../component/chat/ChatSidebar/Blocklist/BlockedUsersList";
 import ChatSidebar from "../../component/chat/ChatSidebar/ChatSidebar";
 import ConversationListComponent from "../../component/chat/Conversation/ConversationList";
 // Import RestrictedList (bạn đã tạo ở bước trước)
@@ -24,6 +24,7 @@ function Chat() {
     activeReceiver,
     ConversationList = [],
     RestrictedConversationList = [],
+    BlockedConversationList = [],
   } = useSelector((state) => state.chat);
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -45,7 +46,8 @@ function Chat() {
       ConversationList.find((conv) => conv._id === activeConversationId) ||
       RestrictedConversationList.find(
         (conv) => conv._id === activeConversationId,
-      );
+      ) ||
+      BlockedConversationList.find((conv) => conv._id === activeConversationId);
 
     if (currentConv) {
       otherUser = currentConv.participants.find(
@@ -109,13 +111,16 @@ function Chat() {
         <div className={cx("conversationWrapper")}>
           {activeView === "conversations" && <ConversationListComponent />}
           {activeView === "restricted" && <RestrictedList />}
-          {activeView !== "conversations" && activeView !== "restricted" && (
-            <div
-              style={{ padding: "20px", textAlign: "center", color: "#888" }}
-            >
-              Tính năng đang phát triển...
-            </div>
-          )}
+          {activeView === "blocked" && <BlockedUserList />}
+          {activeView !== "conversations" &&
+            activeView !== "restricted" &&
+            activeView !== "blocked" && (
+              <div
+                style={{ padding: "20px", textAlign: "center", color: "#888" }}
+              >
+                Tính năng đang phát triển...
+              </div>
+            )}
         </div>
       </div>
 

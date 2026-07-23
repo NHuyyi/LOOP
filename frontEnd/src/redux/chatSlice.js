@@ -16,6 +16,7 @@ const initialState = {
     isBlockedByMe: false,
     isBlockedByThem: false,
   },
+  BlockedConversationList: [],
 };
 
 const chatSlice = createSlice({
@@ -348,6 +349,55 @@ const chatSlice = createSlice({
       state.blockStatus.isBlockedByMe = !!isBlockedByMe;
       state.blockStatus.isBlockedByThem = !!isBlockedByThem;
     },
+
+    setBlockedConversations: (state, action) => {
+      state.BlockedConversationList = action.payload;
+    },
+
+    moveConversationToBlocked: (state, action) => {
+      const conversation = action.payload;
+      if (!conversation) return;
+
+      // Xóa khỏi danh sách bình thường và hạn chế
+      state.ConversationList = state.ConversationList.filter(
+        (c) => String(c._id) !== String(conversation._id),
+      );
+      state.RestrictedConversationList =
+        state.RestrictedConversationList.filter(
+          (c) => String(c._id) !== String(conversation._id),
+        );
+
+      // Đưa vào danh sách block
+      const exists = state.BlockedConversationList.find(
+        (c) => String(c._id) === String(conversation._id),
+      );
+      if (!exists) state.BlockedConversationList.unshift(conversation);
+
+      // Nếu đang mở khung chat của người này, đóng nó lại
+      if (String(state.activeConversationId) === String(conversation._id)) {
+        state.activeConversationId = null;
+        state.currentMessages = [];
+        state.activeReceiver = null;
+        state.page = 1;
+        state.hasMore = true;
+      }
+    },
+
+    removeConversationFromBlocked: (state, action) => {
+      const conversation = action.payload;
+      if (!conversation) return;
+
+      // Xóa khỏi list Block
+      state.BlockedConversationList = state.BlockedConversationList.filter(
+        (c) => String(c._id) !== String(conversation._id),
+      );
+
+      // Đưa lại vào list bình thường
+      const exists = state.ConversationList.find(
+        (c) => String(c._id) === String(conversation._id),
+      );
+      if (!exists) state.ConversationList.unshift(conversation);
+    },
   },
 });
 
@@ -374,6 +424,9 @@ export const {
   updateConversationMuteStatus,
   setInitialBlockStatus,
   updateBlockStatusRealtime,
+  moveConversationToBlocked,
+  removeConversationFromBlocked,
+  setBlockedConversations,
 } = chatSlice.actions;
 
 export default chatSlice.reducer;

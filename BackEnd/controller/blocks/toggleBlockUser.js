@@ -1,4 +1,5 @@
 const Block = require("../../model/Block.Model");
+const Conversation = require("../../model/Conversation.Model");
 const { getIO, getOnlineUsers } = require("../../config/socker");
 
 exports.toggleBlockUser = async (req, res) => {
@@ -43,14 +44,22 @@ exports.toggleBlockUser = async (req, res) => {
       blocked: currentUserId,
     });
 
+    const conversation = await Conversation.findOne({
+      participants: { $all: [currentUserId, targetId] },
+    })
+      .populate("participants", "name avatar")
+      .populate("lastMessage");
+
     const currentUserPayload = {
       isBlockedByMe: !!blockByMe,
       isBlockedByThem: !!blockByThem,
+      conversation: conversation,
     };
 
     const targetUserPayload = {
       isBlockedByMe: !!blockByThem,
       isBlockedByThem: !!blockByMe,
+      conversation: conversation,
     };
 
     const io = getIO();

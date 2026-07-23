@@ -29,6 +29,8 @@ import {
   setTyping,
   revokeMessageInState,
   updateBlockStatusRealtime,
+  moveConversationToBlocked,
+  removeConversationFromBlocked,
 } from "../redux/chatSlice";
 
 import { useLocation } from "react-router-dom";
@@ -250,6 +252,15 @@ function SocketManager() {
             isBlockedByThem: data.isBlockedByThem,
           }),
         );
+        if (data.conversation) {
+          if (data.isBlockedByMe) {
+            // Nếu mình chặn họ -> Văng khỏi list chat bình thường, chuyển sang list chặn
+            dispatch(moveConversationToBlocked(data.conversation));
+          } else {
+            // Nếu mình bỏ chặn -> Trả lại vào list chat bình thường
+            dispatch(removeConversationFromBlocked(data.conversation));
+          }
+        }
       });
     }
 

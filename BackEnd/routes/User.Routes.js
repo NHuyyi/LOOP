@@ -9,6 +9,7 @@ const resetpassword = require("../controller/users/resetpassword");
 const getUserById = require("../controller/users/getUserbyId");
 const toggleBlockUser = require("../controller/blocks/toggleBlockUser");
 const checkBlockStatus = require("../controller/blocks/checkBlockStatus");
+const getBlockList = require("../controller/blocks/getBlockList");
 const authorize = require("../middleware/Authorization");
 
 router.post("/signup", SignUp.SignUp); // Đăng ký người dùng
@@ -24,5 +25,6 @@ router.get(
   authorize,
   checkBlockStatus.checkBlockStatus,
 );
+router.get("/blocked-list", authorize, getBlockList.getBlockList);
 
 module.exports = router;
