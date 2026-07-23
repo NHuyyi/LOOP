@@ -19,11 +19,15 @@ function PostCard({ post, currentUserId, friendList = [] }) {
   const comments = useSelector(makeSelectCommentsByPostId(post._id));
 
   // Nếu đã mở commentList thì dùng dữ liệu redux để đếm chính xác
-  const countComments = (arr) =>
-    arr.reduce(
-      (acc, c) => acc + (c.isDeleted ? 0 : 1) + countComments(c.replies || []),
-      0,
-    );
+  const countComments = (arr) => {
+    return arr.reduce((acc, c) => {
+      const currentCount = c.isDeleted ? 0 : 1;
+
+      const replyCount = countComments(c.replies || []);
+
+      return acc + currentCount + replyCount;
+    }, 0);
+  };
 
   const commentCount =
     comments.length > 0

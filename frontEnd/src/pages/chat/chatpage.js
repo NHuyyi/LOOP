@@ -77,7 +77,13 @@ function Chat() {
       checkBlockStatus(otherUser._id)
         .then((res) => {
           if (res.success) {
-            dispatch(setInitialBlockStatus(res.data?.state || "none"));
+            // SỬA Ở ĐÂY: Truyền đúng Object chứa 2 trạng thái vào Redux
+            dispatch(
+              setInitialBlockStatus({
+                isBlockedByMe: res.data.isBlockedByMe,
+                isBlockedByThem: res.data.isBlockedByThem,
+              }),
+            );
           }
         })
         .catch((err) => console.error("Lỗi lấy trạng thái block:", err));

@@ -1,5 +1,6 @@
 // controllers/GetReactionList.js
 const PostModel = require("../../../model/Post.Model");
+const Block = require("../../../model/Block.Model");
 
 exports.getReactComentList = async (req, res) => {
   try {
@@ -23,7 +24,6 @@ exports.getReactComentList = async (req, res) => {
       return res.status(404).json({ error: "không tìm thấy bình luận" });
     }
 
-    // 🔑 chỉ cho phép author xem danh sách
     if (
       post.author._id.toString() !== userId.toString() &&
       comment.user._id.toString() !== userId.toString()
@@ -34,9 +34,31 @@ exports.getReactComentList = async (req, res) => {
       });
     }
 
+    const userBlocks = await Block.find({
+      blocker: userId,
+    }).select("blocked");
+
+    const userBlockedBy = await Block.find({
+      blocked: userId,
+    }).select("blocker");
+
+    const blockedUserIds = new Set([
+      ...userBlocks.map((item) => String(item.blocked)),
+
+      ...userBlockedBy.map((item) => String(item.blocker)),
+    ]);
+
+    const reactions = comment.reactions.filter((r) => {
+      if (!r.user) {
+        return false;
+      }
+
+      return !blockedUserIds.has(String(r.user._id));
+    });
+
     res.json({
       success: true,
-      data: comment.reactions.map((r) => ({
+      data: reactions.map((r) => ({
         userId: r.user._id,
         name: r.user.name,
         avatar: r.user.avatar,
