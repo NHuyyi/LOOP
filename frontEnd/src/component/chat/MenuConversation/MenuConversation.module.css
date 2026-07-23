@@ -288,3 +288,27 @@
   background-color: #fa3e3e;
   color: #ffffff; /* Khi di chuột vào sẽ đầy nền đỏ chữ trắng để nhấn mạnh */
 }
+
+/* Giao diện dùng chung cho các nút dạng danh sách trong Dropdown Menu */
+.menu-item {
+  width: 100%;
+  padding: 10px 16px;
+  border: none;
+  background: none;
+  text-align: left;
+  cursor: pointer;
+  font-size: 14px;
+  color: #050505;
+  font-weight: 500;
+  transition: background-color 0.2s;
+  display: block;
+}
+
+.menu-item:hover {
+  background-color: #f2f2f2;
+}
+
+/* Class màu đỏ cho các nút cảnh báo như Xóa, Chặn */
+.menu-item.danger {
+  color: #e41e3f;
+}

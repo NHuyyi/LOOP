@@ -1,0 +1,65 @@
+.dropdown-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.more-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: #65676b;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s;
+}
+
+/* Nút hiện lên khi menu đang mở */
+.more-btn.active {
+  opacity: 1;
+  background-color: #e4e6eb;
+}
+
+.more-btn:hover {
+  background-color: #e4e6eb;
+}
+
+.dropdown-menu {
+  position: absolute;
+  margin-top: 4px;
+  background: white;
+  border: 1px solid #e4e6eb;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 9999; /* Z-index cao để không bị đè */
+  display: flex;
+  flex-direction: column;
+  min-width: 160px;
+  overflow: hidden;
+  padding: 8px 0;
+}
+
+.menu-item {
+  padding: 10px 16px;
+  border: none;
+  background: none;
+  text-align: left;
+  cursor: pointer;
+  font-size: 14px;
+  color: #050505;
+  font-weight: 500;
+  transition: background-color 0.2s;
+  white-space: nowrap; /* Chống rớt dòng làm vỡ form */
+}
+
+.menu-item:hover {
+  background-color: #f2f2f2;
+}
+
+.menu-item.danger {
+  color: #e41e3f; /* Đổi màu đỏ cho nút chặn/xóa */
+}

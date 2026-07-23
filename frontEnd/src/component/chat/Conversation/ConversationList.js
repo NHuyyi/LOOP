@@ -3,6 +3,7 @@ import styles from "./ConversationList.module.css";
 import classNames from "classnames/bind";
 import { useSelector, useDispatch } from "react-redux";
 import { BellOff } from "lucide-react";
+import ConversationDropdown from "./ConversationDropdown/ConversationDropdown";
 
 // Import API và Redux
 import getFriendList from "../../../services/Friends/getFriendList";
@@ -34,7 +35,7 @@ const ConversationList = () => {
 
   const { parseEmojis } = useEmojiParser();
   const { ConversationList = [], activeConversationId } = useSelector(
-    (state) => state.chat || [],
+    (state) => state.chat || {},
   );
 
   useEffect(() => {
@@ -124,19 +125,25 @@ const ConversationList = () => {
         className={cx("item")}
         onClick={() => handleSearchResultClick(friend)}
       >
-        <img
-          src={
-            friend.avatar ||
-            "https://res.cloudinary.com/dpym64zg9/image/upload/v1755614090/raw_cq4nqn.png"
-          }
-          alt="avatar"
-          className={cx("avatar")}
-        />
-        <div className={cx("info")}>
-          <div className={cx("name-time")}>
-            <h4>{friend.name}</h4>
-          </div>
+        <div className={cx("avatar-container")}>
+          <img
+            src={
+              friend.avatar ||
+              "https://res.cloudinary.com/dpym64zg9/image/upload/v1755614090/raw_cq4nqn.png"
+            }
+            alt="avatar"
+            className={cx("avatar")}
+          />
         </div>
+
+        {/* Cột giữa: Tên và hướng dẫn */}
+        <div className={cx("info")}>
+          <h4 className={cx("user-name")}>{friend.name}</h4>
+          <p className={cx("last-message")}>Nhấn để bắt đầu trò chuyện</p>
+        </div>
+
+        {/* Cột phải rỗng để giữ bố cục luôn đồng nhất */}
+        <div className={cx("right-section")}></div>
       </div>
     ));
   };
@@ -155,13 +162,14 @@ const ConversationList = () => {
         conv.mutedBy.includes(currentUser._id);
 
       const isImageMessage =
-        conv.lastMessage.messageType === "image" || conv.lastMessage.imageUrl;
+        conv.lastMessage?.messageType === "image" || conv.lastMessage?.imageUrl;
+
       // ---- XỬ LÝ LOGIC TRẠNG THÁI TIN NHẮN ----
       let isMyMessage = false;
       let isUnread = "delivered";
 
       if (conv.lastMessage) {
-        // Kiểm tra xem ai là người gửi (so sánh ID người gửi với ID của user đang đăng nhập)
+        // Kiểm tra xem ai là người gửi
         const senderId =
           conv.lastMessage.senderId?._id || conv.lastMessage.senderId;
         isMyMessage = senderId === currentUser._id;
@@ -176,30 +184,22 @@ const ConversationList = () => {
           className={cx("item", { active: isActive })}
           onClick={() => handleConversationClick(conv)}
         >
-          <img
-            src={
-              otherUser?.avatar ||
-              "https://res.cloudinary.com/dpym64zg9/image/upload/v1755614090/raw_cq4nqn.png"
-            }
-            alt="avatar"
-            className={cx("avatar")}
-          />
+          <div className={cx("avatar-container")}>
+            <img
+              src={
+                otherUser?.avatar ||
+                "https://res.cloudinary.com/dpym64zg9/image/upload/v1755614090/raw_cq4nqn.png"
+              }
+              alt="avatar"
+              className={cx("avatar")}
+            />
+          </div>
+
+          {/* CỘT GIỮA: Chỉ chứa Tên và Tin nhắn (Căn trái hoàn toàn) */}
           <div className={cx("info")}>
-            <div className={cx("name-time")}>
-              {/* Nếu chưa đọc thì in đậm tên người gửi */}
-              <h4 className={cx({ "unread-text": isUnread })}>
-                {otherUser?.name}
-              </h4>
-              <span className={cx({ "unread-text": isUnread })}>
-                {conv.lastMessage
-                  ? new Date(conv.updatedAt).toLocaleTimeString([], {
-                      hour: "2-digit",
-                      minute: "2-digit",
-                    })
-                  : ""}
-              </span>
-            </div>
-            {/* Nếu chưa đọc thì in đậm nội dung tin nhắn */}
+            <h4 className={cx("user-name", { "unread-text": isUnread })}>
+              {otherUser?.name}
+            </h4>
             <p className={cx("last-message", { "unread-text": isUnread })}>
               {conv.lastMessage ? (
                 conv.lastMessage.isrevoked ? (
@@ -211,7 +211,6 @@ const ConversationList = () => {
                 ) : (
                   <>
                     {isMyMessage ? "Bạn: " : ""}
-
                     {isImageMessage
                       ? "Đã gửi một ảnh"
                       : parseEmojis(conv.lastMessage.text, true)}
@@ -223,14 +222,42 @@ const ConversationList = () => {
             </p>
           </div>
 
-          {isMuted && (
-            <span className={cx("muted-icon")} title="Tắt thông báo">
-              <BellOff size={14} />
-            </span>
-          )}
+          {/* CỘT PHẢI: Chứa Thời gian/Trạng thái HOẶC Nút 3 chấm */}
+          <div className={cx("right-section")}>
+            {/* Vùng này hiện mặc định */}
+            <div className={cx("time-and-status")}>
+              <span className={cx("time-text", { "unread-text": isUnread })}>
+                {conv.lastMessage
+                  ? new Date(conv.updatedAt).toLocaleTimeString([], {
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })
+                  : ""}
+              </span>
+              <div className={cx("status-indicators")}>
+                {isMuted && (
+                  <span className={cx("muted-icon")} title="Tắt thông báo">
+                    <BellOff size={14} />
+                  </span>
+                )}
+                {isUnread && !isMuted && (
+                  <div className={cx("unread-dot")}></div>
+                )}
+              </div>
+            </div>
 
-          {/* Hiển thị một chấm xanh nhỏ góc phải nếu có tin nhắn chưa đọc */}
-          {isUnread && !isMuted && <div className={cx("unread-dot")}></div>}
+            {/* Vùng này ẩn đi, chỉ hiện nút 3 chấm khi Hover */}
+            <div
+              className={cx("action-menu")}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <ConversationDropdown
+                conversation={conv}
+                currentUser={currentUser}
+                isMuted={isMuted}
+              />
+            </div>
+          </div>
         </div>
       );
     });

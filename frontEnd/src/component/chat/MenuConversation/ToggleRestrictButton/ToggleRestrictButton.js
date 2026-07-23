@@ -7,11 +7,25 @@ import {
 } from "../../../../redux/chatSlice";
 import ConfirmModal from "../../../common/ConfirmModal/ConfirmModal";
 import Loading from "../../../Loading/Loading";
+import style from "../MenuConversation.module.css";
+import classNames from "classnames/bind";
 
-function ToggleRestrictButton({ conversationId, isRestricted, className }) {
+const cx = classNames.bind(style);
+
+function ToggleRestrictButton({
+  conversationId,
+  isRestricted,
+  className,
+  type = "in",
+}) {
   const [showConfirm, setShowConfirm] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
   const dispatch = useDispatch();
+
+  const handleOpenConfirm = (e) => {
+    if (e) e.stopPropagation();
+    setShowConfirm(true);
+  };
 
   const handleToggle = async () => {
     setIsProcessing(true);
@@ -36,19 +50,33 @@ function ToggleRestrictButton({ conversationId, isRestricted, className }) {
 
   return (
     <>
-      <button
-        className={className}
-        onClick={() => setShowConfirm(true)}
-        disabled={isProcessing}
-      >
-        {isProcessing ? (
-          <Loading size="small" />
-        ) : isRestricted ? (
-          "Bỏ hạn chế"
-        ) : (
-          "Hạn chế"
-        )}
-      </button>
+      {type === "out" ? (
+        <button
+          className={cx("menu-item")}
+          onClick={handleOpenConfirm}
+          disabled={isProcessing}
+        >
+          {isProcessing
+            ? "Đang xử lý..."
+            : isRestricted
+              ? "Bỏ hạn chế"
+              : "Hạn chế"}
+        </button>
+      ) : (
+        <button
+          className={className}
+          onClick={() => setShowConfirm(true)}
+          disabled={isProcessing}
+        >
+          {isProcessing ? (
+            <Loading size="small" />
+          ) : isRestricted ? (
+            "Bỏ hạn chế"
+          ) : (
+            "Hạn chế"
+          )}
+        </button>
+      )}
 
       <ConfirmModal
         isOpen={showConfirm}

@@ -10,7 +10,12 @@ import classNames from "classnames/bind";
 
 const cx = classNames.bind(style);
 
-const ToggleMuteButton = ({ conversationId, initialIsMuted = false }) => {
+const ToggleMuteButton = ({
+  conversationId,
+  initialIsMuted = false,
+  className,
+  type = "in",
+}) => {
   const [isMuted, setIsMuted] = useState(initialIsMuted);
   const currentUser = useSelector((state) => state.user.user);
 
@@ -29,9 +34,8 @@ const ToggleMuteButton = ({ conversationId, initialIsMuted = false }) => {
     setIsMuted(newState);
 
     const userId = currentUser?._id;
-    
+
     if (userId) {
-      
       dispatch(
         updateConversationMuteStatus({
           conversationId,
@@ -59,6 +63,14 @@ const ToggleMuteButton = ({ conversationId, initialIsMuted = false }) => {
       }
     }
   };
+
+  if (type === "out") {
+    return (
+      <button className={className} onClick={handleToggleMute}>
+        {isMuted ? "Bật thông báo" : "Tắt thông báo"}
+      </button>
+    );
+  }
 
   return (
     <button

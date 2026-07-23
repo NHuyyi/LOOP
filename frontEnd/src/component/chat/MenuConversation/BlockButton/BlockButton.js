@@ -3,25 +3,27 @@ import { useDispatch, useSelector } from "react-redux";
 import Loading from "../../../Loading/Loading";
 import ConfirmModal from "../../../common/ConfirmModal/ConfirmModal";
 import blockUser from "../../../../services/User/blockUser";
-import { updateBlockStatusRealtime } from "../../../../redux/chatSlice"; // Import action
+import { updateBlockStatusRealtime } from "../../../../redux/chatSlice";
 
-function BlockButton({ targetUserId }) {
+function BlockButton({ targetUserId, type = "in", className }) {
   const dispatch = useDispatch();
-  const currentUser = useSelector((state) => state.user.user);
 
-  // Lấy trạng thái block TỪ REDUX thay vì tự quản lý bằng useState
   const blockStatus = useSelector((state) => state.chat.blockStatus) || {};
-  const isBlocked = blockStatus.isBlockedByMe; // True nếu mình đang chặn đối phương
+  const isBlocked = blockStatus.isBlockedByMe;
 
   const [loading, setLoading] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
 
+  // Hàm mở Modal (chặn sự kiện lan ra ngoài để không làm đóng menu 3 chấm)
+  const handleOpenConfirm = (e) => {
+    if (e) e.stopPropagation();
+    setShowConfirm(true);
+  };
+
   const handleToggleBlock = async () => {
     try {
       setLoading(true);
-      // Gọi API lên Backend
       const result = await blockUser(targetUserId);
-      console.log("Kết quả từ API:", result);
 
       if (!result.success) {
         throw new Error(result.message);
@@ -43,24 +45,39 @@ function BlockButton({ targetUserId }) {
 
   return (
     <>
-      <button
-        onClick={() => setShowConfirm(true)}
-        disabled={loading}
-        style={{
-          padding: "8px 12px",
-          borderRadius: "8px",
-          border: "none",
-          background: isBlocked ? "#f59e0b" : "#dc2626",
-          color: "#fff",
-          cursor: loading ? "not-allowed" : "pointer",
-        }}
-      >
-        {loading ? <Loading size="small" /> : isBlocked ? "Bỏ chặn" : "Chặn"}
-      </button>
+      {/* Gom chung vào 1 return và tách UI bằng toán tử ba ngôi để Modal ở dưới luôn được render */}
+      {type === "out" ? (
+        <button
+          className={className}
+          onClick={handleOpenConfirm}
+          disabled={loading}
+        >
+          {loading ? "Đang xử lý..." : isBlocked ? "Bỏ chặn" : "Chặn"}
+        </button>
+      ) : (
+        <button
+          onClick={handleOpenConfirm}
+          disabled={loading}
+          style={{
+            padding: "8px 12px",
+            borderRadius: "8px",
+            border: "none",
+            background: isBlocked ? "#f59e0b" : "#dc2626",
+            color: "#fff",
+            cursor: loading ? "not-allowed" : "pointer",
+          }}
+        >
+          {loading ? <Loading size="small" /> : isBlocked ? "Bỏ chặn" : "Chặn"}
+        </button>
+      )}
 
+      {/* Modal được đưa ra ngoài để luôn hoạt động cho cả 2 trạng thái */}
       <ConfirmModal
         isOpen={showConfirm}
-        onClose={() => setShowConfirm(false)}
+        onClose={(e) => {
+          if (e) e.stopPropagation();
+          setShowConfirm(false);
+        }}
         onConfirm={handleToggleBlock}
         title={isBlocked ? "Bỏ chặn đối phương?" : "Chặn đối phương?"}
         message={
