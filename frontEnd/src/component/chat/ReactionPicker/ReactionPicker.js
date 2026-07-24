@@ -13,7 +13,7 @@ import { UpdateReactionMessage } from "../../../redux/chatSlice";
 
 const cx = classNames.bind(styles);
 
-function ReactionPicker({ messageId, currentReaction, isMine }) {
+function ReactionPicker({ messageId, currentReaction, isMine, isMiniChat }) {
   const [showMenu, setShowMenu] = useState(false);
   const closeTimer = useRef(null);
 
@@ -94,21 +94,31 @@ function ReactionPicker({ messageId, currentReaction, isMine }) {
       {showMenu && (
         <div
           ref={pickerRef}
-          className={cx("reaction-menu", isMine ? "menu-right" : "menu-left")}
+          className={cx("reaction-menu", isMine ? "menu-right" : "menu-left", {
+            "mini-chat-menu": isMiniChat,
+          })}
         >
           {reactions.map((r) => (
             <button
               key={r.type}
-              className={cx("reaction-item", {
-                active: currentReaction === r.type,
-              })}
+              className={cx(
+                "reaction-item",
+                {
+                  active: currentReaction === r.type,
+                },
+                {
+                  "mini-chat-menu": isMiniChat,
+                },
+              )}
               onClick={() => handleReaction(r.type)}
               style={{ color: r.color }}
             >
               <img
                 src={r.icon}
                 alt={r.type}
-                style={{ width: "42px", height: "42px", objectFit: "contain" }}
+                className={cx("reaction-icon", {
+                  "mini-chat-icon": isMiniChat,
+                })}
               />
             </button>
           ))}

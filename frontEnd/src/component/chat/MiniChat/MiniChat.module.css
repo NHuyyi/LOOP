@@ -1,0 +1,230 @@
+.portalContainer {
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 9999;
+  pointer-events: none; /* Rất quan trọng: cho phép click xuyên qua vùng trống */
+}
+
+.miniChatWindow {
+  position: absolute;
+  bottom: 20px;
+  width: 320px;
+  height: 420px;
+  background-color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  pointer-events: auto; /* Kích hoạt lại tương tác cho cửa sổ chat */
+}
+
+.header {
+  background: linear-gradient(135deg, #daabff, #a770ef);
+  padding: 8px 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: grab;
+  color: #fff;
+}
+
+.header:active {
+  cursor: grabbing;
+}
+
+/* Các CSS khác cho avatar, messageList, bubble, v.v... */
+.userInfo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.avatar {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid #fff;
+}
+
+.name {
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.closeBtn {
+  background: transparent;
+  border: none;
+  color: #fff;
+  cursor: pointer;
+}
+
+.messageList {
+  flex: 1;
+  padding: 10px;
+  overflow-y: auto;
+  background-color: #f9f9f9;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Wrapper chung cho cả window và bubble */
+.nodeWrapper {
+  position: absolute;
+  pointer-events: auto;
+  z-index: 9999;
+}
+
+/* ================= BONG BÓNG ================= */
+.bubbleContainer {
+  position: relative;
+  width: 60px;
+  height: 60px;
+  cursor: grab;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.bubbleContainer:active {
+  cursor: grabbing;
+}
+
+.avatarWrapper {
+  position: relative;
+}
+
+.bubbleAvatar {
+  width: 55px;
+  height: 55px;
+  border-radius: 50%;
+  object-fit: cover;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  border: 2px solid #fff;
+  transition: all 0.3s ease;
+}
+
+/* Xám khi offline */
+.offline {
+  filter: grayscale(100%);
+  opacity: 0.8;
+}
+
+/* Chấm xanh góc trên bên phải (Unread) */
+.unreadDot {
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  width: 14px;
+  height: 14px;
+  background-color: #0084ff; /* Xanh Messenger */
+  border-radius: 50%;
+  border: 2px solid #fff;
+}
+
+/* Nút X siêu nhỏ góc trên bên trái */
+.closeBubbleBtn {
+  position: absolute;
+  top: -5px;
+  left: -5px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #f0f2f5;
+  color: #65676b;
+  border: 1px solid #ccc;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.bubbleContainer:hover .closeBubbleBtn {
+  opacity: 1;
+}
+
+/* Preview tin nhắn nảy ra bên trái */
+.previewTooltip {
+  position: absolute;
+  right: 70px;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: #fff;
+  padding: 8px 12px;
+  border-radius: 18px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+  white-space: nowrap;
+  max-width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 14px;
+  color: #050505;
+  pointer-events: none;
+  animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes popIn {
+  0% {
+    transform: translateY(-50%) scale(0.8);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(-50%) scale(1);
+    opacity: 1;
+  }
+}
+
+/* ================= CỬA SỔ (WINDOW) ================= */
+.miniChatWindow {
+  width: 330px;
+  height: 430px;
+  background-color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.headerActions {
+  display: flex;
+  gap: 5px;
+}
+
+.iconBtn {
+  background: transparent;
+  border: none;
+  color: #fff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  border-radius: 50%;
+}
+.iconBtn:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* Dot Online/Offline ở trong header window */
+.statusDot {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 2px solid #fff;
+}
+.onlineDot {
+  background-color: #31a24c;
+}
+.offlineDot {
+  background-color: #90949c;
+}

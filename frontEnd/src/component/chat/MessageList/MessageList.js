@@ -69,6 +69,8 @@ function MessageList() {
   // Nếu tin cuối là của mình thì id mặc định là nó, ngược lại là null
   const defaultStatusId = isLastMessageMine ? lastMessage._id : null;
 
+  
+
   // 3. Quyết định sẽ hiện trạng thái ở ID nào:
   // Ưu tiên cái người dùng đang click. Nếu họ không click gì (clickedMsgId là null), thì hiện cái mặc định.
   const activeStatusId = clickedMsgId !== null ? clickedMsgId : defaultStatusId;

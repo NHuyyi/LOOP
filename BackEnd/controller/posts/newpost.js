@@ -53,7 +53,6 @@ exports.NewPost = async (req, res) => {
       io.to(onlineUsers[author.toString()]).emit("createPost", {
         post: newPost,
       });
-      console.log("Emit cho chính author:", author.toString());
     }
 
     const user = await UserModel.findById(author).select("friends");
@@ -64,7 +63,6 @@ exports.NewPost = async (req, res) => {
         const socketId = onlineUsers[friendId.toString()];
         if (socketId) {
           io.to(socketId).emit("createPost", { post: newPost });
-          console.log("Emit friends createPost đến", friendId.toString());
         }
       });
     } else if (finalVisibility === "custom") {
@@ -74,12 +72,10 @@ exports.NewPost = async (req, res) => {
           const socketId = onlineUsers[friendId.toString()];
           if (socketId) {
             io.to(socketId).emit("createPost", { post: newPost });
-            console.log("Emit custom createPost đến", friendId.toString());
           }
         }
       });
     } else if (finalVisibility === "private") {
-      console.log("Private → chỉ emit cho author");
     }
 
     return res.status(201).json({

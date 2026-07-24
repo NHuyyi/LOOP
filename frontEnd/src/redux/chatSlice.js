@@ -134,10 +134,23 @@ const chatSlice = createSlice({
     },
     // khi đang mở khung chat mà có tin nhắn mới
     addMessage: (state, action) => {
-      if (state.activeConversationId === action.payload.conversationId) {
-        state.currentMessages.push(action.payload.message); // thêm tin nhắn mới vào cuối danh sách
+      const { conversationId, message } = action.payload;
+
+      // A. Cập nhật cho khung chat chính (Nếu đang mở đúng người đó)
+      if (String(state.activeConversationId) === String(conversationId)) {
+        state.currentMessages.push(message);
+      }
+
+      // B. Cập nhật cho Mini Chat (Nếu khung mini chat của người này đang mở)
+      const miniChatIndex = state.miniChat.findIndex(
+        (c) => String(c.conversationId) === String(conversationId),
+      );
+
+      if (miniChatIndex !== -1) {
+        state.miniChat[miniChatIndex].message.push(message);
       }
     },
+
     setNewFriendChat: (state, action) => {
       state.activeConversationId = null;
       state.activeReceiver = action.payload.receiver;
@@ -147,15 +160,14 @@ const chatSlice = createSlice({
     },
 
     OpenMiniChat: (state, action) => {
-      const { receiver, conversationId } = action.payload;
+      // Thêm triggerBy để biết mở từ đâu ('socket' hoặc 'click')
+      const { receiver, conversationId, triggerBy = "click" } = action.payload;
 
-      // kiểm tra xem khung chat này đã mở chưa
       const existingIndex = state.miniChat.findIndex(
-        (c) => c.receiver._id === receiver._id,
+        (c) => String(c.receiver?._id) === String(receiver._id),
       );
-      // nếu chưa hiện thì thêm vào mảng
-      if (existingIndex !== -1) {
-        // hiện tối đa 3 khung nếu quá thì xóa cái cũ nhất đi
+
+      if (existingIndex === -1) {
         if (state.miniChat.length >= 3) {
           state.miniChat.shift();
         }
@@ -163,25 +175,40 @@ const chatSlice = createSlice({
           receiver,
           conversationId,
           message: [],
-          isOpen: true,
+          isWindowOpen: triggerBy === "click", // Nếu click thì mở cửa sổ, socket thì bong bóng
         });
       } else {
-        // nếu mở rồi thì focus vào
-        state.miniChat[existingIndex].isOpen = true;
+        // Đã có sẵn: Nếu người dùng click thì phóng to cửa sổ
+        if (triggerBy === "click") {
+          state.miniChat[existingIndex].isWindowOpen = true;
+        }
+      }
+    },
+
+    ToggleMiniChatWindow: (state, action) => {
+      const { receiverId, isOpen } = action.payload;
+      const index = state.miniChat.findIndex(
+        (c) => String(c.receiver?._id) === String(receiverId),
+      );
+      if (index !== -1) {
+        state.miniChat[index].isWindowOpen = isOpen;
       }
     },
 
     CloseMiniChat: (state, action) => {
       state.miniChat = state.miniChat.filter(
-        (c) => c.receiver._id !== action.payload.receiver._id,
+        (c) =>
+          String(c.receiver?._id) === String(action.payload?.receiverId?._id),
       );
     },
 
     setMiniChatMessages: (state, action) => {
       const { receiverId, messages, conversationId } = action.payload;
+      // Dùng String() để tránh lỗi Type Mismatch
       const index = state.miniChat.findIndex(
-        (c) => c.receiver._id === receiverId,
+        (c) => String(c.receiver._id) === String(receiverId),
       );
+
       if (index !== -1) {
         state.miniChat[index].message = messages;
         if (conversationId) {
@@ -189,6 +216,7 @@ const chatSlice = createSlice({
         }
       }
     },
+
     markConversationAsRead: (state, action) => {
       const { conversationId, currentUserId } = action.payload;
 
@@ -251,7 +279,6 @@ const chatSlice = createSlice({
 
     setReplyMessage: (state, action) => {
       state.replyMessage = action.payload; // Lưu tin nhắn đang trả lời vào state
-      console.log("Tin nhắn được chọn để trả lời:", state.replyMessage);
     },
 
     clearReplyMessage: (state) => {
@@ -306,12 +333,6 @@ const chatSlice = createSlice({
 
     updateConversationMuteStatus: (state, action) => {
       const { conversationId, userId, isMuted } = action.payload;
-
-      console.log("updateConversationMuteStatus called with:", {
-        conversationId,
-        userId,
-        isMuted,
-      });
 
       // 1. Tìm cuộc trò chuyện cần cập nhật
       const conversation = state.ConversationList.find(
@@ -427,6 +448,7 @@ export const {
   moveConversationToBlocked,
   removeConversationFromBlocked,
   setBlockedConversations,
+  ToggleMiniChatWindow,
 } = chatSlice.actions;
 
 export default chatSlice.reducer;

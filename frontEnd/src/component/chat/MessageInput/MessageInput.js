@@ -23,7 +23,7 @@ import { useRichTextEditor } from "../../../hooks/useRichTextEditor";
 const cx = classNames.bind(styles);
 let typingTimeout = null;
 
-function MessageInput({ receiverId }) {
+function MessageInput({ receiverId, conversationIdProp }) {
   const [selectedImage, setSelectedImage] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
   const [isUploading, setIsUploading] = useState(false);
@@ -35,6 +35,8 @@ function MessageInput({ receiverId }) {
   const { activeConversationId, currentMessages, replyMessage } = useSelector(
     (state) => state.chat,
   );
+
+  const targetConversationId = conversationIdProp || activeConversationId;
 
   const handleFocus = async () => {
     if (
@@ -105,7 +107,7 @@ function MessageInput({ receiverId }) {
         const newMessage = res.message;
         dispatch(
           addMessage({
-            conversationId: activeConversationId,
+            conversationId: targetConversationId,
             message: newMessage,
           }),
         );
@@ -233,27 +235,6 @@ function MessageInput({ receiverId }) {
             }
           }}
         />
-
-        <div
-          className={cx("sticker-action-wrapper")}
-          style={{ position: "relative" }}
-        >
-          <button
-            type="button"
-            className={cx("actionBtn")}
-            onClick={() => setShowPicker(!showPicker)}
-          >
-            <Smile size={22} />
-          </button>
-
-          {/* GỌI BẢNG TỐI GIẢN RA */}
-          {showPicker && (
-            <EmojiStickerPicker
-              onSelectMyIcon={(icon) => insertTextAtcursor(icon, handleTyping)}
-              onClose={() => setShowPicker(false)}
-            />
-          )}
-        </div>
 
         {!isChatDisabled && (
           <div

@@ -76,3 +76,25 @@
     transform: scale(1) translateY(0);
   }
 }
+.reaction-icon {
+  width: 42px;
+  height: 42px;
+  object-fit: contain;
+}
+
+.mini-chat-icon {
+  width: 24px; /* Bạn có thể điều chỉnh 18px hay 24px tùy ý */
+  height: 24px;
+}
+
+/* Ép menu phải tự động rớt dòng nếu thiếu chỗ, chống tràn màn hình */
+.reaction-menu.mini-chat-menu {
+  width: max-content; /* Cho phép khung menu tự động giãn vừa đủ chứa các icon */
+  max-width: unset; /* Xóa bỏ giới hạn 200px cũ */
+  gap: 0px; /* Thu nhỏ khoảng cách giữa các icon một chút để vừa vặn hơn */
+  padding: 2px 8px !important;
+}
+
+.reaction-item.mini-chat-menu {
+  padding: 2px;
+}

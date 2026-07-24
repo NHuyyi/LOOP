@@ -5,6 +5,7 @@ import routes from "./routes/routes.js";
 import Header from "./component/Header/Header.js";
 import { usePersistedUser } from "./hooks/usePersistedUser";
 import SocketManager from "./hooks/SocketManager.js";
+import MiniChatPortal from "./component/chat/MiniChat/MiniChatPortal.js";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 const cx = classNames.bind(styles);
@@ -15,6 +16,7 @@ function App() {
     <div className={cx("App")}>
       <Router>
         <SocketManager />
+        <MiniChatPortal />
         <Routes>
           {routes.map((route, index) => (
             <Route

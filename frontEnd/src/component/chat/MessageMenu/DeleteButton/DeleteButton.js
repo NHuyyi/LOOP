@@ -13,7 +13,6 @@ const DeleteButton = ({ message, closeMenu }) => {
   // This state is used to find the info of the person we are chatting
   const activeReceiver = useSelector((state) => state.chat.activeReceiver);
 
-  console.log("DeleteButton received message:", message.conversationId);
   const handleDelete = async () => {
     try {
       // first, we call the deleteMessage service to delete the message
@@ -26,10 +25,8 @@ const DeleteButton = ({ message, closeMenu }) => {
         return;
       }
 
-      console.log("Đã xóa tin nhắn thành công:", message._id);
-
       // second, we call the getMessages service to get the updated list of messages for the conversation
-      const resMessages = await getMessages(message.conversationId,1);
+      const resMessages = await getMessages(message.conversationId, 1);
 
       // This code checks if the getMessages call was successful and updates the Redux store with the new list of messages.
       if (resMessages) {

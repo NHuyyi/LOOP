@@ -19,6 +19,7 @@ function MessageItem({
   handleMsgClick,
   activeReceiver,
   isTopMessage,
+  isMiniChat,
 }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
@@ -173,6 +174,7 @@ function MessageItem({
                   messageId={msg._id}
                   currentReaction={myReaction}
                   isMine={isMyMessage}
+                  isMiniChat={isMiniChat}
                 />
               </div>
               <button

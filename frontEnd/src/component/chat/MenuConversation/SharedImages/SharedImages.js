@@ -5,11 +5,6 @@ import classNames from "classnames/bind";
 const cx = classNames.bind(style);
 
 function SharedImages({ chatImages = [] }) {
-  console.log(
-    "chatImages:",
-    chatImages.length > 0 ? chatImages : "Không có ảnh nào được chia sẻ.",
-  );
-  console.log("chatImages.length:", chatImages.length > 0);
   return (
     <div className={cx("wrapper")}>
       {chatImages.length > 0 ? (

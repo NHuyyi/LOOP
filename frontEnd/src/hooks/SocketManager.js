@@ -202,6 +202,7 @@ function SocketManager() {
               OpenMiniChat({
                 receiver: { _id: message.senderId },
                 conversationId,
+                triggerBy: "socket",
               }),
             );
           }

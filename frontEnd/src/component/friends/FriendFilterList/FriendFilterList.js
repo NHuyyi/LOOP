@@ -29,7 +29,6 @@ function FriendFilterList() {
         try {
           const res = await getFriendListFilter(currentUser._id);
           if (res.success) {
-            console.log("Danh sách bạn bè đã filter:", res.data);
             // Đẩy dữ liệu vào Redux. (Lưu ý: Tùy theo cấu trúc trả về của API mà bạn truyền res.data hoặc res.friends nhé)
             dispatch(setFilteredFriends(res.data));
           }
