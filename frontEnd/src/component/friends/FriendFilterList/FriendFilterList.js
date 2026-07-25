@@ -59,7 +59,6 @@ function FriendFilterList() {
               name={friend.name}
               onClick={() => {
                 // Logic khi click vào bạn bè (ví dụ: mở chat với người đó)
-                console.log("Clicked on friend:", friend);
               }}
             />
           ))}

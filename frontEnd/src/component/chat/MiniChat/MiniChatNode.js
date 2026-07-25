@@ -171,7 +171,7 @@ export default function MiniChatNode({ chatData, index }) {
         {!isWindowOpen ? (
           /* ================= BONG BÓNG CHAT ================= */
           <div
-            cclassName={cx("drag-handle", "bubbleContainer")}
+            className={cx("drag-handle", "bubbleContainer")}
             onClick={toggleWindow}
           >
             <div className={cx("avatarWrapper")}>
@@ -321,7 +321,7 @@ export default function MiniChatNode({ chatData, index }) {
 
             <div className={cx("inputArea")}>
               <MessageInput
-                receiverId={receiver._id}
+                receiverId={receiverId._id}
                 conversationIdProp={conversationId}
               />
             </div>

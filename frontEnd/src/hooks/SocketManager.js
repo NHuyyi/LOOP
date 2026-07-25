@@ -211,10 +211,6 @@ function SocketManager() {
       // This event is listens for forwarded messages and updates the last message,
       socket.on("updateLastMessage", ({ conversationId, message }) => {
         dispatch(updateLastMessage({ conversationId, message }));
-        console.log("Dữ liệu nhận được từ server:", {
-          conversationId,
-          message,
-        });
       });
 
       socket.on("UpdateReactionMessage", (data) => {
