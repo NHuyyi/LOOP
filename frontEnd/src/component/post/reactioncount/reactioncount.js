@@ -56,7 +56,14 @@ function ReactionCounts({ postId, postAuthorId, currentUserId }) {
         <div className={cx("icons")}>
           {topReactions.map(([type]) => {
             const rInfo = getReactionByType(type);
-            return <img src={rInfo.icon} alt={type} className={cx("icon")} />;
+            return (
+              <img
+                src={rInfo.icon}
+                alt={type}
+                className={cx("icon")}
+                key={type}
+              />
+            );
           })}
         </div>
       </div>

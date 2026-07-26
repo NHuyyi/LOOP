@@ -31,7 +31,7 @@ export default function MiniChatNode({ chatData, index }) {
   const currentUser = useSelector((state) => state.user.user);
   // 1. Check trạng thái Online/Offline
   const onlineUsers = useSelector((state) => state.online);
-  const isOnline = onlineUsers.includes(receiverId._id);
+  const isOnline = onlineUsers.includes(receiverId);
 
   const [previewMsg, setPreviewMsg] = useState("");
   const [clickedMsgId, setClickedMsgId] = useState(null);
@@ -74,14 +74,14 @@ export default function MiniChatNode({ chatData, index }) {
     if (
       lastMessage &&
       String(lastMessage.senderId?._id || lastMessage.senderId) ===
-        String(receiverId._id) &&
+        String(receiverId) &&
       lastMessage.status !== "read"
     ) {
       setIsUnread(true);
     } else {
       setIsUnread(false);
     }
-  }, [lastMessage, receiverId._id]);
+  }, [lastMessage, receiverId]);
 
   // 4. Logic Preview Last Message 2 giây
   useEffect(() => {
@@ -90,7 +90,7 @@ export default function MiniChatNode({ chatData, index }) {
       // Nếu tin nhắn cuối là của đối phương gửi tới
       if (
         String(lastMsg.senderId?._id || lastMsg.senderId) ===
-          String(receiverId._id) &&
+          String(receiverId) &&
         isUnread === true
       ) {
         setPreviewMsg(lastMsg.text);
@@ -103,7 +103,7 @@ export default function MiniChatNode({ chatData, index }) {
         setPreviewMsg("");
       }
     }
-  }, [message, isWindowOpen, receiverId._id, isUnread]);
+  }, [message, isWindowOpen, receiverId, isUnread]);
 
   useEffect(() => {
     if (isWindowOpen && scrollRef.current) {
@@ -177,7 +177,7 @@ export default function MiniChatNode({ chatData, index }) {
             <div className={cx("avatarWrapper")}>
               <img
                 src={
-                  receiverId.avatar ||
+                  receiver.avatar ||
                   "https://res.cloudinary.com/dpym64zg9/image/upload/v1755614090/raw_cq4nqn.png"
                 }
                 alt="avatar"
@@ -189,7 +189,7 @@ export default function MiniChatNode({ chatData, index }) {
               <X size={12} />
             </button>
             {previewMsg && (
-              <div cclassName={cx("previewTooltip")}>
+              <div className={cx("previewTooltip")}>
                 {parseEmojis(previewMsg, false)}
               </div>
             )}
@@ -206,10 +206,10 @@ export default function MiniChatNode({ chatData, index }) {
                 <div className={cx("avatarWrapper")}>
                   <img
                     src={
-                      receiverId.avatar ||
+                      receiver.avatar ||
                       "https://res.cloudinary.com/dpym64zg9/image/upload/v1755614090/raw_cq4nqn.png"
                     }
-                    alt={receiverId.name}
+                    alt={receiver.name}
                     className={cx("avatar", { offline: !isOnline })}
                   />
                   <span
@@ -219,7 +219,7 @@ export default function MiniChatNode({ chatData, index }) {
                     )}
                   />
                 </div>
-                <span className={cx("name")}>{receiverId.name}</span>
+                <span className={cx("name")}>{receiver.name}</span>
               </div>
               <div className={cx("headerActions")}>
                 <button
@@ -321,7 +321,7 @@ export default function MiniChatNode({ chatData, index }) {
 
             <div className={cx("inputArea")}>
               <MessageInput
-                receiverId={receiverId._id}
+                receiverId={receiverId}
                 conversationIdProp={conversationId}
               />
             </div>

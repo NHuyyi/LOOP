@@ -189,22 +189,32 @@ function SocketManager() {
           }
 
           if (message.senderId) {
+            const senderId = message.senderId?._id || message.senderId;
             dispatch(
               updateChatInFilteredFriends({
-                friendId: message.senderId,
+                friendId: senderId,
                 conversationId,
               }),
             );
           }
 
-          if (!isChatpage && message.senderId && !isMuted) {
-            dispatch(
-              OpenMiniChat({
-                receiver: { _id: message.senderId },
-                conversationId,
-                triggerBy: "socket",
-              }),
+          if (!isChatpage && !isMuted) {
+            // Lấy người dùng còn lại trong conversation
+            // GIỐNG HỆT CÁCH MiniChatPortal ĐANG LÀM
+            const otherUser = conversation?.participants?.find(
+              (p) => String(p._id) !== String(currentUser._id),
             );
+
+            // Chỉ mở MiniChat nếu tìm được user
+            if (otherUser) {
+              dispatch(
+                OpenMiniChat({
+                  receiver: otherUser,
+                  conversationId,
+                  triggerBy: "socket",
+                }),
+              );
+            }
           }
         }
       });
