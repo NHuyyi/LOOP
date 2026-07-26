@@ -4,7 +4,7 @@ const initialState = {
   ConversationList: [], // lưu trữ danh sách bạn bè đã chat + tin nhắn cuối cùng
   activeConversationId: null, // lưu trữ cuộc trò chuyện hiện tại đang mở
   currentMessages: [], // lưu trữ tin nhắn của cuộc trò chuyện hiện tại(mặc định 20 tin nhắn)
-  activeRteceiver: null, // thông tin người đang chat cùng
+  activeReceiver: null, // thông tin người đang chat cùng
   RestrictedConversationList: [],
   // các state hỗ trợ phân trang khi cuộn chuột lên
   hasMore: true, // Biến cờ: dung để kiểm tra xem còn tin nhắn nào để tải hay không
@@ -103,7 +103,7 @@ const chatSlice = createSlice({
       // 3. NẾU KHÔNG CÓ Ở ĐÂU CẢ -> Tạo mới và đẩy vào danh sách bình thường
       const newConversation = {
         _id: conversationId,
-        participants: [message.senderId, state.activeReceiver],
+        participants: [message.senderId, state.activeReceiver].filter(Boolean),
         lastMessage: message,
         updatedAt: new Date().toISOString(),
       };

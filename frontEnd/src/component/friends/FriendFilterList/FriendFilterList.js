@@ -4,9 +4,10 @@ import classNames from "classnames/bind";
 import { useSelector, useDispatch } from "react-redux";
 import getFriendListFilter from "../../../services/Friends/getFriendListFilter";
 import { setFilteredFriends } from "../../../redux/friendSlice";
+import { OpenMiniChat, ToggleMiniChatWindow } from "../../../redux/chatSlice";
 import UserListItem from "../../user/UserListItem/UserListItem";
-
 import Loading from "../../Loading/Loading";
+
 const cx = classNames.bind(styles);
 
 function FriendFilterList() {
@@ -17,6 +18,9 @@ function FriendFilterList() {
   const stateUser = useSelector((state) => state.user);
   const currentUser = stateUser?.user;
   const filteredFriends = useSelector((state) => state.friend.filteredFriends);
+
+  const conversations = useSelector((state) => state.chat.ConversationList);
+  console.log("conversations:", conversations);
 
   useEffect(() => {
     const fetchFilteredFriends = async () => {
@@ -43,6 +47,34 @@ function FriendFilterList() {
     fetchFilteredFriends();
   }, [currentUser, filteredFriends, dispatch]);
 
+  const handleClick = (friend) => {
+    const existingConv = conversations?.find((conv) =>
+      conv.participants?.some((p) => p._id === friend._id || p === friend._id),
+    );
+
+    console.log("existingConv:", existingConv);
+
+    const conversationId = existingConv ? existingConv._id : null;
+
+    console.log("conversationId:", conversationId);
+
+    dispatch(
+      OpenMiniChat({
+        receiver: friend,
+        conversationId: conversationId,
+        triggerBy: "socket", // Gắn cờ "user" để chỉ định người dùng chủ động mở, giúp cửa sổ bật lên thay vì chỉ hiện bong bóng
+      }),
+    );
+
+    console.log("dispatch OpenMiniChat:", friend._id);
+    dispatch(
+      ToggleMiniChatWindow({
+        receiverId: friend._id,
+        isOpen: true,
+      }),
+    );
+  };
+
   return (
     <div>
       <h3 className={cx("title")}>Liên Hệ Nhanh</h3>
@@ -57,9 +89,7 @@ function FriendFilterList() {
               id={friend._id}
               avatar={friend.avatar}
               name={friend.name}
-              onClick={() => {
-                // Logic khi click vào bạn bè (ví dụ: mở chat với người đó)
-              }}
+              onClick={() => handleClick(friend)}
             />
           ))}
         </div>
