@@ -197,8 +197,7 @@ const chatSlice = createSlice({
 
     CloseMiniChat: (state, action) => {
       state.miniChat = state.miniChat.filter(
-        (c) =>
-          String(c.receiver?._id) === String(action.payload?.receiverId?._id),
+        (c) => String(c.receiver?._id) !== String(action.payload?.receiverId),
       );
     },
 
