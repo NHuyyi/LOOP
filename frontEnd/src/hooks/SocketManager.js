@@ -167,13 +167,9 @@ function SocketManager() {
         const isMuted = conversation?.mutedBy?.includes(currentUser._id);
         const finalIsRestricted =
           isRestricted || conversation?.restrictedBy?.includes(currentUser._id);
-        const isActiveConversation =
-          String(activeConversationId) === String(conversationId);
         const isChatpage = location.pathname.startsWith("/chat");
 
-        if (isActiveConversation) {
-          dispatch(addMessage({ conversationId, message }));
-        }
+        dispatch(addMessage({ conversationId, message }));
 
         if (!finalIsRestricted) {
           if (isMuted) {

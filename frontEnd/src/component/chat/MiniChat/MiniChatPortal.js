@@ -46,7 +46,6 @@ export default function MiniChatPortal() {
               const otherUser = conv.participants.find(
                 (p) => String(p._id) !== String(currentUser._id),
               );
-              console.log("otherUser:", otherUser);
               if (otherUser) {
                 dispatch(
                   OpenMiniChat({
@@ -83,9 +82,28 @@ export default function MiniChatPortal() {
 
   return createPortal(
     <div className={styles.portalContainer}>
-      {miniChats.map((chat, index) => (
-        <MiniChatNode key={chat.receiver._id} chatData={chat} index={index} />
-      ))}
+      {miniChats.map((chat) => {
+        const chatId = chat.receiver._id;
+
+        // Chỉ tính vị trí trong nhóm các cửa sổ đang mở
+        const windowIndex = miniChats
+          .filter((item) => item.isWindowOpen)
+          .findIndex((item) => item.receiver._id === chatId);
+
+        // Chỉ tính vị trí trong nhóm các bong bóng đang thu nhỏ
+        const bubbleIndex = miniChats
+          .filter((item) => !item.isWindowOpen)
+          .findIndex((item) => item.receiver._id === chatId);
+
+        return (
+          <MiniChatNode
+            key={chatId}
+            chatData={chat}
+            windowIndex={windowIndex}
+            bubbleIndex={bubbleIndex}
+          />
+        );
+      })}
     </div>,
     document.body,
   );

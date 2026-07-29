@@ -14,7 +14,7 @@ import MessageInput from "../../component/chat/MessageInput/MessageInput";
 import MenuConverSation from "../../component/chat/MenuConversation/MenuConversation";
 
 import checkBlockStatus from "../../services/User/checkBlockStatus";
-import { setInitialBlockStatus } from "../../redux/chatSlice";
+import { setInitialBlockStatus, OpenMiniChat } from "../../redux/chatSlice";
 const cx = classNames.bind(styles);
 
 function Chat() {
@@ -91,6 +91,24 @@ function Chat() {
         .catch((err) => console.error("Lỗi lấy trạng thái block:", err));
     }
   }, [otherUser?._id, dispatch]);
+
+  // BẮT ĐẦU THÊM MỚI: Tự động mở MiniChat khi rời khỏi trang Chat
+  useEffect(() => {
+    return () => {
+      // Cleanup function chạy khi Component bị unmount (rời trang)
+      if (activeReceiver && activeConversationId) {
+        // Đẩy cuộc trò chuyện hiện tại vào mảng MiniChat
+        dispatch(
+          OpenMiniChat({
+            receiver: activeReceiver,
+            conversationId: activeConversationId,
+            triggerBy: "User",
+          }),
+        );
+      }
+    };
+  }, [activeReceiver, activeConversationId, dispatch]);
+  // KẾT THÚC THÊM MỚI
 
   return (
     <div className={cx("container")}>

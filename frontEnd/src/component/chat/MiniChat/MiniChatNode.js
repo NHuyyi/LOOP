@@ -20,7 +20,12 @@ import classNames from "classnames/bind";
 
 const cx = classNames.bind(styles);
 
-export default function MiniChatNode({ chatData, index }) {
+export default function MiniChatNode({
+  chatData,
+  windowIndex,
+  bubbleIndex,
+  renderType,
+}) {
   const dispatch = useDispatch();
   const { parseEmojis } = useEmojiParser();
   const { receiver, conversationId, message, isWindowOpen } = chatData;
@@ -164,8 +169,8 @@ export default function MiniChatNode({ chatData, index }) {
         ref={nodeRef}
         className={cx("nodeWrapper")}
         style={{
-          right: isWindowOpen ? `${20 + (index + 1) * 340}px` : "20px",
-          bottom: "20px",
+          right: isWindowOpen ? `${70 + (windowIndex + 1) * 350}px` : "20px",
+          bottom: isWindowOpen ? "20px" : `${20 + bubbleIndex * 70}px`,
         }}
       >
         {!isWindowOpen ? (
@@ -182,6 +187,7 @@ export default function MiniChatNode({ chatData, index }) {
                 }
                 alt="avatar"
                 className={cx("bubbleAvatar", { offline: !isOnline })}
+                draggable={false}
               />
               {isUnread && <span className={cx("unreadDot")}></span>}
             </div>
