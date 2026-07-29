@@ -72,8 +72,52 @@ export default function MiniChatNode({
       String(currentUser?._id);
   const defaultStatusId = isLastMessageMine ? lastMessage._id : null;
   const activeStatusId = clickedMsgId !== null ? clickedMsgId : defaultStatusId;
-
   const [isUnread, setIsUnread] = useState(true);
+  const [windowSize, setWindowSize] = useState({
+    width: window.innerWidth,
+    height: window.innerHeight,
+  });
+
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowSize({ width: window.innerWidth, height: window.innerHeight });
+    };
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  const startRight = isWindowOpen ? 70 + (windowIndex + 1) * 350 : 20;
+  const startBottom = isWindowOpen ? 20 : 20 + bubbleIndex * 70;
+
+  // 3. Lấy kích thước tương ứng từ MiniChat.module.css[cite: 1]
+  const nodeWidth = isWindowOpen ? 330 : 60;
+  const nodeHeight = isWindowOpen ? 430 : 60;
+
+  // 4. BỘ GIỚI HẠN TUYỆT ĐỐI CHO BỐN CẠNH
+  const dragBounds = {
+    right: 90, // Kéo phải tối đa (X dương)
+    bottom: startBottom, // Kéo xuống tối đa (Y dương)
+    left: -(windowSize.width - nodeWidth - startRight + 300), // Kéo trái tối đa (X âm)
+    top: -(windowSize.height - nodeHeight - startBottom - 20), // Kéo lên tối đa (Y âm)
+  };
+
+  // 5. Cờ chống click khi kéo thả (Giải quyết Vấn đề 1)
+  const [isDragging, setIsDragging] = useState(false);
+  const [dragPos, setDragPos] = useState({ x: 0, y: 0 }); // Kiểm soát tọa độ để không bị lỗi đè lên nhau
+
+  // Reset tọa độ khi mở/đóng cửa sổ (Giải quyết Vấn đề 3)
+  useEffect(() => {
+    setDragPos({ x: 0, y: 0 });
+  }, [isWindowOpen]);
+
+  const handleDrag = (e, data) => {
+    setIsDragging(true);
+    setDragPos({ x: data.x, y: data.y });
+  };
+
+  const handleStop = () => {
+    setTimeout(() => setIsDragging(false), 100);
+  };
 
   useEffect(() => {
     if (
@@ -146,6 +190,9 @@ export default function MiniChatNode({
 
   const toggleWindow = async (e) => {
     e.stopPropagation();
+    if (isDragging) {
+      return; // Nếu đang kéo thì huỷ bỏ việc mở chat
+    }
     dispatch(
       ToggleMiniChatWindow({
         receiverId: receiverId,
@@ -164,13 +211,20 @@ export default function MiniChatNode({
     setIsUnread(false);
   };
   return (
-    <Draggable nodeRef={nodeRef} handle=".drag-handle" bounds="body">
+    <Draggable
+      nodeRef={nodeRef}
+      handle=".drag-handle"
+      bounds={dragBounds}
+      position={dragPos}
+      onDrag={handleDrag}
+      onStop={handleStop}
+    >
       <div
         ref={nodeRef}
         className={cx("nodeWrapper")}
         style={{
-          right: isWindowOpen ? `${70 + (windowIndex + 1) * 350}px` : "20px",
-          bottom: isWindowOpen ? "20px" : `${20 + bubbleIndex * 70}px`,
+          right: `${startRight}px`,
+          bottom: `${startBottom}px`,
         }}
       >
         {!isWindowOpen ? (
