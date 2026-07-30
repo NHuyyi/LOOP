@@ -20,7 +20,6 @@ function FriendFilterList() {
   const filteredFriends = useSelector((state) => state.friend.filteredFriends);
 
   const conversations = useSelector((state) => state.chat.ConversationList);
-  console.log("conversations:", conversations);
 
   useEffect(() => {
     const fetchFilteredFriends = async () => {
@@ -52,11 +51,7 @@ function FriendFilterList() {
       conv.participants?.some((p) => p._id === friend._id || p === friend._id),
     );
 
-    console.log("existingConv:", existingConv);
-
     const conversationId = existingConv ? existingConv._id : null;
-
-    console.log("conversationId:", conversationId);
 
     dispatch(
       OpenMiniChat({
@@ -66,7 +61,6 @@ function FriendFilterList() {
       }),
     );
 
-    console.log("dispatch OpenMiniChat:", friend._id);
     dispatch(
       ToggleMiniChatWindow({
         receiverId: friend._id,

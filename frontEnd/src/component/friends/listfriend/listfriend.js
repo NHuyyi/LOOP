@@ -3,20 +3,48 @@ import { useState } from "react";
 import styles from "./FriendsList.module.css";
 import classNames from "classnames/bind";
 import { MessageCircleMore, UserRoundX } from "lucide-react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import Removefriend from "../removefriend/removefriend";
+import { OpenMiniChat, ToggleMiniChatWindow } from "../../../redux/chatSlice";
 
 const cx = classNames.bind(styles);
 
 // Đổi prop `id` thành `userData`
 function FriendsList({ currentUserId, userData }) {
   const [open, setOpen] = useState(false);
+  const dispatch = useDispatch();
 
   const onlineUsers = useSelector((state) => state.online);
   // Kiểm tra trạng thái online dựa trên ID nằm trong userData
   const isOnline = onlineUsers.includes(userData._id);
+  const conversations = useSelector((state) => state.chat.ConversationList);
   // Không cần useEffect hay loading nữa, vì dữ liệu có sẵn ngay lập tức!
   if (!userData) return null;
+
+  const handleClick = (userData) => {
+    const existingConv = conversations?.find((conv) =>
+      conv.participants?.some(
+        (p) => p._id === userData._id || p === userData._id,
+      ),
+    );
+
+    const conversationId = existingConv ? existingConv._id : null;
+
+    dispatch(
+      OpenMiniChat({
+        receiver: userData,
+        conversationId: conversationId,
+        triggerBy: "socket", // Gắn cờ "user" để chỉ định người dùng chủ động mở, giúp cửa sổ bật lên thay vì chỉ hiện bong bóng
+      }),
+    );
+
+    dispatch(
+      ToggleMiniChatWindow({
+        receiverId: userData._id,
+        isOpen: true,
+      }),
+    );
+  };
 
   return (
     <div className={cx("friendItem")}>
@@ -34,7 +62,10 @@ function FriendsList({ currentUserId, userData }) {
         <div className={cx("friendCode")}>Mã: {userData.friendCode}</div>
       </div>
 
-      <button className={cx("chatButton")}>
+      <button
+        className={cx("chatButton")}
+        onClick={() => handleClick(userData)}
+      >
         <MessageCircleMore />
       </button>
 
