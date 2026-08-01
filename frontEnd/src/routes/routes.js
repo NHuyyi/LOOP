@@ -5,6 +5,7 @@ import Reset from "../pages/resetpasspage/resetpasspage";
 import Home from "../pages/HomePage/HomePage";
 import Friends from "../pages/friendpage/friendspage";
 import Chat from "../pages/chat/chatpage";
+import FriendProfilePage from "../pages/FriendProfilePage/FriendProfilePage";
 
 const routes = [
   {
@@ -42,6 +43,11 @@ const routes = [
     path: "chat",
     Element: <Chat />,
     isHeader: true,
+  },
+  {
+    path: "friend/:id",
+    Element: <FriendProfilePage />,
+    isHeader: true, // Hiển thị kèm Header (thanh điều hướng)
   },
 ];
 

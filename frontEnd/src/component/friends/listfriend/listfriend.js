@@ -6,7 +6,7 @@ import { MessageCircleMore, UserRoundX } from "lucide-react";
 import { useSelector, useDispatch } from "react-redux";
 import Removefriend from "../removefriend/removefriend";
 import { OpenMiniChat, ToggleMiniChatWindow } from "../../../redux/chatSlice";
-
+import { useNavigate } from "react-router-dom";
 const cx = classNames.bind(styles);
 
 // Đổi prop `id` thành `userData`
@@ -18,6 +18,13 @@ function FriendsList({ currentUserId, userData }) {
   // Kiểm tra trạng thái online dựa trên ID nằm trong userData
   const isOnline = onlineUsers.includes(userData._id);
   const conversations = useSelector((state) => state.chat.ConversationList);
+
+  const navigate = useNavigate();
+
+  const handleGoToProfile = () => {
+    // Điều hướng đến trang friend kèm theo ID của user đó
+    navigate(`/friend/${userData._id}`);
+  };
   // Không cần useEffect hay loading nữa, vì dữ liệu có sẵn ngay lập tức!
   if (!userData) return null;
 
@@ -47,7 +54,7 @@ function FriendsList({ currentUserId, userData }) {
   };
 
   return (
-    <div className={cx("friendItem")}>
+    <div className={cx("friendItem")} onClick={handleGoToProfile}>
       <div className={cx("avatarWrapper")}>
         <img
           src={userData.avatar || "/default-avatar.png"}
@@ -64,7 +71,10 @@ function FriendsList({ currentUserId, userData }) {
 
       <button
         className={cx("chatButton")}
-        onClick={() => handleClick(userData)}
+        onClick={(e) => {
+          e.stopPropagation();
+          handleClick(userData);
+        }}
       >
         <MessageCircleMore />
       </button>

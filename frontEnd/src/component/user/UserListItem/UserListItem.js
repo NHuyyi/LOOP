@@ -3,11 +3,9 @@ import styles from "./UserListItem.module.css";
 import classNames from "classnames/bind";
 import { useSelector } from "react-redux";
 
-
 const cx = classNames.bind(styles);
 
 function UserListItem({ id, avatar, name, onClick }) {
-
   const onlineUsers = useSelector((state) => state.online);
   // Kiểm tra trạng thái online dựa trên ID nằm trong userData
   const isOnline = onlineUsers.includes(id);
@@ -16,10 +14,7 @@ function UserListItem({ id, avatar, name, onClick }) {
     "https://res.cloudinary.com/dpym64zg9/image/upload/v1755614090/raw_cq4nqn.png";
 
   return (
-    <div
-      className={cx("user-item-container")}
-      onClick={() => onClick && onClick({ avatar, name })}
-    >
+    <div className={cx("user-item-container")} onClick={onClick}>
       <div className={cx("avatar-wrapper")}>
         <img
           src={avatar || defaultAvatar}
