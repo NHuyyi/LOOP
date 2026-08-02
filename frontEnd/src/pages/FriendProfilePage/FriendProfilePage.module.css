@@ -65,8 +65,12 @@
   background: #0084ff; /* Màu messenger */
 }
 .more-btn {
-  background: #e4e6eb;
+  background: #fff;
   color: #050505;
+}
+
+.more-btn:hover {
+  background: #d4d4d4;
 }
 .menu-wrapper {
   position: relative;

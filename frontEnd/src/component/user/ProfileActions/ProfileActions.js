@@ -1,38 +1,72 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { OpenMiniChat, ToggleMiniChatWindow } from "../../../redux/chatSlice";
+import { useNavigate } from "react-router-dom";
+import {
+  OpenMiniChat,
+  ToggleMiniChatWindow,
+  setInitialBlockStatus,
+} from "../../../redux/chatSlice";
 import classNames from "classnames/bind";
 import styles from "../../../pages/FriendProfilePage/FriendProfilePage.module.css";
-import { MessageCircleMore, MoreHorizontal } from "lucide-react";
+import { MessageCircleMore, MoreHorizontal, BellOff } from "lucide-react";
 
-// Tái sử dụng component Xóa bạn
+// Import các component chức năng
 import Removefriend from "../../../component/friends/removefriend/removefriend";
+import BlockButton from "../../chat/MenuConversation/BlockButton/BlockButton";
+import checkBlockStatus from "../../../services/User/checkBlockStatus";
 
 const cx = classNames.bind(styles);
 
 function ProfileActions({ friendData, currentUser }) {
   const dispatch = useDispatch();
+
+  const navigate = useNavigate();
+
   const [showMenu, setShowMenu] = useState(false);
   const [showRemoveModal, setShowRemoveModal] = useState(false);
+  const menuRef = useRef(null); // Ref dùng để bắt sự kiện click ra ngoài menu
 
-  // Lấy list conversation để kiểm tra xem đã từng chat chưa
+  const blockStatus = useSelector((state) => state.chat.blockStatus) || {};
+  const isChatDisabled =
+    blockStatus.isBlockedByMe || blockStatus.isBlockedByThem;
+
+  // Lấy list conversation từ Redux để kiểm tra trạng thái Mute (cho icon chuông)
   const conversations = useSelector((state) => state.chat.ConversationList);
+  const existingConv = conversations?.find((conv) =>
+    conv.participants?.some(
+      (p) => p._id === friendData._id || p === friendData._id,
+    ),
+  );
+
+  const conversationId = existingConv ? existingConv._id : null;
+  const isMuted = existingConv?.mutedBy?.includes(currentUser._id);
+
+  useEffect(() => {
+    if (friendData?._id) {
+      checkBlockStatus(friendData._id)
+        .then((res) => {
+          if (res.success) {
+            // Dispatch thẳng vào Redux, lúc này BlockButton sẽ tự động nhận diện được trạng thái
+            dispatch(
+              setInitialBlockStatus({
+                isBlockedByMe: res.data.isBlockedByMe,
+                isBlockedByThem: res.data.isBlockedByThem,
+              }),
+            );
+          }
+        })
+        .catch((err) => console.error("Lỗi lấy trạng thái chặn:", err));
+    }
+  }, [friendData?._id, dispatch]);
 
   const handleOpenMiniChat = () => {
-    // Tìm cuộc hội thoại cũ nếu có
-    const existingConv = conversations?.find((conv) =>
-      conv.participants?.some(
-        (p) => p._id === friendData._id || p === friendData._id,
-      ),
-    );
-    const conversationId = existingConv ? existingConv._id : null;
+    if (isChatDisabled) return;
 
-    // Dispatch hành động mở MiniChat
     dispatch(
       OpenMiniChat({
         receiver: friendData,
         conversationId: conversationId,
-        triggerBy: "click", // Kích hoạt bằng click để mở to cửa sổ
+        triggerBy: "click",
       }),
     );
     dispatch(
@@ -43,15 +77,44 @@ function ProfileActions({ friendData, currentUser }) {
     );
   };
 
+  // Đóng dropdown menu khi người dùng click ra ngoài vùng menu
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (menuRef.current && !menuRef.current.contains(event.target)) {
+        setShowMenu(false);
+      }
+    };
+
+    if (showMenu) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [showMenu]);
+
   return (
     <div className={cx("actions-section")}>
-      <button className={cx("app-btn", "msg-btn")} onClick={handleOpenMiniChat}>
+      {/* 1. NÚT NHẮN TIN VÀ TRẠNG THÁI CHUÔNG */}
+      <button
+        className={cx("app-btn", "msg-btn")}
+        onClick={handleOpenMiniChat}
+        disabled={isChatDisabled}
+        style={{
+          backgroundColor: isChatDisabled ? "#e4e6eb" : "", // Màu nền xám
+          color: isChatDisabled ? "#bcc0c4" : "", // Màu chữ xám mờ
+          cursor: isChatDisabled ? "not-allowed" : "pointer", // Con trỏ cấm click
+        }}
+      >
         <MessageCircleMore size={20} />
         <span>Nhắn tin</span>
+        {isMuted && (
+          <BellOff size={16} color="#fff" style={{ marginLeft: "4px" }} />
+        )}
       </button>
 
-      {/* Nút ... mở menu */}
-      <div className={cx("menu-wrapper")}>
+      {/* 2. MENU DROPDOWN DÀNH CHO PROFILE */}
+      <div className={cx("menu-wrapper")} ref={menuRef}>
         <button
           className={cx("app-btn", "more-btn")}
           onClick={() => setShowMenu(!showMenu)}
@@ -61,6 +124,7 @@ function ProfileActions({ friendData, currentUser }) {
 
         {showMenu && (
           <div className={cx("dropdown-menu")}>
+            {/* Chức năng: XÓA BẠN */}
             <button
               onClick={() => {
                 setShowRemoveModal(true);
@@ -69,15 +133,25 @@ function ProfileActions({ friendData, currentUser }) {
             >
               Xóa bạn
             </button>
-            {/* Các chức năng này bạn có thể import BlockButton, ToggleMuteButton từ chat/MenuConversation để tái sử dụng */}
-            <button>Chặn</button>
-            <button>Tắt thông báo</button>
-            <button className={cx("text-danger")}>Báo cáo</button>
+
+            {/* Chức năng: CHẶN (Sử dụng lại BlockButton, type="out" để render dạng list) */}
+            <BlockButton targetUserId={friendData._id} type="out" />
+
+            {/* Chức năng: BÁO CÁO */}
+            <button
+              className={cx("text-danger")}
+              onClick={() => {
+                // Logic API báo cáo xử lý sau
+                setShowMenu(false);
+              }}
+            >
+              Báo cáo
+            </button>
           </div>
         )}
       </div>
 
-      {/* Component Xóa bạn đã có sẵn */}
+      {/* MODAL XÓA BẠN */}
       {showRemoveModal && (
         <Removefriend
           type="removeFriend"
@@ -85,6 +159,7 @@ function ProfileActions({ friendData, currentUser }) {
           id={friendData._id}
           name={friendData.name}
           onClose={() => setShowRemoveModal(false)}
+          onSuccess={() => navigate("/home")}
         />
       )}
     </div>

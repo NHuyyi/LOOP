@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom"; // Lấy ID bạn bè từ URL
+import { useParams, useNavigate } from "react-router-dom"; // Lấy ID bạn bè từ URL
 import { useSelector } from "react-redux";
 import classNames from "classnames/bind";
 import styles from "./FriendProfilePage.module.css";
@@ -21,10 +21,7 @@ function FriendProfilePage() {
   const [friendData, setFriendData] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  console.log(
-    "posts",
-    useSelector((state) => state.posts),
-  );
+  const navigate = useNavigate();
 
   // Lấy thông tin bạn bè
   useEffect(() => {
@@ -32,7 +29,19 @@ function FriendProfilePage() {
       setLoading(true);
       try {
         const res = await getUserbyId(id);
-        if (res) setFriendData(res);
+
+        console.log("Thông tin bạn bè:", res);
+
+        const isFriend = res.friends?.some(
+          (friendId) => String(friendId) === String(currentUser?._id),
+        );
+
+        if (res && isFriend) {
+          setFriendData(res);
+        } else {
+          // Nếu res trả về { success: false } hoặc undefined
+          navigate("/home");
+        }
       } catch (error) {
         console.error("Lỗi fetch user:", error);
       } finally {
@@ -40,7 +49,7 @@ function FriendProfilePage() {
       }
     };
     if (id) fetchFriendInfo();
-  }, [id]);
+  }, [id, navigate, currentUser]);
 
   if (loading) return <Loading fullScreen text="Đang tải thông tin..." />;
   if (!friendData)
