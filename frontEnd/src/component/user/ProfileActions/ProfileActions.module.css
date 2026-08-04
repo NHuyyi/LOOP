@@ -1,0 +1,108 @@
+.actions-section {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  justify-content: center;
+  padding: 0 24px 24px;
+  border-bottom: 1px solid #f1f3f5;
+  width: 100%;
+}
+
+.app-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 44px;
+  border-radius: 22px;
+  border: none;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.msg-btn {
+  background: #0084ff;
+  color: #fff;
+  padding: 0 24px;
+  box-shadow: 0 4px 12px rgba(0, 132, 255, 0.25);
+  flex-grow: 1; /* Cho nút nhắn tin dài ra một chút */
+  max-width: 250px;
+}
+
+.msg-btn:hover:not(.disabled) {
+  background: #0073e6;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 132, 255, 0.35);
+}
+
+.msg-btn.disabled {
+  background: #e4e6eb;
+  color: #bcc0c4;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.mute-icon {
+  margin-left: 4px;
+  opacity: 0.8;
+}
+
+.more-btn {
+  background: #f0f2f5;
+  color: #1c1e21;
+  width: 44px;
+  padding: 0;
+}
+
+.more-btn:hover {
+  background: #e4e6eb;
+}
+
+.menu-wrapper {
+  position: relative;
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  display: flex;
+  flex-direction: column;
+  min-width: 220px;
+  z-index: 100;
+  padding: 8px;
+  border: 1px solid #f1f3f5;
+}
+
+.menu-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  border: none;
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 500;
+  color: #333;
+  transition: background 0.15s;
+  width: 100%;
+}
+
+.menu-item:hover {
+  background: #f0f2f5;
+}
+
+.text-danger {
+  color: #e41e3f;
+}
+.text-danger:hover {
+  background: #ffebee;
+}

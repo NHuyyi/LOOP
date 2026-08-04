@@ -1,0 +1,241 @@
+.header-section {
+  position: relative;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.cover-photo {
+  width: 100%;
+  height: 180px;
+  background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+  border-radius: 16px 16px 0 0;
+}
+
+.info-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0 24px 24px;
+  margin-top: -60px; /* Đẩy nội dung lên đè vào cover photo */
+}
+
+.avatar-wrapper {
+  position: relative;
+  margin-bottom: 12px;
+}
+
+.avatar {
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 5px solid #ffffff;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  background-color: #fff;
+}
+
+.floating-badge {
+  position: absolute;
+  bottom: 5px;
+  right: 5px;
+  background: #fff;
+  border: 2px solid #fff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.name {
+  margin: 0;
+  font-size: 26px;
+  font-weight: 700;
+  color: #1a1a2e;
+}
+
+.friend-code {
+  color: #6c757d;
+  font-size: 14px;
+  margin: 4px 0 16px;
+  font-weight: 500;
+}
+
+/* Stats Pills */
+.stats-container {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 10px;
+}
+
+.stat-pill {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 16px 6px 6px;
+  border-radius: 50px;
+  font-size: 14px;
+  font-weight: 600;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+  cursor: default;
+}
+
+.stat-pill:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+.icon-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #ffffff;
+}
+
+/* Màu sắc từng stat */
+.blue {
+  background: #e3f2fd;
+  color: #1976d2;
+}
+.blue .icon-wrapper {
+  color: #1976d2;
+}
+
+.purple {
+  background: #f3e5f5;
+  color: #7b1fa2;
+}
+.purple .icon-wrapper {
+  color: #7b1fa2;
+}
+
+.red {
+  background: #ffebee;
+  color: #d32f2f;
+}
+.red .icon-wrapper {
+  color: #d32f2f;
+}
+
+.teal {
+  background: #e0f2f1;
+  color: #00796b;
+}
+.teal .icon-wrapper {
+  color: #00796b;
+}
+
+.streak-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #e65100;
+}
+/* --- PHẦN FRIEND CODE & COPY --- */
+.friend-code-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  background: #f0f2f5;
+  padding: 4px 12px;
+  border-radius: 20px;
+  margin: 8px 0 16px;
+}
+
+.code-label {
+  color: #6c757d;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.code-value {
+  color: #1a1a2e;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.copy-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.copy-btn {
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #6c757d;
+  transition: all 0.2s ease;
+}
+
+.copy-btn:hover {
+  background: #e4e6eb;
+  color: #333;
+}
+
+.copy-btn.copied {
+  background: #e8f5e9;
+  border-color: #4caf50;
+  color: #4caf50;
+}
+
+.copy-tooltip {
+  position: absolute;
+  top: -30px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #333;
+  color: #fff;
+  font-size: 11px;
+  padding: 4px 8px;
+  border-radius: 4px;
+  white-space: nowrap;
+  animation: fadeInOut 2s ease forwards;
+  pointer-events: none;
+}
+
+.copy-tooltip::after {
+  content: "";
+  position: absolute;
+  bottom: -4px;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 4px 4px 0;
+  border-style: solid;
+  border-color: #333 transparent transparent transparent;
+}
+
+@keyframes fadeInOut {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, 5px);
+  }
+  15% {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+  85% {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -5px);
+  }
+}

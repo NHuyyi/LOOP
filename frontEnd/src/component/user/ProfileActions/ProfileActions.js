@@ -7,8 +7,14 @@ import {
   setInitialBlockStatus,
 } from "../../../redux/chatSlice";
 import classNames from "classnames/bind";
-import styles from "../../../pages/FriendProfilePage/FriendProfilePage.module.css";
-import { MessageCircleMore, MoreHorizontal, BellOff } from "lucide-react";
+import styles from "./ProfileActions.module.css";
+import {
+  MessageCircleMore,
+  MoreHorizontal,
+  BellOff,
+  UserMinus,
+  Flag,
+} from "lucide-react";
 
 // Import các component chức năng
 import Removefriend from "../../../component/friends/removefriend/removefriend";
@@ -95,22 +101,14 @@ function ProfileActions({ friendData, currentUser }) {
 
   return (
     <div className={cx("actions-section")}>
-      {/* 1. NÚT NHẮN TIN VÀ TRẠNG THÁI CHUÔNG */}
       <button
-        className={cx("app-btn", "msg-btn")}
+        className={cx("app-btn", "msg-btn", { disabled: isChatDisabled })}
         onClick={handleOpenMiniChat}
         disabled={isChatDisabled}
-        style={{
-          backgroundColor: isChatDisabled ? "#e4e6eb" : "", // Màu nền xám
-          color: isChatDisabled ? "#bcc0c4" : "", // Màu chữ xám mờ
-          cursor: isChatDisabled ? "not-allowed" : "pointer", // Con trỏ cấm click
-        }}
       >
         <MessageCircleMore size={20} />
         <span>Nhắn tin</span>
-        {isMuted && (
-          <BellOff size={16} color="#fff" style={{ marginLeft: "4px" }} />
-        )}
+        {isMuted && <BellOff size={16} className={cx("mute-icon")} />}
       </button>
 
       {/* 2. MENU DROPDOWN DÀNH CHO PROFILE */}
@@ -126,26 +124,31 @@ function ProfileActions({ friendData, currentUser }) {
           <div className={cx("dropdown-menu")}>
             {/* Chức năng: XÓA BẠN */}
             <button
+              className={cx("menu-item")}
               onClick={() => {
                 setShowRemoveModal(true);
                 setShowMenu(false);
               }}
             >
-              Xóa bạn
+              <UserMinus size={16} />
+              <span>Xóa bạn bè</span>
             </button>
 
             {/* Chức năng: CHẶN (Sử dụng lại BlockButton, type="out" để render dạng list) */}
-            <BlockButton targetUserId={friendData._id} type="out" />
+            <div className={cx("menu-item")}>
+              <BlockButton targetUserId={friendData._id} type="out" />
+            </div>
 
             {/* Chức năng: BÁO CÁO */}
             <button
-              className={cx("text-danger")}
+              className={cx("menu-item", "text-danger")}
               onClick={() => {
                 // Logic API báo cáo xử lý sau
                 setShowMenu(false);
               }}
             >
-              Báo cáo
+              <Flag size={16} />
+              <span>Báo cáo trang cá nhân</span>
             </button>
           </div>
         )}

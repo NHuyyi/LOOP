@@ -1,13 +1,22 @@
-import React from "react";
+import React, { useState } from "react";
 import classNames from "classnames/bind";
-import styles from "../../../pages/FriendProfilePage/FriendProfilePage.module.css";
+import styles from "./ProfileHeader.module.css";
 // Import thêm các icon mới
-import { Flame, Users, FileText, Heart, MessageCircle } from "lucide-react";
+import {
+  Flame,
+  Users,
+  FileText,
+  Heart,
+  MessageCircle,
+  Copy,
+  Check,
+} from "lucide-react";
 
 const cx = classNames.bind(styles);
 
 // Nhận thêm prop stats
 function ProfileHeader({ friendData, stats }) {
+  const [isCopied, setIsCopied] = useState(false);
   // Hash cứng tạo bợ chờ dữ liệu thật
   const mockStreak = {
     hash: "dummy_streak_hash_123456789",
@@ -23,60 +32,95 @@ function ProfileHeader({ friendData, stats }) {
     totalComments = 0,
   } = stats || {};
 
+  const handleCopyCode = async () => {
+    if (!friendData?.friendCode) return;
+    try {
+      await navigator.clipboard.writeText(friendData.friendCode);
+      setIsCopied(true);
+
+      // Sau 2 giây thì reset lại icon copy
+      setTimeout(() => {
+        setIsCopied(false);
+      }, 2000);
+    } catch (err) {
+      console.error("Không thể copy:", err);
+    }
+  };
+
   return (
     <div className={cx("header-section")}>
-      <img
-        src={
-          friendData.avatar ||
-          "https://res.cloudinary.com/dpym64zg9/image/upload/v1755614090/raw_cq4nqn.png"
-        }
-        alt={friendData.name}
-        className={cx("avatar")}
-      />
-      <h2 className={cx("name")}>{friendData.name}</h2>
-      <p className={cx("friend-code")}>Mã: {friendData.friendCode}</p>
+      {/* Ảnh bìa mô phỏng */}
+      <div className={cx("cover-photo")}></div>
 
-      {/* VÙNG CHỨA CÁC THỐNG KÊ (NẰM NGANG) */}
-      <div
-        className={cx("stats-container")}
-        style={{
-          display: "flex",
-          gap: "15px",
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
-        {/* Chuỗi (Streak) */}
-        <div
-          className={cx("streak-badge", { active: mockStreak.isActive })}
-          title="Streak"
-        >
-          <Flame size={18} color={mockStreak.isActive ? "#ff9800" : "#ccc"} />
-          <span>{mockStreak.count}</span>
+      <div className={cx("info-wrapper")}>
+        <div className={cx("avatar-wrapper")}>
+          <img
+            src={
+              friendData.avatar ||
+              "https://res.cloudinary.com/dpym64zg9/image/upload/v1755614090/raw_cq4nqn.png"
+            }
+            alt={friendData.name}
+            className={cx("avatar")}
+          />
+          {mockStreak.isActive && (
+            <div
+              className={cx("streak-badge", "floating-badge")}
+              title="Streak"
+            >
+              <Flame size={16} color="#ff9800" />
+              <span>{mockStreak.count}</span>
+            </div>
+          )}
         </div>
 
-        {/* Tổng Bạn Bè */}
-        <div className={cx("stat-badge")} title="Tổng bạn bè">
-          <Users size={18} color="#0084ff" />
-          <span>{totalFriends}</span>
+        <h2 className={cx("name")}>{friendData.name}</h2>
+        <div className={cx("friend-code-wrapper")}>
+          <span className={cx("code-label")}>Mã ID: </span>
+          <span className={cx("code-value")}>{friendData.friendCode}</span>
+
+          <div className={cx("copy-container")}>
+            <button
+              className={cx("copy-btn", { copied: isCopied })}
+              onClick={handleCopyCode}
+              title="Copy mã"
+            >
+              {isCopied ? <Check size={14} /> : <Copy size={14} />}
+            </button>
+
+            {/* Tooltip hiển thị "Đã chép" */}
+            {isCopied && <span className={cx("copy-tooltip")}>Đã chép!</span>}
+          </div>
         </div>
 
-        {/* Tổng Bài Viết */}
-        <div className={cx("stat-badge")} title="Tổng bài viết">
-          <FileText size={18} color="#8c1af6" />
-          <span>{totalPosts}</span>
-        </div>
+        {/* Vùng chứa thống kê dạng Pills hiện đại */}
+        <div className={cx("stats-container")}>
+          <div className={cx("stat-pill", "blue")} title="Tổng bạn bè">
+            <div className={cx("icon-wrapper")}>
+              <Users size={16} />
+            </div>
+            <span>{totalFriends} bạn bè</span>
+          </div>
 
-        {/* Tổng Reactions */}
-        <div className={cx("stat-badge")} title="Tổng lượt tương tác">
-          <Heart size={18} color="#e41e3f" />
-          <span>{totalReactions}</span>
-        </div>
+          <div className={cx("stat-pill", "purple")} title="Tổng bài viết">
+            <div className={cx("icon-wrapper")}>
+              <FileText size={16} />
+            </div>
+            <span>{totalPosts} bài viết</span>
+          </div>
 
-        {/* Tổng Comments */}
-        <div className={cx("stat-badge")} title="Tổng lượt bình luận">
-          <MessageCircle size={18} color="#20b2aa" />
-          <span>{totalComments}</span>
+          <div className={cx("stat-pill", "red")} title="Tổng lượt tương tác">
+            <div className={cx("icon-wrapper")}>
+              <Heart size={16} />
+            </div>
+            <span>{totalReactions} lượt thích</span>
+          </div>
+
+          <div className={cx("stat-pill", "teal")} title="Tổng lượt bình luận">
+            <div className={cx("icon-wrapper")}>
+              <MessageCircle size={16} />
+            </div>
+            <span>{totalComments} bình luận</span>
+          </div>
         </div>
       </div>
     </div>

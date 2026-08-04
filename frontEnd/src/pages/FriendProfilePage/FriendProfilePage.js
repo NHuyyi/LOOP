@@ -93,26 +93,38 @@ function FriendProfilePage() {
   const stats = { totalFriends, totalPosts, totalReactions, totalComments };
 
   return (
-    <div className={cx("profile-container")}>
+    <div className={cx("profile-layout")}>
       <div className={cx("profile-card")}>
         <ProfileHeader friendData={friendData} stats={stats} />
         <ProfileActions friendData={friendData} currentUser={currentUser} />
       </div>
 
       <div className={cx("feed-section")}>
-        <h3 className={cx("feed-title")}>Bài viết của {friendData.name}</h3>
-        {friendPosts.length > 0 ? (
-          friendPosts.map((post) => (
-            <PostCard
-              key={post._id}
-              post={post}
-              currentUserId={currentUser._id}
-              friendList={currentUser.friends || []}
-            />
-          ))
-        ) : (
-          <p className={cx("no-posts")}>Chưa có bài viết nào.</p>
-        )}
+        <div className={cx("feed-header")}>
+          <h3 className={cx("feed-title")}>Bài viết gần đây</h3>
+        </div>
+
+        <div className={cx("feed-content")}>
+          {friendPosts.length > 0 ? (
+            friendPosts.map((post) => (
+              <PostCard
+                key={post._id}
+                post={post}
+                currentUserId={currentUser._id}
+                friendList={currentUser.friends || []}
+              />
+            ))
+          ) : (
+            <div className={cx("no-posts")}>
+              <img
+                src="https://cdn-icons-png.flaticon.com/512/7486/7486754.png"
+                alt="No posts"
+                className={cx("empty-icon")}
+              />
+              <p>Chưa có bài viết nào.</p>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

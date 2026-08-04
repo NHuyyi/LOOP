@@ -1,113 +1,44 @@
-.profile-container {
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 20px;
-}
-
-.profile-card {
-  background: #fff;
-  border-radius: 16px;
-  padding: 30px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-  margin-bottom: 20px;
+/* Background chung của cả trang nên là màu xám nhạt (ví dụ: #f0f2f5) để card trắng nổi lên */
+.profile-layout {
+  max-width: 760px;
+  margin: 24px auto;
+  padding: 0 16px;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  gap: 24px;
 }
 
-/* Header */
-.header-section {
-  text-align: center;
-  margin-bottom: 20px;
-}
-.avatar {
-  width: 120px;
-  height: 120px;
-  border-radius: 50%;
-  object-fit: cover;
-  border: 4px solid #daabff;
-}
-.name {
-  margin: 10px 0 5px;
-  font-size: 24px;
-}
-.friend-code {
-  color: #666;
-  font-size: 14px;
+.feed-header {
+  background: #ffffff;
+  padding: 16px 20px;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+  margin-bottom: 16px;
 }
 
-/* Streak Badge */
-.streak-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  background: #f0f2f5;
-  padding: 6px 12px;
-  border-radius: 20px;
-  margin-top: 10px;
-  font-size: 14px;
-  font-weight: 500;
-}
-.streak-badge.active {
-  background: #fff4e5;
-  color: #e65100;
-}
-
-/* Actions */
-.actions-section {
-  display: flex;
-  gap: 10px;
-  align-items: center;
-}
-.msg-btn {
-  display: flex;
-  gap: 8px;
-  background: #0084ff; /* Màu messenger */
-}
-.more-btn {
-  background: #fff;
-  color: #050505;
-}
-
-.more-btn:hover {
-  background: #d4d4d4;
-}
-.menu-wrapper {
-  position: relative;
-}
-.dropdown-menu {
-  position: absolute;
-  top: 110%;
-  right: 0;
-  background: #fff;
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  display: flex;
-  flex-direction: column;
-  min-width: 150px;
-  z-index: 10;
-}
-.dropdown-menu button {
-  padding: 10px 15px;
-  border: none;
-  background: none;
-  text-align: left;
-  cursor: pointer;
-}
-.dropdown-menu button:hover {
-  background: #f0f2f5;
-}
-.text-danger {
-  color: red;
-}
-
-/* Feed */
 .feed-title {
   font-size: 18px;
-  margin-bottom: 15px;
-  color: #333;
+  font-weight: 700;
+  color: #1a1a2e;
+  margin: 0;
 }
+
 .no-posts {
+  background: #fff;
+  border-radius: 12px;
+  padding: 40px 20px;
   text-align: center;
-  color: #888;
+  color: #6c757d;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  font-weight: 500;
+}
+
+.empty-icon {
+  width: 64px;
+  height: 64px;
+  opacity: 0.5;
 }
