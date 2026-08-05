@@ -83,3 +83,15 @@
   margin-left: 6px; /* cách chữ một chút */
   font-style: italic; /* chữ nghiêng */
 }
+
+:global(.mention) {
+  color: #20c997; /* Màu xanh Facebook, đổi sang #20c997 nếu muốn xanh ngọc */
+  font-weight: 600;
+  text-decoration: none;
+  pointer-events: auto; /* Cho phép click & hover */
+  cursor: pointer;
+}
+
+:global(.mention):hover {
+  text-decoration: underline;
+}

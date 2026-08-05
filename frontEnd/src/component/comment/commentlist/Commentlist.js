@@ -80,6 +80,8 @@ function CommentList({ postId, userID, AuthorId }) {
           postId={postId}
           parentId={replyTarget?._id || null}
           replytoname={replyTarget?.name || ""}
+          replyToUserId={replyTarget?.userId || null}
+          replyToAvatar={replyTarget?.avatar || ""}
           editCommentId={editTarget?._id || null}
           initialText={editTarget?.text || ""}
           setReplyTaget={setReplyTaget}

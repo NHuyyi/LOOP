@@ -1,10 +1,13 @@
+import { useState, useRef, useEffect } from "react";
 import classNames from "classnames/bind";
 import styles from "./commentItem.module.css";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import "dayjs/locale/vi";
 import CommentActions from "../commentActions/commentActions";
-import { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
+import { useNavigate } from "react-router-dom";
+import HoverProfileCard from "../../user/HoverProfileCard/HoverProfileCard";
 
 dayjs.extend(relativeTime);
 dayjs.locale("vi");
@@ -25,6 +28,9 @@ function CommentItem({
   onDeleted,
 }) {
   const [showReplies, setShowReplies] = useState(false);
+  const [hoveredMention, setHoveredMention] = useState(null);
+  const navigate = useNavigate();
+  let hoverTimeout = useRef(null);
 
   useEffect(() => {
     if (comment.replies?.some((r) => r._id === newestCommentId)) {
@@ -40,6 +46,40 @@ function CommentItem({
       });
     }
   }, [comment._id, newestCommentId, lastCommentRef]);
+
+  const handleMouseOver = (e) => {
+    const mentionEl = e.target.closest("a.mention"); // Kiểm tra xem chuột có nằm trên thẻ tag không
+
+    if (mentionEl) {
+      clearTimeout(hoverTimeout.current);
+      const rect = mentionEl.getBoundingClientRect();
+      setHoveredMention({
+        id: mentionEl.getAttribute("data-id"),
+        name: mentionEl.getAttribute("data-name"),
+        avatar: mentionEl.getAttribute("data-avatar"),
+        position: { x: rect.left, y: rect.top },
+      });
+    }
+  };
+
+  const handleMouseOut = (e) => {
+    const mentionEl = e.target.closest("a.mention");
+    if (mentionEl) {
+      hoverTimeout.current = setTimeout(() => {
+        setHoveredMention(null);
+      }, 300); // Delay 300ms để người dùng kịp di chuyển chuột lên card
+    }
+  };
+
+  // Xử lý click trực tiếp vào chữ màu xanh
+  const handleClick = (e) => {
+    const mentionEl = e.target.closest("a.mention");
+    if (mentionEl) {
+      e.preventDefault(); // Ngăn hành vi mở link mặc định
+      const userId = mentionEl.getAttribute("data-id");
+      if (userId) navigate(`/friend/${userId}`);
+    }
+  };
   return (
     <div
       className={cx("commentWrapper")}
@@ -72,6 +112,9 @@ function CommentItem({
                 <div
                   className={cx("text")}
                   dangerouslySetInnerHTML={{ __html: comment.text }}
+                  onMouseOver={handleMouseOver}
+                  onMouseOut={handleMouseOut}
+                  onClick={handleClick}
                 ></div>
               </>
             ) : (
@@ -120,6 +163,17 @@ function CommentItem({
           ))}
         </div>
       )}
+
+      {hoveredMention &&
+        createPortal(
+          <HoverProfileCard
+            userData={hoveredMention}
+            position={hoveredMention.position}
+            onMouseEnter={() => clearTimeout(hoverTimeout.current)}
+            onMouseLeave={() => setHoveredMention(null)}
+          />,
+          document.body,
+        )}
     </div>
   );
 }

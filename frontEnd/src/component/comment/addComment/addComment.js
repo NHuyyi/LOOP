@@ -14,6 +14,8 @@ function AddComment({
   postId,
   parentId,
   replytoname,
+  replyToUserId,
+  replyToAvatar,
   editCommentId,
   initialText = "",
   setReplyTaget,
@@ -38,8 +40,7 @@ function AddComment({
   useEffect(() => {
     if (editorRef.current) {
       if (replytoname && !editCommentId) {
-        editorRef.current.innerHTML = `<a href="#" class="${cx("mention")}" contenteditable="false">@${replytoname}</a>&nbsp;`;
-
+        editorRef.current.innerHTML = `<a href="/friend/${replyToUserId}" class="mention" data-id="${replyToUserId}" data-name="${replytoname}" data-avatar="${replyToAvatar}" contenteditable="false">@${replytoname}</a>&nbsp;`;
         placeCaretAtEnd(editorRef.current);
       } else if (editCommentId && initialText) {
         editorRef.current.innerText = initialText;
@@ -48,7 +49,14 @@ function AddComment({
         editorRef.current.innerHTML = "";
       }
     }
-  }, [replytoname, parentId, editCommentId, initialText]);
+  }, [
+    replytoname,
+    parentId,
+    editCommentId,
+    initialText,
+    replyToUserId,
+    replyToAvatar,
+  ]);
 
   // Clear replyTaget nếu không còn đang reply
   useEffect(() => {

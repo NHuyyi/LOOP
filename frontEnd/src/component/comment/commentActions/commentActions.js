@@ -55,7 +55,12 @@ function CommentActions({
         onClick={() => {
           setReplyTaget(null);
           setTimeout(() => {
-            setReplyTaget({ _id: comment._id, name: comment.name });
+            setReplyTaget({
+              _id: comment._id,
+              name: comment.name,
+              userId: comment.userId || AuthorId, // ID của người viết comment
+              avatar: comment.avatar,
+            });
           }, 0);
         }}
       >
