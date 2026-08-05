@@ -6,6 +6,7 @@ import PostReaction from "../PostReaction/PostReaction";
 import ReactionCounts from "../reactioncount/reactioncount";
 import CommentList from "../../comment/commentlist/Commentlist";
 import { CircleX } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import { makeSelectCommentsByPostId } from "../../../redux/selectors"; // 👈 import selector
 import PostMenu from "../postmenu/postmenu";
 
@@ -49,11 +50,23 @@ function PostCard({ post, currentUserId, friendList = [] }) {
         String(r.user) === String(currentUserId),
     )?.type || "";
 
+  const navigate = useNavigate();
+
+  const handleGoToProfile = () => {
+    // Điều hướng đến trang friend kèm theo ID của user đó
+    navigate(`/friend/${currentPost.author?._id}`);
+  };
+
   return (
     <div className={cx("postCard")}>
       {/* Author */}
-      <div className={cx("postHeader")}>
-        <div className={cx("author")}>
+      <div
+        className={cx("postHeader", {
+          isCurrentUser: currentPost.author?._id !== currentUserId,
+        })}
+        onClick={handleGoToProfile}
+      >
+        <div className={cx("author ")}>
           <div className={cx("authorInfo")}>
             <img
               src={
