@@ -40,7 +40,8 @@ exports.createComment = async (req, res) => {
       allowedTags: ["b", "i", "em", "strong", "a", "span", "u", "br"],
       allowedAttributes: {
         span: ["class", "style"],
-        a: ["href"],
+        // 🚀 Cho phép giữ lại class="mention" và các data-* để CSS xanh ngọc + HoverProfileCard hoạt động
+        a: ["href", "class", "data-id", "data-name", "data-avatar", "contenteditable"],
       },
       allowedStyles: {
         "*": {

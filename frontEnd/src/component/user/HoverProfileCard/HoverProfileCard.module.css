@@ -1,26 +1,31 @@
 .hover-card-wrapper {
-  position: fixed; /* Fixed để neo theo tọa độ màn hình */
-  z-index: 10000;
+  position: fixed;
+  z-index: 999;
+  /* Giảm xuống dưới 9999 của ConfirmModal để không bị đè */
   transform: translateY(-100%);
-  padding-bottom: 10px; /* Vùng đệm để chuột không bị lọt khi di chuyển từ chữ lên card */
+  padding-bottom: 6px;
+  /* Giảm từ 10px xuống 6px để thẻ nằm gần text hơn nhưng vẫn giữ được vùng hover chuột */
 }
 
 .card-content {
   background: #fff;
   border-radius: 12px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-  padding: 16px;
+  padding: 12px;
+  /* Giảm từ 16px xuống 12px để bớt khoảng trống thừa bên trong */
   width: 320px;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 8px;
+  /* Giảm từ 12px xuống 8px để các thành phần sát lại với nhau hơn */
   animation: fadeIn 0.2s ease-in-out;
 }
 
 .user-info {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
+  /* Thu gọn khoảng cách giữa avatar và tên một chút */
   cursor: pointer;
 }
 
@@ -40,7 +45,8 @@
 
 .actions-wrapper {
   border-top: 1px solid #f0f2f5;
-  padding-top: 12px;
+  padding-top: 8px;
+  /* Giảm từ 12px xuống 8px để phần nút bấm liền mạch hơn */
 }
 
 @keyframes fadeIn {
@@ -48,6 +54,7 @@
     opacity: 0;
     transform: translateY(10px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);

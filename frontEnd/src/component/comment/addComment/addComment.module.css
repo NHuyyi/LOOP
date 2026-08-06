@@ -9,13 +9,18 @@
 }
 
 .editableInput {
-  min-height: 2.5rem; /* 40px */
+  min-height: 2.5rem;
+  /* 40px */
   max-width: 100%;
   width: 100%;
-  border: 0.0625rem solid #ccc; /* 1px */
-  padding: 0.5rem; /* 8px */
-  font-size: 0.9375rem; /* 15px */
-  border-radius: 0.375rem; /* 6px */
+  border: 0.0625rem solid #ccc;
+  /* 1px */
+  padding: 0.5rem;
+  /* 8px */
+  font-size: 0.9375rem;
+  /* 15px */
+  border-radius: 0.375rem;
+  /* 6px */
   outline: none;
   white-space: pre-wrap;
   text-align: start;
@@ -57,4 +62,24 @@
   color: #1877f2;
   font-weight: 500;
   pointer-events: none;
+}
+
+.mentionsInput {
+  flex: 1;
+  background-color: #f0f2f5;
+  border-radius: 18px;
+  overflow: hidden;
+  font-family: inherit;
+}
+
+.mentionsInput textarea {
+  border: none !important;
+  outline: none !important;
+  background: transparent !important;
+  resize: none !important;
+}
+
+/* 🚀 Bắt buộc phải có để Dropdown không bị che mất bởi các giao diện khác */
+:global(.tribute-container) {
+  z-index: 99999 !important;
 }

@@ -1,6 +1,7 @@
 const PostModel = require("../../../model/Post.Model");
 const UserModel = require("../../../model/User.Model");
 const { getIO, getOnlineUsers } = require("../../../config/socker");
+const sanitizeHtml = require("sanitize-html");
 
 exports.updateComment = async (req, res) => {
   try {
@@ -27,8 +28,22 @@ exports.updateComment = async (req, res) => {
         .status(403)
         .json({ message: "Bạn không có quyền sửa bình luận" });
 
+    // 🚀 Làm sạch HTML trước khi lưu (giống createComment)
+    const cleanText = sanitizeHtml(newtext, {
+      allowedTags: ["b", "i", "em", "strong", "a", "span", "u", "br"],
+      allowedAttributes: {
+        span: ["class", "style"],
+        a: ["href", "class", "data-id", "data-name", "data-avatar", "contenteditable"],
+      },
+      allowedStyles: {
+        "*": {
+          color: [/^#[0-9A-Fa-f]{3,6}$/, /^rgb/, /^rgba/],
+        },
+      },
+    });
+
     // cập nhật nội dung
-    comment.text = newtext;
+    comment.text = cleanText;
     comment.isEdited = true;
     comment.editedAt = new Date();
     await post.save();
