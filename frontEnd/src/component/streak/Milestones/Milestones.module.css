@@ -1,0 +1,36 @@
+.wrap { margin-top: 4px; }
+
+.title {
+  font-size: 14px;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+
+.list {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  font-size: 13px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.4);
+  transition: all 0.2s;
+}
+
+.done {
+  background: rgba(255, 100, 0, 0.2);
+  border-color: rgba(255, 100, 0, 0.5);
+  color: #ff8c00;
+  box-shadow: 0 2px 12px rgba(255, 100, 0, 0.2);
+}
+
+.icon { font-size: 16px; }

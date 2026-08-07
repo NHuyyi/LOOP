@@ -21,6 +21,12 @@
   margin-right: 12px;
 }
 
+.nameAndStatus {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
 .nameAndStatus h4 {
   margin: 0;
   font-size: 16px;

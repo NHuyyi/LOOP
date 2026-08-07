@@ -1,0 +1,69 @@
+/* ── Base wrap ────────────────────────────────────── */
+.wrap {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  border-radius: 20px;
+  font-weight: 700;
+  white-space: nowrap;
+  background: rgba(255, 120, 0, 0.1);
+  border: 1px solid rgba(255, 120, 0, 0.3);
+  color: #ff6a00;
+  transition: all 0.2s;
+}
+
+/* ── Sizes ────────────────────────────────────────── */
+.md {
+  padding: 3px 10px 3px 7px;
+  font-size: 13px;
+}
+
+.sm {
+  padding: 2px 7px 2px 5px;
+  font-size: 11px;
+  gap: 2px;
+}
+
+/* ── Flame animation ──────────────────────────────── */
+.flame {
+  display: inline-block;
+  animation: flicker 1.8s ease-in-out infinite alternate;
+  line-height: 1;
+}
+
+.md .flame { font-size: 16px; }
+.sm .flame { font-size: 12px; }
+
+@keyframes flicker {
+  0%   { transform: scale(1) rotate(-4deg); }
+  100% { transform: scale(1.18) rotate(4deg); }
+}
+
+/* ── Count ────────────────────────────────────────── */
+.count {
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+}
+
+/* ── Label ────────────────────────────────────────── */
+.label {
+  font-weight: 500;
+  opacity: 0.8;
+}
+
+/* ── Color states ─────────────────────────────────── */
+
+/* 7-29 ngày: ấm — cam đỏ */
+.warm {
+  background: rgba(255, 90, 0, 0.13);
+  border-color: rgba(255, 90, 0, 0.45);
+  color: #ff4500;
+}
+
+/* 30+ ngày: nóng — gradient đỏ-vàng, glow */
+.hot {
+  background: linear-gradient(135deg, rgba(255,60,0,0.18), rgba(255,180,0,0.18));
+  border-color: rgba(255, 80, 0, 0.6);
+  color: #ff3d00;
+  box-shadow: 0 0 10px rgba(255, 80, 0, 0.25);
+}

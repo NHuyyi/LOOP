@@ -1,0 +1,49 @@
+.item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  cursor: pointer;
+  transition: all 0.2s;
+  user-select: none;
+}
+
+.item:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.16);
+  transform: translateX(3px);
+}
+
+.done {
+  background: rgba(80, 220, 160, 0.08);
+  border-color: rgba(80, 220, 160, 0.3);
+}
+
+.check    { font-size: 20px; flex-shrink: 0; }
+.taskIcon { font-size: 22px; flex-shrink: 0; }
+
+.title {
+  flex: 1;
+  font-size: 14px;
+  font-weight: 500;
+  margin: 0;
+}
+
+.done .title {
+  text-decoration: line-through;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.badge {
+  flex-shrink: 0;
+  padding: 4px 10px;
+  background: rgba(255, 215, 0, 0.15);
+  border: 1px solid rgba(255, 215, 0, 0.3);
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #ffd700;
+}

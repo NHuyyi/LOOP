@@ -2,6 +2,7 @@
 const PostModel = require("../../model/Post.Model");
 const UserModel = require("../../model/User.Model");
 const { getIO, getOnlineUsers } = require("../../config/socker"); // lấy thêm onlineUsers
+const { completeTaskForUser, incrementWeeklyPostCount } = require("../../utils/streakHelper");
 
 exports.NewPost = async (req, res) => {
   try {
@@ -43,6 +44,10 @@ exports.NewPost = async (req, res) => {
     });
     await newPost.save();
     await newPost.populate("author", "name avatar");
+
+    // ── Streak auto-completion ──
+    completeTaskForUser(author, 2).catch(() => {});
+    incrementWeeklyPostCount(author).catch(() => {});
 
     // 🔥 Emit realtime theo từng chế độ
     const io = getIO();

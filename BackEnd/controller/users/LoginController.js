@@ -1,6 +1,7 @@
 const bcrypt = require("bcrypt");
 const UserModel = require("../../model/User.Model");
 const jwt = require("jsonwebtoken");
+const { completeTaskForUser } = require("../../utils/streakHelper");
 
 exports.Login = async (req, res) => {
   try {
@@ -47,6 +48,9 @@ exports.Login = async (req, res) => {
       process.env.JWT_SECRET,
       { expiresIn: "1h" }
     );
+
+    // Task 4: Đăng nhập hôm nay (10 điểm)
+    completeTaskForUser(user._id, 4).catch(() => {});
 
     return res.status(200).json({
       message: "Đăng nhập thành công!",

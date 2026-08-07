@@ -91,10 +91,19 @@
   font-size: 15px;
   font-weight: 500;
   color: #050505;
+  text-align: left;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  overflow: hidden;
+}
+
+.user-name-text {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  text-align: left;
+  flex-shrink: 1;
+  min-width: 0;
 }
 
 .last-message {

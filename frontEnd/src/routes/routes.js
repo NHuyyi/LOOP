@@ -6,6 +6,7 @@ import Home from "../pages/HomePage/HomePage";
 import Friends from "../pages/friendpage/friendspage";
 import Chat from "../pages/chat/chatpage";
 import FriendProfilePage from "../pages/FriendProfilePage/FriendProfilePage";
+import StreakPage from "../pages/StreakPage/StreakPage";
 
 const routes = [
   {
@@ -42,6 +43,11 @@ const routes = [
   {
     path: "chat",
     Element: <Chat />,
+    isHeader: true,
+  },
+  {
+    path: "streak",
+    Element: <StreakPage />,
     isHeader: true,
   },
   {
