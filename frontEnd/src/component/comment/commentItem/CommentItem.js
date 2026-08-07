@@ -48,26 +48,44 @@ function CommentItem({
   }, [comment._id, newestCommentId, lastCommentRef]);
 
   const handleMouseOver = (e) => {
-    const mentionEl = e.target.closest("a.mention"); // Kiểm tra xem chuột có nằm trên thẻ tag không
-
+    const mentionEl = e.target.closest("a.mention");
     if (mentionEl) {
       clearTimeout(hoverTimeout.current);
-      const rect = mentionEl.getBoundingClientRect();
-      setHoveredMention({
-        id: mentionEl.getAttribute("data-id"),
-        name: mentionEl.getAttribute("data-name"),
-        avatar: mentionEl.getAttribute("data-avatar"),
-        position: { x: rect.left, y: rect.top },
+      const id = mentionEl.getAttribute("data-id");
+
+      // CHỈ cập nhật state nếu Hover vào người mới (ngăn React re-render liên tục làm sập timer)
+      setHoveredMention((prev) => {
+        if (prev && prev.id === id) return prev;
+        const rect = mentionEl.getBoundingClientRect();
+        return {
+          id,
+          name: mentionEl.getAttribute("data-name"),
+          avatar: mentionEl.getAttribute("data-avatar"),
+          position: { x: rect.left, y: rect.top },
+        };
       });
     }
+  };
+
+  const handleStartCloseTimer = () => {
+    clearTimeout(hoverTimeout.current);
+    hoverTimeout.current = setTimeout(() => {
+      setHoveredMention(null);
+    }, 300);
   };
 
   const handleMouseOut = (e) => {
     const mentionEl = e.target.closest("a.mention");
     if (mentionEl) {
+      // Đảm bảo chuột THỰC SỰ rời khỏi thẻ a.mention (không phải di chuyển giữa các chữ cái bên trong nó)
+      if (e.relatedTarget && mentionEl.contains(e.relatedTarget)) {
+        return;
+      }
+
+      clearTimeout(hoverTimeout.current);
       hoverTimeout.current = setTimeout(() => {
         setHoveredMention(null);
-      }, 300); // Delay 300ms để người dùng kịp di chuyển chuột lên card
+      }, 300);
     }
   };
 
@@ -170,7 +188,8 @@ function CommentItem({
             userData={hoveredMention}
             position={hoveredMention.position}
             onMouseEnter={() => clearTimeout(hoverTimeout.current)}
-            onMouseLeave={() => setHoveredMention(null)}
+            onMouseLeave={handleStartCloseTimer}
+            onModalClose={handleStartCloseTimer}
           />,
           document.body,
         )}

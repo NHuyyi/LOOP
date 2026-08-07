@@ -1,6 +1,7 @@
 import React from "react";
 import styles from "./ConfirmModal.module.css";
 import classNames from "classnames/bind";
+import { createPortal } from "react-dom";
 
 import Loading from "../../Loading/Loading";
 
@@ -14,10 +15,12 @@ const ConfirmModal = ({
   message,
   isProcessing,
 }) => {
+
   if (!isOpen) return null;
 
-  return (
-    <div className={cx("modalOverlay")} onClick={onClose}>
+
+  return createPortal(
+    <div className={cx("modalOverlay")} data-confirm-modal onClick={onClose}>
       {/* Dừng sự kiện click để không bị đóng khi click vào trong box */}
       <div className={cx("modalContent")} onClick={(e) => e.stopPropagation()}>
         <h3 className={cx("title")}>{title}</h3>
@@ -40,7 +43,8 @@ const ConfirmModal = ({
           </button>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 };
 

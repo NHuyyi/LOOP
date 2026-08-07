@@ -5,7 +5,7 @@ import ConfirmModal from "../../../common/ConfirmModal/ConfirmModal";
 import blockUser from "../../../../services/User/blockUser";
 import { updateBlockStatusRealtime } from "../../../../redux/chatSlice";
 
-function BlockButton({ targetUserId, type = "in", className }) {
+function BlockButton({ targetUserId, type = "in", className, onModalClose, onCloseMenu }) {
   const dispatch = useDispatch();
 
   const blockStatus = useSelector((state) => state.chat.blockStatus) || {};
@@ -14,6 +14,11 @@ function BlockButton({ targetUserId, type = "in", className }) {
   const [loading, setLoading] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
 
+  const handleCloseConfirm = (e) => {
+    onCloseMenu(false)
+    setShowConfirm(false);
+    if (onModalClose) onModalClose();
+  };
   // Hàm mở Modal (chặn sự kiện lan ra ngoài để không làm đóng menu 3 chấm)
   const handleOpenConfirm = (e) => {
     if (e) e.stopPropagation();
@@ -38,8 +43,10 @@ function BlockButton({ targetUserId, type = "in", className }) {
     } catch (error) {
       alert(error.message || "Có lỗi xảy ra");
     } finally {
+      onCloseMenu(false)
       setLoading(false);
       setShowConfirm(false);
+      if (onModalClose) onModalClose();
     }
   };
 
@@ -49,6 +56,10 @@ function BlockButton({ targetUserId, type = "in", className }) {
       {type === "out" ? (
         <button
           className={className}
+          style={{
+            width: "100%",
+            textAlign: "left",
+          }}
           onClick={handleOpenConfirm}
           disabled={loading}
         >
@@ -74,10 +85,7 @@ function BlockButton({ targetUserId, type = "in", className }) {
       {/* Modal được đưa ra ngoài để luôn hoạt động cho cả 2 trạng thái */}
       <ConfirmModal
         isOpen={showConfirm}
-        onClose={(e) => {
-          if (e) e.stopPropagation();
-          setShowConfirm(false);
-        }}
+        onClose={handleCloseConfirm}
         onConfirm={handleToggleBlock}
         title={isBlocked ? "Bỏ chặn đối phương?" : "Chặn đối phương?"}
         message={

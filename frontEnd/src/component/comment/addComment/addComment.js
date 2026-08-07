@@ -45,7 +45,7 @@ function AddComment({
       }));
   }, [friends]);
 
-  // Đặt con trỏ vào cuối nội dung (Hàm cũ của bạn)
+  // Đặt con trỏ vào cuối nội dung
   const placeCaretAtEnd = (el) => {
     if (!el) return;
     const range = document.createRange();
@@ -70,7 +70,7 @@ function AddComment({
 
     const tribute = new Tribute({
       trigger: "@",
-      requireLeadingSpace: false, // Thử tắt yêu cầu dấu cách trước @ xem có dễ mở hơn không
+      requireLeadingSpace: false, 
       // Lấy danh sách bạn bè động từ Ref và TỰ ĐỘNG LỌC theo text
       values: function (text, cb) {
         const allFriends = tributeDataRef.current;

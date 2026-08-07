@@ -23,7 +23,7 @@ import checkBlockStatus from "../../../services/User/checkBlockStatus";
 
 const cx = classNames.bind(styles);
 
-function ProfileActions({ friendData, currentUser }) {
+function ProfileActions({ friendData, currentUser, onModalClose }) {
   const dispatch = useDispatch();
 
   const navigate = useNavigate();
@@ -86,6 +86,7 @@ function ProfileActions({ friendData, currentUser }) {
   // Đóng dropdown menu khi người dùng click ra ngoài vùng menu
   useEffect(() => {
     const handleClickOutside = (event) => {
+      if (event.target.closest("[data-confirm-modal]")) return;
       if (menuRef.current && !menuRef.current.contains(event.target)) {
         setShowMenu(false);
       }
@@ -135,15 +136,14 @@ function ProfileActions({ friendData, currentUser }) {
             </button>
 
             {/* Chức năng: CHẶN (Sử dụng lại BlockButton, type="out" để render dạng list) */}
-            <div className={cx("menu-item")}>
-              <BlockButton targetUserId={friendData._id} type="out" />
+            <div className={cx("menu-item")} onClick={() => setShowMenu(false)}>
+              <BlockButton targetUserId={friendData._id} type="out" onModalClose={onModalClose} onCloseMenu={(e) => setShowMenu(e)}/>
             </div>
 
             {/* Chức năng: BÁO CÁO */}
             <button
               className={cx("menu-item", "text-danger")}
               onClick={() => {
-                // Logic API báo cáo xử lý sau
                 setShowMenu(false);
               }}
             >
@@ -161,8 +161,14 @@ function ProfileActions({ friendData, currentUser }) {
           currentUserId={currentUser._id}
           id={friendData._id}
           name={friendData.name}
-          onClose={() => setShowRemoveModal(false)}
-          onSuccess={() => navigate("/home")}
+          onClose={() => {
+            setShowRemoveModal(false);
+            if (onModalClose) onModalClose();
+          }}
+          onSuccess={() => {
+            navigate("/home")
+            if (onModalClose) onModalClose();
+          }}
         />
       )}
     </div>

@@ -7,7 +7,7 @@ import ProfileActions from "../ProfileActions/ProfileActions";
 
 const cx = classNames.bind(styles);
 
-function HoverProfileCard({ userData, position, onMouseLeave, onMouseEnter }) {
+function HoverProfileCard({ userData, position, onMouseLeave, onMouseEnter, onModalClose }) {
   const navigate = useNavigate();
   const currentUser = useSelector((state) => state.user.user);
 
@@ -46,7 +46,7 @@ function HoverProfileCard({ userData, position, onMouseLeave, onMouseEnter }) {
 
         {/* Nút thao tác profile */}
         <div className={cx("actions-wrapper")}>
-          <ProfileActions friendData={friendData} currentUser={currentUser} />
+          <ProfileActions friendData={friendData} currentUser={currentUser} onModalClose={onModalClose} />
         </div>
       </div>
     </div>
