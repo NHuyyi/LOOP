@@ -21,6 +21,9 @@ import { useEmojiParser } from "../../../hooks/useEmojiParser";
 import ChatSearch from "./ChatSearch";
 
 import Loading from "../../Loading/Loading";
+import ChatStreak from "../ChatStreak/ChatStreak";
+
+// Removed mock streak
 
 const cx = classNames.bind(styles);
 
@@ -198,7 +201,10 @@ const ConversationList = () => {
           {/* CỘT GIỮA: Chỉ chứa Tên và Tin nhắn (Căn trái hoàn toàn) */}
           <div className={cx("info")}>
             <h4 className={cx("user-name", { "unread-text": isUnread })}>
-              {otherUser?.name}
+              <span className={cx("user-name-text")}>{otherUser?.name}</span>
+              {(conv.streak || 0) > 0 && (
+                <ChatStreak streak={conv.streak} size="sm" showLabel={false} />
+              )}
             </h4>
             <p className={cx("last-message", { "unread-text": isUnread })}>
               {conv.lastMessage ? (

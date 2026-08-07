@@ -1,0 +1,68 @@
+.podium {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 24px;
+  padding-top: 12px;
+}
+
+.item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  position: relative;
+}
+
+.crown {
+  font-size: 22px;
+  position: absolute;
+  top: -26px;
+  animation: float 2s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-6px); }
+}
+
+.avatar {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  object-fit: cover;
+}
+
+.avatarFirst {
+  width: 64px;
+  height: 64px;
+  border-color: rgba(255, 215, 0, 0.8);
+  box-shadow: 0 0 20px rgba(255, 215, 0, 0.4);
+}
+
+.medal { font-size: 18px; }
+
+.name {
+  font-size: 12px;
+  font-weight: 600;
+  margin: 0;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.value {
+  font-size: 13px;
+  font-weight: 700;
+  margin: 0;
+  color: #ffd700;
+}
+
+.bar {
+  width: 70px;
+  border-radius: 6px 6px 0 0;
+}
+
+.bar1 { height: 80px; background: linear-gradient(180deg, rgba(255,215,0,0.6), rgba(255,215,0,0.10)); }
+.bar2 { height: 60px; background: linear-gradient(180deg, rgba(180,180,200,0.5), rgba(180,180,200,0.08)); }
+.bar3 { height: 44px; background: linear-gradient(180deg, rgba(205,127,50,0.5), rgba(205,127,50,0.08)); }

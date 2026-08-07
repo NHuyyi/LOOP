@@ -1,0 +1,33 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
+.page {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+  font-family: 'Inter', sans-serif;
+  color: #fff;
+  padding-bottom: 60px;
+}
+
+.inner {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 40px 24px;
+}
+
+/* ── 3 Stat Cards ── */
+.statsRow {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.statsRow > * {
+  flex: 1;
+  min-width: 180px;
+}
+
+@media (max-width: 600px) {
+  .inner { padding: 24px 16px; }
+  .statsRow { gap: 10px; }
+  .statsRow > * { min-width: 140px; }
+}

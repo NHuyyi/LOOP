@@ -1,0 +1,78 @@
+.hero {
+  position: relative;
+  padding: 48px 40px 40px;
+  overflow: hidden;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.glow {
+  position: absolute;
+  top: -80px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 600px;
+  height: 300px;
+  background: radial-gradient(ellipse, rgba(255, 120, 0, 0.25) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.profile {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 32px;
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.avatar-wrap {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.avatar {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  border: 3px solid rgba(255, 140, 0, 0.8);
+  box-shadow: 0 0 24px rgba(255, 140, 0, 0.5);
+  object-fit: cover;
+}
+
+.flame {
+  position: absolute;
+  bottom: -4px;
+  right: -4px;
+  font-size: 22px;
+  animation: flicker 1.5s ease-in-out infinite alternate;
+}
+
+@keyframes flicker {
+  0%   { transform: scale(1) rotate(-5deg); }
+  100% { transform: scale(1.15) rotate(5deg); }
+}
+
+.name {
+  font-size: 28px;
+  font-weight: 800;
+  background: linear-gradient(90deg, #ff8c00, #ffdb58);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin: 0;
+}
+
+.sub {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.55);
+  margin: 4px 0 0;
+}
+
+.stats {
+  display: flex;
+  gap: 16px;
+  max-width: 1200px;
+  margin: 0 auto;
+  flex-wrap: wrap;
+}

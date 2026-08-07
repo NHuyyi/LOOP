@@ -1,0 +1,47 @@
+.layout {
+  display: flex;
+  gap: 24px;
+  align-items: flex-start;
+}
+
+.panel { flex: 1; min-width: 0; }
+
+.card {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  padding: 28px;
+  backdrop-filter: blur(16px);
+}
+
+.title {
+  font-size: 18px;
+  font-weight: 700;
+  margin: 0 0 6px;
+  color: #fff;
+}
+
+.desc {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.5);
+  margin-bottom: 24px;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.online {
+  width: 8px;
+  height: 8px;
+  background: #22c55e;
+  border-radius: 50%;
+  box-shadow: 0 0 6px rgba(34, 197, 94, 0.8);
+  flex-shrink: 0;
+}
+
+@media (max-width: 900px) {
+  .layout { flex-direction: column; }
+}

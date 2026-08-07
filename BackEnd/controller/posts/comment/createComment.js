@@ -3,6 +3,7 @@ const UserModel = require("../../../model/User.Model");
 const Block = require("../../../model/Block.Model");
 const { getIO, getOnlineUsers } = require("../../../config/socker");
 const sanitizeHtml = require("sanitize-html"); // ⚠️ cần cài nếu dùng: npm install sanitize-html
+const { completeTaskForUser } = require("../../../utils/streakHelper");
 
 exports.createComment = async (req, res) => {
   try {
@@ -59,6 +60,10 @@ exports.createComment = async (req, res) => {
 
     post.comments.push(newComment);
     await post.save();
+
+    // ── Streak auto-completion ──
+    // Task 5: Bình luận bài viết (15 điểm)
+    completeTaskForUser(userId, 5).catch(() => {});
 
     // Lấy lại comment vừa thêm với populate user
     const populated = await PostModel.findById(postId)

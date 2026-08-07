@@ -40,6 +40,7 @@ function Chat() {
   let isOnline = false;
   let isMuted = false;
   let isRestricted = false;
+  let streak = 0;
 
   if (activeConversationId) {
     const currentConv =
@@ -53,6 +54,7 @@ function Chat() {
       otherUser = currentConv.participants.find(
         (user) => user._id !== currentUser._id,
       );
+      streak = currentConv.streak || 0;
       if (
         currentConv.mutedBy &&
         currentConv.mutedBy.includes(currentUser._id)
@@ -149,6 +151,7 @@ function Chat() {
             <ChatHeader
               onOpenModal={() => setIsMenuOpen(true)}
               otherUser={otherUser}
+              streak={streak}
             />
             <MessageList />
             <MessageInput receiverId={otherUser?._id} />
