@@ -34,6 +34,7 @@ function AddComment({
   const friends = useMemo(() => friendsRaw || [], [friendsRaw]);
   // Dùng Ref để lưu data bạn bè mới nhất cho TributeJS (tránh khởi tạo lại nhiều lần)
   const tributeDataRef = useRef([]);
+
   useEffect(() => {
     tributeDataRef.current = friends
       .filter((friend) => friend && friend._id)
@@ -70,7 +71,7 @@ function AddComment({
 
     const tribute = new Tribute({
       trigger: "@",
-      requireLeadingSpace: false, 
+      requireLeadingSpace: false,
       // Lấy danh sách bạn bè động từ Ref và TỰ ĐỘNG LỌC theo text
       values: function (text, cb) {
         const allFriends = tributeDataRef.current;
@@ -180,6 +181,25 @@ function AddComment({
     }
   };
 
+  const handleKeyDown = (e) => {
+    // Nếu bấm phím Enter VÀ KHÔNG bấm kèm phím Shift
+    if (e.key === "Enter" && !e.shiftKey) {
+      // Kiểm tra xem dropdown của Tribute có đang hiển thị không (nếu có thì không làm gì để Tribute tự xử lý)
+      const tributeMenu = document.querySelector(".tribute-container");
+      if (tributeMenu && tributeMenu.style.display !== "none") {
+        return;
+      }
+
+      // Chặn hành vi Enter mặc định (xuống dòng) của trình duyệt
+      e.preventDefault();
+
+      // Gọi hàm submit
+      if (!loading) {
+        handleClick(e);
+      }
+    }
+  };
+
   return (
     <div className={cx("Comment-input")}>
       {/* TRỞ VỀ DÙNG CONTENTEDITABLE NHƯ CŨ */}
@@ -189,6 +209,7 @@ function AddComment({
         className={cx("editableInput")}
         suppressContentEditableWarning={true}
         placeholder="Viết bình luận..."
+        onKeyDown={handleKeyDown}
       ></div>
 
       <button

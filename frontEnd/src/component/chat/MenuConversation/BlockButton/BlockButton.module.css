@@ -20,3 +20,35 @@
 .menu-item.danger {
   color: #e41e3f;
 }
+
+
+.not-blocked {
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid #fa3e3e;
+  background: #ffffff;
+  color: #fa3e3e;
+  cursor: not-allowed;
+  grid-column: span 2;
+}
+
+.not-blocked:hover {
+  background: #fa3e3e;
+  color: #ffffff;
+}
+
+.blocked {
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid #f59e0b;
+  background: #ffffff;
+  color: #f59e0b;
+  cursor: not-allowed;
+  grid-column: span 2;
+}
+
+.blocked:hover {
+  background: #f59e0b;
+  color: #ffffff;
+}
+
