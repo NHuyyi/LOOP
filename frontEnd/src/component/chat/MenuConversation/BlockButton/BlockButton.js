@@ -4,6 +4,10 @@ import Loading from "../../../Loading/Loading";
 import ConfirmModal from "../../../common/ConfirmModal/ConfirmModal";
 import blockUser from "../../../../services/User/blockUser";
 import { updateBlockStatusRealtime } from "../../../../redux/chatSlice";
+import style from "./BlockButton.module.css";
+import classNames from "classnames/bind";
+
+const cx = classNames.bind(style);
 
 function BlockButton({ targetUserId, type = "in", className, onModalClose, onCloseMenu }) {
   const dispatch = useDispatch();
@@ -15,7 +19,7 @@ function BlockButton({ targetUserId, type = "in", className, onModalClose, onClo
   const [showConfirm, setShowConfirm] = useState(false);
 
   const handleCloseConfirm = (e) => {
-    onCloseMenu(false)
+    if(onCloseMenu) onCloseMenu(false)
     setShowConfirm(false);
     if (onModalClose) onModalClose();
   };
@@ -43,7 +47,7 @@ function BlockButton({ targetUserId, type = "in", className, onModalClose, onClo
     } catch (error) {
       alert(error.message || "Có lỗi xảy ra");
     } finally {
-      onCloseMenu(false)
+      if(onCloseMenu) onCloseMenu(false)
       setLoading(false);
       setShowConfirm(false);
       if (onModalClose) onModalClose();
@@ -69,14 +73,7 @@ function BlockButton({ targetUserId, type = "in", className, onModalClose, onClo
         <button
           onClick={handleOpenConfirm}
           disabled={loading}
-          style={{
-            padding: "8px 12px",
-            borderRadius: "8px",
-            border: "none",
-            background: isBlocked ? "#f59e0b" : "#dc2626",
-            color: "#fff",
-            cursor: loading ? "not-allowed" : "pointer",
-          }}
+          className={cx( isBlocked ? "blocked" : "not-blocked")}
         >
           {loading ? <Loading size="small" /> : isBlocked ? "Bỏ chặn" : "Chặn"}
         </button>
