@@ -19,7 +19,7 @@ function Header() {
         <img src={logo} alt="avatar" className={cx("logo-image")} />
         <span>LOOP</span>
       </Link>
-    
+
       <nav className={cx("nav")}>
         <NavLink
           to="/home"
@@ -47,10 +47,12 @@ function Header() {
         </NavLink>
       </nav>
 
-      <div className={cx("userSection")}>
-        <img src={currentUser.avatar} alt="avatar" className={cx("avatar")} />
-        <p className={cx("userName")}>{currentUser.name || "Người dùng"}</p>
-      </div>
+      <Link to="/profile" style={{ textDecoration: "none", color: "inherit" }}>
+        <div className={cx("userSection")}>
+          <img src={currentUser.avatar} alt="avatar" className={cx("avatar")} />
+          <p className={cx("userName")}>{currentUser.name || "Người dùng"}</p>
+        </div>
+      </Link>
     </header>
   );
 }

@@ -31,6 +31,7 @@ import {
   updateBlockStatusRealtime,
   moveConversationToBlocked,
   removeConversationFromBlocked,
+  removeConversationInState
 } from "../redux/chatSlice";
 
 import { useLocation } from "react-router-dom";
@@ -58,8 +59,12 @@ function SocketManager() {
     if (currentUser?._id) {
       socket.emit("register", currentUser._id);
 
-      socket.on("friendRemoved", ({ by }) => {
+      socket.on("friendRemoved", ({ by, conversationId }) => {
         dispatch(removeFriend(by));
+        // Xóa luôn conversation bên phía người bị xóa
+        if (conversationId) {
+          dispatch(removeConversationInState(conversationId));
+        }
       });
 
       socket.on("friendRequestReceived", ({ senderInfo }) => {

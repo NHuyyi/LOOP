@@ -70,6 +70,15 @@ function FriendsPage() {
     }
   };
 
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      if (!loading) {
+        handleFindNewFriend(e);
+      }
+    }
+  };
+
   if (loading) return <Loading fullScreen text="Đang tải dữ liệu..." />;
 
   return (
@@ -84,6 +93,8 @@ function FriendsPage() {
             placeholder="🔍 Nhập mã bạn bè..."
             value={friendCode}
             onChange={(e) => setFriendCode(e.target.value)}
+            onKeyDown={handleKeyDown}
+            disabled={loading}
           />
           <button onClick={handleFindNewFriend} className="app-btn">
             Tìm

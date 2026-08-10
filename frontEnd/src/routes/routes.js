@@ -7,6 +7,7 @@ import Friends from "../pages/friendpage/friendspage";
 import Chat from "../pages/chat/chatpage";
 import FriendProfilePage from "../pages/FriendProfilePage/FriendProfilePage";
 import StreakPage from "../pages/StreakPage/StreakPage";
+import MyProfilePage from "../pages/MyProfilePage/MyProfilePage";
 
 const routes = [
   {
@@ -50,10 +51,17 @@ const routes = [
     Element: <StreakPage />,
     isHeader: true,
   },
+
   {
     path: "friend/:id",
     Element: <FriendProfilePage />,
     isHeader: true, // Hiển thị kèm Header (thanh điều hướng)
+  },
+
+  {
+    path: "profile",
+    Element: <MyProfilePage />,
+    isHeader: true,
   },
 ];
 

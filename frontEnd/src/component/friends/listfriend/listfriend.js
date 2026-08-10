@@ -79,7 +79,7 @@ function FriendsList({ currentUserId, userData }) {
         <MessageCircleMore />
       </button>
 
-      <button className={cx("removeButton")} onClick={() => setOpen(true)}>
+      <button className={cx("removeButton")} onClick={(e) => { e.stopPropagation(); setOpen(true) }}>
         <UserRoundX />
       </button>
 
