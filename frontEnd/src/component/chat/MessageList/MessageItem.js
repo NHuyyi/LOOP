@@ -68,11 +68,11 @@ function MessageItem({
             style={
               msg.isrevoked
                 ? {
-                    border: "1px solid #ccc",
-                    backgroundColor: "transparent",
-                    color: "gray",
-                    fontStyle: "italic",
-                  }
+                  border: "1px solid #ccc",
+                  backgroundColor: "transparent",
+                  color: "gray",
+                  fontStyle: "italic",
+                }
                 : {}
             }
           >
@@ -165,7 +165,7 @@ function MessageItem({
                 display: "flex",
                 alignItems: "center",
                 gap: "4px",
-                position: "relative",
+                // Đã gỡ bỏ position: "relative" ở đây để menu bám vào thẻ cha cao hơn
               }}
               className={cx("reactionPickerContainer")}
             >
@@ -177,37 +177,42 @@ function MessageItem({
                   isMiniChat={isMiniChat}
                 />
               </div>
-              <button
-                className={cx("menuOpenBtn")}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setIsMenuOpen(!isMenuOpen);
-                }}
-                title="Thêm"
-              >
-                <MoreVertical size={16} />
-              </button>
-              {isMenuOpen && (
-                <div
-                  style={{
-                    position: "absolute",
-                    top: isTopMessage ? "100%" : "auto",
-                    bottom: isTopMessage ? "auto" : "100%",
-                    right: isMyMessage ? "0" : "auto",
-                    left: isMyMessage ? "auto" : "0",
-                    zIndex: 50,
-                    marginTop: isTopMessage ? "4px" : "0",
-                    marginBottom: isTopMessage ? "0" : "4px",
+
+              {/* Bọc nút 3 chấm và menu của nó trong một thẻ có position: relative */}
+              <div style={{ position: "relative", display: "flex", alignItems: "center" }}>
+                <button
+                  className={cx("menuOpenBtn")}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setIsMenuOpen(!isMenuOpen);
                   }}
+                  title="Thêm"
                 >
-                  <MessageMenu
-                    message={msg}
-                    onClose={() => setIsMenuOpen(false)}
-                    activeReceiver={activeReceiver}
-                    isOwnMessage={isMyMessage}
-                  />
-                </div>
-              )}
+                  <MoreVertical size={16} />
+                </button>
+                {isMenuOpen && (
+                  <div
+                    style={{
+                      position: "absolute",
+                      top: isTopMessage ? "100%" : "auto",
+                      bottom: isTopMessage ? "auto" : "100%",
+                      right: isMyMessage ? "0" : "auto",
+                      left: isMyMessage ? "auto" : "0",
+                      zIndex: 50,
+                      marginTop: isTopMessage ? "4px" : "0",
+                      marginBottom: isTopMessage ? "0" : "4px",
+                    }}
+                  >
+                    <MessageMenu
+                      message={msg}
+                      onClose={() => setIsMenuOpen(false)}
+                      activeReceiver={activeReceiver}
+                      isOwnMessage={isMyMessage}
+                      isMiniChat={isMiniChat}
+                    />
+                  </div>
+                )}
+              </div>
             </div>
           )}
         </div>

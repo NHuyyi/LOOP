@@ -1,5 +1,5 @@
 .picker-wrapper {
-  position: relative;
+  /* Đã xóa position: relative ở đây */
   display: inline-block;
 }
 
@@ -38,6 +38,7 @@
 .menu-left {
   left: 0;
 }
+
 .menu-right {
   right: 0;
 }
@@ -62,7 +63,8 @@
 /* HIỆU ỨNG ĐÁNH DẤU CẢM XÚC ĐÃ CHỌN */
 .reaction-item.active {
   background-color: rgba(0, 0, 0, 0.06);
-  transform: scale(1.2); /* Phóng to nhẹ để nhận biết */
+  transform: scale(1.2);
+  /* Phóng to nhẹ để nhận biết */
   box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.1);
 }
 
@@ -71,11 +73,13 @@
     opacity: 0;
     transform: scale(0.8) translateY(10px);
   }
+
   to {
     opacity: 1;
     transform: scale(1) translateY(0);
   }
 }
+
 .reaction-icon {
   width: 42px;
   height: 42px;
@@ -83,15 +87,19 @@
 }
 
 .mini-chat-icon {
-  width: 24px; /* Bạn có thể điều chỉnh 18px hay 24px tùy ý */
+  width: 24px;
+  /* Bạn có thể điều chỉnh 18px hay 24px tùy ý */
   height: 24px;
 }
 
 /* Ép menu phải tự động rớt dòng nếu thiếu chỗ, chống tràn màn hình */
 .reaction-menu.mini-chat-menu {
-  width: max-content; /* Cho phép khung menu tự động giãn vừa đủ chứa các icon */
-  max-width: unset; /* Xóa bỏ giới hạn 200px cũ */
-  gap: 0px; /* Thu nhỏ khoảng cách giữa các icon một chút để vừa vặn hơn */
+  width: max-content;
+  /* Cho phép khung menu tự động giãn vừa đủ chứa các icon */
+  max-width: unset;
+  /* Xóa bỏ giới hạn 200px cũ */
+  gap: 0px;
+  /* Thu nhỏ khoảng cách giữa các icon một chút để vừa vặn hơn */
   padding: 2px 8px !important;
 }
 

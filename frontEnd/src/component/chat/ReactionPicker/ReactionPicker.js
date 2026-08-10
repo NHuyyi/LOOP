@@ -51,15 +51,27 @@ function ReactionPicker({ messageId, currentReaction, isMine, isMiniChat }) {
   const pickerRef = useRef(null);
 
   useEffect(() => {
-    // Chỉ tính toán khi menu được hiển thị và ref đã bắt được phần tử DOM
     if (showMenu && pickerRef.current) {
       const rect = pickerRef.current.getBoundingClientRect();
 
-      if (rect.top < 140) {
-        pickerRef.current.scrollIntoView({
-          behavior: "smooth",
-          block: "nearest",
-        });
+      let scrollContainer = pickerRef.current.parentElement;
+      while (scrollContainer) {
+        const style = window.getComputedStyle(scrollContainer);
+        if (style.overflowY === 'auto' || style.overflowY === 'scroll') {
+          break;
+        }
+        scrollContainer = scrollContainer.parentElement;
+      }
+
+      if (scrollContainer) {
+        const containerRect = scrollContainer.getBoundingClientRect();
+        if (rect.top < containerRect.top || rect.bottom > containerRect.bottom) {
+          pickerRef.current.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        }
+      } else {
+        if (rect.top < 140) {
+          pickerRef.current.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        }
       }
     }
   }, [showMenu]);
