@@ -10,6 +10,7 @@ import {
   rejectFriendRequest,
   removeSentRequestLocal,
 } from "../../../redux/friendSlice";
+import { removeConversationInState } from "../../../redux/chatSlice";
 import { createPortal } from "react-dom";
 
 const cx = classNames.bind(styles);
@@ -23,6 +24,10 @@ function Removefriend({ type, currentUserId, id, name, onClose, onSuccess }) {
       if (res.success) {
         //  Cập nhật Redux ngay lập tức để mất icon trên giao diện
         dispatch(removeFriend(id));
+
+        if (res.conversationId) {
+          dispatch(removeConversationInState(res.conversationId));
+        }
         //  Cập nhật trạng thái ở component cha (AddFriends)
         if (onSuccess) onSuccess();
         onClose(); // Đóng modal

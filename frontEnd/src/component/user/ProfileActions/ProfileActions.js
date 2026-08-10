@@ -14,6 +14,8 @@ import {
   BellOff,
   UserMinus,
   Flag,
+  Edit3,
+  Settings,
 } from "lucide-react";
 
 // Import các component chức năng
@@ -32,6 +34,8 @@ function ProfileActions({ friendData, currentUser, onModalClose }) {
   const [showRemoveModal, setShowRemoveModal] = useState(false);
   const menuRef = useRef(null); // Ref dùng để bắt sự kiện click ra ngoài menu
 
+  const isMe = friendData?._id === currentUser?._id;
+
   const blockStatus = useSelector((state) => state.chat.blockStatus) || {};
   const isChatDisabled =
     blockStatus.isBlockedByMe || blockStatus.isBlockedByThem;
@@ -48,7 +52,7 @@ function ProfileActions({ friendData, currentUser, onModalClose }) {
   const isMuted = existingConv?.mutedBy?.includes(currentUser._id);
 
   useEffect(() => {
-    if (friendData?._id) {
+    if (friendData?._id && !isMe) {
       checkBlockStatus(friendData._id)
         .then((res) => {
           if (res.success) {
@@ -63,7 +67,7 @@ function ProfileActions({ friendData, currentUser, onModalClose }) {
         })
         .catch((err) => console.error("Lỗi lấy trạng thái chặn:", err));
     }
-  }, [friendData?._id, dispatch]);
+  }, [friendData?._id, isMe, dispatch]);
 
   const handleOpenMiniChat = () => {
     if (isChatDisabled) return;
@@ -99,6 +103,20 @@ function ProfileActions({ friendData, currentUser, onModalClose }) {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [showMenu]);
+
+  if (isMe) {
+    return (
+      <div className={cx("actions-section")}>
+        <button className={cx("app-btn", "msg-btn")} onClick={() => alert("Tính năng chỉnh sửa đang phát triển...")}>
+          <Edit3 size={20} />
+          <span>Chỉnh sửa thông tin</span>
+        </button>
+        <button className={cx("app-btn", "more-btn")} onClick={() => alert("Cài đặt tài khoản")}>
+          <Settings size={20} />
+        </button>
+      </div>
+    );
+  }
 
   return (
     <div className={cx("actions-section")}>
@@ -137,7 +155,7 @@ function ProfileActions({ friendData, currentUser, onModalClose }) {
 
             {/* Chức năng: CHẶN (Sử dụng lại BlockButton, type="out" để render dạng list) */}
             <div className={cx("menu-item")} onClick={() => setShowMenu(false)}>
-              <BlockButton targetUserId={friendData._id} type="out" onModalClose={onModalClose} onCloseMenu={(e) => setShowMenu(e)}/>
+              <BlockButton targetUserId={friendData._id} type="out" onModalClose={onModalClose} onCloseMenu={(e) => setShowMenu(e)} />
             </div>
 
             {/* Chức năng: BÁO CÁO */}

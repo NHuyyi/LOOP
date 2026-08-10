@@ -75,6 +75,7 @@ const friendSlice = createSlice({
     removeFriend: (state, action) => {
       const friendId = action.payload; // id người vừa xóa mình
       state.friends = state.friends.filter((f) => f._id !== friendId);
+      state.filteredFriends = state.filteredFriends.filter((f) => f._id !== friendId);
     },
 
     // Khi BẠN tự bấm gửi lời mời kết bạn từ thanh tìm kiếm

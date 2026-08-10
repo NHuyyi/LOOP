@@ -2,7 +2,7 @@ import { useState, useEffect, useRef, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import classNames from "classnames/bind";
 import Tribute from "tributejs";
-import "tributejs/dist/tribute.css"; // CSS hiển thị dropdown mặc định cực đẹp của Tribute
+import "tributejs/dist/tribute.css"; 
 
 import createComment from "../../../services/Post/comments/createComments";
 import { setComments } from "../../../redux/commentSlide";
