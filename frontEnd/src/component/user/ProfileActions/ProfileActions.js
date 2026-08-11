@@ -107,7 +107,10 @@ function ProfileActions({ friendData, currentUser, onModalClose }) {
   if (isMe) {
     return (
       <div className={cx("actions-section")}>
-        <button className={cx("app-btn", "msg-btn")} onClick={() => alert("Tính năng chỉnh sửa đang phát triển...")}>
+        <button
+          className={cx("app-btn", "msg-btn")}
+          onClick={() => navigate("/edit-profile")}
+        >
           <Edit3 size={20} />
           <span>Chỉnh sửa thông tin</span>
         </button>
