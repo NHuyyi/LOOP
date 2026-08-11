@@ -8,6 +8,7 @@ import Chat from "../pages/chat/chatpage";
 import FriendProfilePage from "../pages/FriendProfilePage/FriendProfilePage";
 import StreakPage from "../pages/StreakPage/StreakPage";
 import MyProfilePage from "../pages/MyProfilePage/MyProfilePage";
+import EditProfilePage from "../pages/EditProfilePage/EditProfilePage";
 
 const routes = [
   {
@@ -61,6 +62,12 @@ const routes = [
   {
     path: "profile",
     Element: <MyProfilePage />,
+    isHeader: true,
+  },
+
+  {
+    path: "edit-profile",
+    Element: <EditProfilePage />,
     isHeader: true,
   },
 ];

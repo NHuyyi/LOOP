@@ -10,6 +10,9 @@ const getUserById = require("../controller/users/getUserbyId");
 const toggleBlockUser = require("../controller/blocks/toggleBlockUser");
 const checkBlockStatus = require("../controller/blocks/checkBlockStatus");
 const getBlockList = require("../controller/blocks/getBlockList");
+const updateProfile = require("../controller/users/updateProfile");
+const requestChangePassword = require("../controller/users/requestChangePassword");
+const verifyOldPassword = require("../controller/users/verifyOldPassword");
 const authorize = require("../middleware/Authorization");
 
 router.post("/signup", SignUp.SignUp); // Đăng ký người dùng
@@ -26,5 +29,8 @@ router.get(
   checkBlockStatus.checkBlockStatus,
 );
 router.get("/blocked-list", authorize, getBlockList.getBlockList);
+router.post("/update-profile", authorize, updateProfile.updateProfile);
+router.post("/verify-old-password", authorize, verifyOldPassword.verifyOldPassword);
+router.post("/request-change-password", authorize, requestChangePassword.requestChangePassword);
 
 module.exports = router;

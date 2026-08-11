@@ -24,18 +24,23 @@ const User = mongoose.Schema(
     },
     otpExpires: {
       type: Date,
-    }, // thời gian hết hạn của OTP
+    },
     isVerified: {
       type: Boolean,
       default: false,
-    }, // trạng thái xác thực email
+    },
     role: {
       type: String,
       enum: ["user", "admin"],
       default: "user",
     },
-    // ✅ Mã kết bạn duy nhất
     friendCode: { type: String, unique: true },
+
+    profile: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "UserProfile",
+    },
+
     friends: [
       {
         type: mongoose.Schema.Types.ObjectId,
