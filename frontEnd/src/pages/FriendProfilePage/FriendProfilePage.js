@@ -6,9 +6,11 @@ import styles from "./FriendProfilePage.module.css";
 
 // Services & Components
 import { getUserbyId } from "../../services/User/getUserbyId";
+import { getFriendStreakLeaderboard } from "../../services/streak/streakServices";
 import { useGetPost } from "../../hooks/getpost";
 import ProfileHeader from "../../component/user/ProfileHeader/ProfileHeader";
 import ProfileActions from "../../component/user/ProfileActions/ProfileActions"; // Tái sử dụng ProfileActions
+import ProfileInfoCard from "../../component/user/ProfileInfoCard/ProfileInfoCard";
 import PostCard from "../../component/post/postItem/PostCard"; // Tái sử dụng PostCard
 import Loading from "../../component/Loading/Loading";
 import { setPosts } from "../../redux/postSlice";
@@ -23,6 +25,7 @@ function FriendProfilePage() {
 
   const [friendData, setFriendData] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [friendStreak, setFriendStreak] = useState(0); // Chuỗi nhắn tin với bạn này
 
   const navigate = useNavigate();
 
@@ -37,24 +40,34 @@ function FriendProfilePage() {
     }
   }, [fetchedPosts, dispatch]);
 
-  // Lấy thông tin bạn bè
+  // Lấy thông tin bạn bè và streak
   useEffect(() => {
     if (!currentUser || !currentUser._id) return;
     const fetchFriendInfo = async () => {
       setLoading(true);
       try {
-        const res = await getUserbyId(id);
+        const [res, leaderboardRes] = await Promise.all([
+          getUserbyId(id),
+          getFriendStreakLeaderboard(),
+        ]);
 
+        // Thay thế đoạn kiểm tra cũ bằng đoạn này:
         const isFriend = res.friends?.some(
-          (friendId) => String(friendId) === String(currentUser?._id),
+          (friend) => String(friend._id || friend) === String(currentUser?._id)
         );
 
         if (res && isFriend) {
           setFriendData(res);
-          console.log("Thông tin bạn bè:", res);
+
+          // Tìm streak của bạn này trong leaderboard
+          if (leaderboardRes?.success && Array.isArray(leaderboardRes.data)) {
+            const entry = leaderboardRes.data.find(
+              (item) => String(item.userId) === String(id)
+            );
+            setFriendStreak(entry?.streak || 0);
+          }
         } else {
           navigate("/home");
-          console.warn("Người dùng không phải là bạn bè hoặc không tồn tại.");
         }
       } catch (error) {
         console.error("Lỗi fetch user:", error);
@@ -92,12 +105,25 @@ function FriendProfilePage() {
 
   const stats = { totalFriends, totalPosts, totalReactions, totalComments };
 
+  const safeProfile = (friendData?.profile && typeof friendData.profile === "object")
+    ? friendData.profile
+    : {};
+
   return (
     <div className={cx("profile-layout")}>
       <div className={cx("profile-card")}>
         <ProfileHeader friendData={friendData} stats={stats} />
         <ProfileActions friendData={friendData} currentUser={currentUser} />
       </div>
+
+      {/* Thông tin cá nhân: chỉ hiện nếu có profile */}
+      <ProfileInfoCard
+        profile={safeProfile}
+        isOwner={false}
+        streak={friendStreak}
+        posts={friendPosts}
+        currentUser={currentUser}
+      />
 
       <div className={cx("feed-section")}>
         <div className={cx("feed-header")}>

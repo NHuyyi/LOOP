@@ -12,16 +12,19 @@ const cx = classNames.bind(styles);
 
 function BasicInfoForm() {
     const { user, token } = useSelector((state) => state.user);
+    const safeProfile = (user?.profile && typeof user.profile === "object") ? user.profile : {};
     const dispatch = useDispatch();
 
     // States cho text
     const [name, setName] = useState(user?.name || "");
-    const [bio, setBio] = useState(user?.profile?.bio || "");
-    const [location, setLocation] = useState(user?.profile?.location || "");
-    const [gender, setGender] = useState(user?.profile?.gender || "Bí mật");
+    const [bio, setBio] = useState(safeProfile.bio || "");
+    const [location, setLocation] = useState(safeProfile.location || "");
+    const [gender, setGender] = useState(safeProfile.gender || "Bí mật");
     const [dateOfBirth, setDateOfBirth] = useState(
-        user?.profile?.dateOfBirth ? user.profile.dateOfBirth.split('T')[0] : ""
+        safeProfile.dateOfBirth ? safeProfile.dateOfBirth.split('T')[0] : ""
     );
+
+    const [hobbies, setHobbies] = useState(safeProfile.hobbies ? safeProfile.hobbies.join(", ") : "");
 
     // States cho Images (File upload và Preview)
     const [avatarFile, setAvatarFile] = useState(null);
@@ -32,6 +35,8 @@ function BasicInfoForm() {
     const [coverPreview, setCoverPreview] = useState(
         user?.profile?.coverPhoto || "https://res.cloudinary.com/dpym64zg9/image/upload/v1755614090/raw_cq4nqn.png"
     );
+
+    const hobbiesArray = hobbies.split(",").map(item => item.trim()).filter(item => item !== "")
 
     const [loading, setLoading] = useState(false);
     const [message, setMessage] = useState("");
@@ -96,7 +101,8 @@ function BasicInfoForm() {
                 bio,
                 location,
                 gender,
-                dateOfBirth
+                dateOfBirth,
+                hobbies: hobbiesArray
             };
 
             // 4. Gọi service cập nhật DB
@@ -184,6 +190,19 @@ function BasicInfoForm() {
                         <div className={cx("border-input")}>
                             <input type="date" className={cx("custom-input")} value={dateOfBirth} onChange={(e) => setDateOfBirth(e.target.value)} />
                         </div>
+                    </div>
+                </div>
+
+                <div className={cx("input-group")} style={{ flex: 1 }}>
+                    <label className={cx("form-label")}>Sở thích (Cách nhau dấu phẩy)</label>
+                    <div className={cx("border-input")}>
+                        <input
+                            type="text"
+                            className={cx("custom-input")}
+                            value={hobbies}
+                            onChange={(e) => setHobbies(e.target.value)}
+                            placeholder="VD: Chơi game, Nghe nhạc..."
+                        />
                     </div>
                 </div>
 

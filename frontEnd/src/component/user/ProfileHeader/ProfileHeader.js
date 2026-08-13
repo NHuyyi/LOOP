@@ -49,8 +49,19 @@ function ProfileHeader({ friendData, stats }) {
 
   return (
     <div className={cx("header-section")}>
-      {/* Ảnh bìa mô phỏng */}
-      <div className={cx("cover-photo")}></div>
+      {/* Ảnh bìa */}
+      <div
+        className={cx("cover-photo")}
+        style={
+          friendData?.profile?.coverPhoto
+            ? {
+                backgroundImage: `url(${friendData.profile.coverPhoto})`,
+                backgroundSize: "cover",
+                backgroundPosition: "center",
+              }
+            : {}
+        }
+      ></div>
 
       <div className={cx("info-wrapper")}>
         <div className={cx("avatar-wrapper")}>

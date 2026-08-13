@@ -5,8 +5,10 @@ exports.updateProfile = async (req, res) => {
     try {
         const userId = req.user.id;
         const {
-            name, avatar, // Thuộc User
-            coverPhoto, bio, phoneNumber, gender, dateOfBirth, location // Thuộc UserProfile
+            name, avatar,
+            coverPhoto, bio, phoneNumber, gender, dateOfBirth, location,
+            education, workplace, socialLinks,
+            hobbies
         } = req.body;
 
         // 1. Cập nhật thông tin Core (User)
@@ -23,12 +25,16 @@ exports.updateProfile = async (req, res) => {
         // 2. Cập nhật (hoặc tạo mới) thông tin Profile bằng upsert: true
         const updatedProfile = await UserProfileModel.findOneAndUpdate(
             { user: userId },
-            { coverPhoto, bio, phoneNumber, gender, dateOfBirth, location },
-            { new: true, upsert: true } // Upsert: Nếu chưa có thì tự động tạo record mới
+            {
+                coverPhoto, bio, phoneNumber, gender, dateOfBirth, location,
+                education, workplace, socialLinks,
+                hobbies
+            },
+            { new: true, upsert: true }
         );
 
         // 3. Nếu User chưa có liên kết ID tới Profile, thì liên kết lại
-        if (!updatedUser.profile) {
+        if (String(updatedUser.profile) !== String(updatedProfile._id)) {
             updatedUser.profile = updatedProfile._id;
             await updatedUser.save();
         }
