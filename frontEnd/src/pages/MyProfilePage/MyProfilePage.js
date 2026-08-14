@@ -7,6 +7,7 @@ import styles from "../FriendProfilePage/FriendProfilePage.module.css"; // Tái 
 import { useGetPost } from "../../hooks/getpost";
 import ProfileHeader from "../../component/user/ProfileHeader/ProfileHeader";
 import ProfileActions from "../../component/user/ProfileActions/ProfileActions";
+import ProfileInfoCard from "../../component/user/ProfileInfoCard/ProfileInfoCard";
 import PostCard from "../../component/post/postItem/PostCard";
 import CreatePost from "../../component/post/creatpost/creatpost"; // Khác với bạn bè, trang cá nhân nên có thêm phần đăng bài
 import Loading from "../../component/Loading/Loading";
@@ -54,6 +55,11 @@ function MyProfilePage() {
 
     const stats = { totalFriends, totalPosts, totalReactions, totalComments };
 
+    const safeProfile = (currentUser?.profile && typeof currentUser.profile === "object")
+        ? currentUser.profile
+        : {};
+
+
     return (
         <div className={cx("profile-layout")}>
             <div className={cx("profile-card")}>
@@ -61,6 +67,14 @@ function MyProfilePage() {
                 <ProfileHeader friendData={currentUser} stats={stats} />
                 <ProfileActions friendData={currentUser} currentUser={currentUser} />
             </div>
+
+            {/* Thông tin cá nhân đầy đủ */}
+            <ProfileInfoCard
+                profile={safeProfile}
+                isOwner={true}
+                posts={myPosts}
+                currentUser={currentUser}
+            />
 
             <div className={cx("feed-section")}>
                 <div className={cx("feed-header")}>

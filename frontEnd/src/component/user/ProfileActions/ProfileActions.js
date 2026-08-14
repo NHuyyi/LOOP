@@ -114,7 +114,7 @@ function ProfileActions({ friendData, currentUser, onModalClose }) {
           <Edit3 size={20} />
           <span>Chỉnh sửa thông tin</span>
         </button>
-        <button className={cx("app-btn", "more-btn")} onClick={() => alert("Cài đặt tài khoản")}>
+        <button className={cx("app-btn", "more-btn")} onClick={() => navigate("/settings")}>
           <Settings size={20} />
         </button>
       </div>

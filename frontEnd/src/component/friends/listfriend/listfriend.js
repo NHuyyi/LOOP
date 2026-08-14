@@ -18,7 +18,6 @@ function FriendsList({ currentUserId, userData }) {
   // Kiểm tra trạng thái online dựa trên ID nằm trong userData
   const isOnline = onlineUsers.includes(userData._id);
   const conversations = useSelector((state) => state.chat.ConversationList);
-
   const navigate = useNavigate();
 
   const handleGoToProfile = () => {

@@ -11,6 +11,7 @@ exports.requestChangePassword = async (req, res) => {
         const otpExpires = new Date(Date.now() + 5 * 60 * 1000);
 
         user.otp = otp;
+        user.otptype = "change";
         user.otpExpires = otpExpires;
         await user.save();
 

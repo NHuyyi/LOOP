@@ -2,38 +2,30 @@ const mongoose = require("mongoose");
 
 const UserProfileSchema = new mongoose.Schema(
     {
-        user: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: "User",
-            required: true,
-            unique: true, // Đảm bảo mối quan hệ 1-1
-        },
-        coverPhoto: {
-            type: String,
-            default: "https://res.cloudinary.com/dpym64zg9/image/upload/v1755614090/raw_cq4nqn.png", // Hoặc một link ảnh bìa mặc định khác
-        },
-        bio: {
-            type: String,
-            maxLength: 255, // Giới hạn độ dài tiểu sử
-            default: "",
-        },
-        phoneNumber: {
-            type: String,
-            default: "",
-        },
-        gender: {
-            type: String,
-            enum: ["Nam", "Nữ", "Khác", "Bí mật"],
-            default: "Bí mật",
-        },
-        dateOfBirth: {
-            type: Date,
-            default: null,
-        },
-        location: {
-            type: String, // Ví dụ: "Hồ Chí Minh, Việt Nam"
-            default: "",
-        },
+        user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true, unique: true },
+        coverPhoto: { type: String, default: "..." },
+        bio: { type: String, maxLength: 255, default: "" },
+
+        // NHÓM 1: Thông tin nhạy cảm (Cần Streak > 10)
+        phoneNumber: { type: String, default: "" },
+        dateOfBirth: { type: Date, default: null },
+        location: { type: String, default: "" },
+        relationship: { type: String, enum: ["Độc thân", "Đang hẹn hò", "Đã kết hôn"], default: "Độc thân" },
+        hobbies: [{ type: String }],
+
+        // NHÓM 2: Thông tin cơ bản (Công khai)
+        gender: { type: String, enum: ["Nam", "Nữ", "Khác", "Bí mật"], default: "Bí mật" },
+        occupation: { type: String, default: "" },
+        workplace: { type: String, default: "" },
+        education: { type: String, default: "" },
+
+        // NHÓM 3: Mạng xã hội linh hoạt (Công khai)
+        socialLinks: [
+            {
+                platform: { type: String }, // VD: "Facebook", "Github", "Website"
+                url: { type: String }       // VD: "https://github.com/..."
+            }
+        ]
     },
     { timestamps: true }
 );

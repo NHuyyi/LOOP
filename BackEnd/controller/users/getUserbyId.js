@@ -1,12 +1,16 @@
 // controller/user/getUserById.js
 const User = require("../../model/User.Model");
+const UserProfile = require("../../model/UserProfile.Model");
 
 exports.getUserById = async (req, res) => {
   try {
     const { id } = req.body;
 
     // populate friends nếu muốn lấy danh sách chi tiết
-    const user = await User.findById(id);
+    const user = await User.findById(id)
+      .populate("profile")
+      .populate("friends", "name avatar friendCode");
+
 
     if (!user) {
       return res

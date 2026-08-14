@@ -9,6 +9,7 @@ import FriendProfilePage from "../pages/FriendProfilePage/FriendProfilePage";
 import StreakPage from "../pages/StreakPage/StreakPage";
 import MyProfilePage from "../pages/MyProfilePage/MyProfilePage";
 import EditProfilePage from "../pages/EditProfilePage/EditProfilePage";
+import SettingsPage from "../pages/SettingsPage/SettingsPage";
 
 const routes = [
   {
@@ -68,6 +69,11 @@ const routes = [
   {
     path: "edit-profile",
     Element: <EditProfilePage />,
+    isHeader: true,
+  },
+  {
+    path: "settings",
+    Element: <SettingsPage />,
     isHeader: true,
   },
 ];

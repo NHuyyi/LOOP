@@ -2,6 +2,7 @@ const bcrypt = require("bcrypt");
 const UserModel = require("../../model/User.Model");
 const jwt = require("jsonwebtoken");
 const { completeTaskForUser } = require("../../utils/streakHelper");
+const UserProfile = require("../../model/UserProfile.Model");
 
 exports.Login = async (req, res) => {
   try {
@@ -17,7 +18,8 @@ exports.Login = async (req, res) => {
     const user = await UserModel.findOne({ email }).populate(
       "friends",
       "name avatar"
-    );
+    ).populate("profile");
+
 
     if (!user) {
       return res.status(400).json({
@@ -50,7 +52,7 @@ exports.Login = async (req, res) => {
     );
 
     // Task 4: Đăng nhập hôm nay (10 điểm)
-    completeTaskForUser(user._id, 4).catch(() => {});
+    completeTaskForUser(user._id, 4).catch(() => { });
 
     return res.status(200).json({
       message: "Đăng nhập thành công!",

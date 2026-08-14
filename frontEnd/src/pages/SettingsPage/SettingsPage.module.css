@@ -1,0 +1,24 @@
+.settings-container {
+    min-height: calc(100vh - 70px);
+    background: var(--bg-primary);
+    display: flex;
+    justify-content: center;
+    /* Căn giữa 2 khối ra giữa màn hình theo chiều ngang */
+    align-items: flex-start;
+    /* Quan trọng: Neo khối Settings lên trên cùng */
+    padding: 2rem 1rem;
+}
+
+.settings-wrapper {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    max-width: 1000px;
+    gap: 2rem;
+}
+
+@media (max-width: 768px) {
+    .settings-wrapper {
+        flex-direction: column;
+    }
+}

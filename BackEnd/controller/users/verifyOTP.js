@@ -16,7 +16,7 @@ exports.verifyOTP = async (req, res) => {
     const user = await UserModel.findOne({ email }).populate(
       "friends",
       "name avatar"
-    );
+    ).populate("profile");
     if (!user) {
       return res
         .status(404)

@@ -1,0 +1,100 @@
+.sidebar {
+    width: 290px;
+    background: #ffffff;
+    border-radius: 1rem;
+    padding: 1.5rem 1rem;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    display: flex;
+    flex-direction: column;
+    /* Đổi thành fit-content để sidebar tự động dài ra theo nội dung, loại bỏ scroll */
+    height: fit-content;
+}
+
+.title {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: #333;
+    margin: 0 0.5rem 1rem 0.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #f0f2f5;
+    text-align: left;
+    /* Đảm bảo text không bị căn giữa */
+}
+
+.menu-scroll-area {
+    flex-grow: 1;
+    /* Đã xóa overflow-y và các CSS liên quan đến thanh cuộn */
+}
+
+.category-group {
+    margin-bottom: 0.75rem;
+}
+
+.category-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 8px;
+    cursor: pointer;
+    color: #444;
+    transition: background 0.2s ease;
+    border-radius: 8px;
+    user-select: none;
+}
+
+.category-header:hover {
+    background: #f9f9f9;
+}
+
+.category-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 1.05rem;
+    font-weight: 600;
+    text-align: left;
+    /* Căn trái dứt khoát */
+}
+
+.menu-list {
+    list-style: none;
+    padding: 0;
+    margin: 4px 0 0 10px;
+    border-left: 2px solid #f0f2f5;
+}
+
+.menu-item {
+    padding: 10px 16px;
+    margin: 4px 0 4px 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: #666;
+    transition: all 0.2s ease;
+    text-align: left;
+    /* Căn trái nội dung tab */
+}
+
+.menu-item:hover {
+    background: #f5f5f5;
+    color: #a259ff;
+}
+
+.menu-item.active {
+    background: linear-gradient(135deg, rgba(218, 171, 255, 0.2), rgba(167, 112, 239, 0.2));
+    color: #952993;
+    font-weight: 600;
+}
+
+.logout-wrapper {
+    padding-top: 1rem;
+    border-top: 1px solid #f0f2f5;
+    margin-top: 0.5rem;
+}
+
+@media (max-width: 768px) {
+    .sidebar {
+        width: 100%;
+    }
+}
