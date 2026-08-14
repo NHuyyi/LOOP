@@ -15,6 +15,7 @@ const UserProfileSchema = new mongoose.Schema(
 
         // NHÓM 2: Thông tin cơ bản (Công khai)
         gender: { type: String, enum: ["Nam", "Nữ", "Khác", "Bí mật"], default: "Bí mật" },
+        occupation: { type: String, default: "" },
         workplace: { type: String, default: "" },
         education: { type: String, default: "" },
 

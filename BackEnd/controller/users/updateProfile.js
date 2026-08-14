@@ -8,8 +8,24 @@ exports.updateProfile = async (req, res) => {
             name, avatar,
             coverPhoto, bio, phoneNumber, gender, dateOfBirth, location,
             education, workplace, socialLinks,
-            hobbies
+            hobbies, occupation
         } = req.body;
+
+        // 1. KIỂM TRA SỐ ĐIỆN THOẠI HỢP LỆ VÀ ĐÚNG 10 KÝ TỰ Ở BACKEND
+        if (phoneNumber && phoneNumber.trim() !== "") {
+            // Kiểm tra chỉ chứa ký tự số
+            const isNumeric = /^\d+$/.test(phoneNumber);
+
+            // Kiểm tra đầu số Việt Nam (03, 05, 07, 08, 09) và tổng độ dài ĐÚNG 10 ký tự
+            const phoneRegex = /^(03|05|07|08|09)[0-9]{8}$/;
+
+            if (!isNumeric || phoneNumber.length !== 10 || !phoneRegex.test(phoneNumber)) {
+                return res.status(400).json({
+                    success: false,
+                    message: "Số điện thoại không hợp lệ! Phải là dãy số bắt đầu bằng 03, 05, 07, 08, 09 và đúng 10 chữ số."
+                });
+            }
+        }
 
         // 1. Cập nhật thông tin Core (User)
         let updateUserData = {};
@@ -28,7 +44,7 @@ exports.updateProfile = async (req, res) => {
             {
                 coverPhoto, bio, phoneNumber, gender, dateOfBirth, location,
                 education, workplace, socialLinks,
-                hobbies
+                hobbies, occupation
             },
             { new: true, upsert: true }
         );
