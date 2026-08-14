@@ -13,6 +13,36 @@ const cx = classNames.bind(styles);
 
 function BasicInfoForm() {
     const { user, token } = useSelector((state) => state.user);
+    useEffect(() => {
+        if (user) {
+            const profile = (user.profile && typeof user.profile === "object") ? user.profile : {};
+
+            setName(user.name || "");
+            setBio(profile.bio || "");
+            setGender(profile.gender || "Bí mật");
+            setPhoneNumber(profile.phoneNumber || "");
+            setLocation(profile.location || "");
+            setOccupation(profile.occupation || "");
+            setWorkplace(profile.workplace || "");
+            setEducation(profile.education || "");
+            setHobbies(profile.hobbies ? profile.hobbies.join(", ") : "");
+
+            if (profile.dateOfBirth) {
+                const d = new Date(profile.dateOfBirth);
+                setDobDay(d.getDate().toString());
+                setDobMonth((d.getMonth() + 1).toString());
+                setDobYear(d.getFullYear().toString());
+            }
+
+            const socials = profile.socialLinks || [];
+            const getLink = (platform) => socials.find(link => link.platform === platform)?.url || "";
+            setFacebookLink(getLink("Facebook"));
+            setGithubLink(getLink("Github"));
+
+            setAvatarPreview(user.avatar || "https://res.cloudinary.com/dpym64zg9/image/upload/v1755614090/raw_cq4nqn.png");
+            setCoverPreview(profile.coverPhoto || "https://res.cloudinary.com/dpym64zg9/image/upload/v1755614090/raw_cq4nqn.png");
+        }
+    }, [user]);
     const safeProfile = (user?.profile && typeof user.profile === "object") ? user.profile : {};
 
     const dispatch = useDispatch();

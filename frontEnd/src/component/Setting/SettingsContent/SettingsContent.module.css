@@ -1,0 +1,20 @@
+.content-area {
+    flex: 1;
+    /* Không cần background trắng ở đây vì bản thân các component 
+     như BasicInfoForm hay BlockedUsersList đã tự có thẻ Card màu trắng bọc ngoài rồi */
+    min-height: 500px;
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+/* Hiệu ứng mượt mà khi chuyển Tab */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
