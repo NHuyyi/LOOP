@@ -67,6 +67,7 @@ const User = mongoose.Schema(
       type: Boolean,
       default: true
     },
+    showActiveStatus: { type: Boolean, default: true },
   },
 
   { timestamps: true }

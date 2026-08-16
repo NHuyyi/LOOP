@@ -3,11 +3,11 @@ const UserModel = require("../../model/User.Model");
 exports.updatePrivacy = async (req, res) => {
     try {
         const userId = req.user.id;
-        const { allowSearchByCode, allowFriendRequests } = req.body;
+        const { allowSearchByCode, allowFriendRequests,showActiveStatus } = req.body;
 
         const updatedUser = await UserModel.findByIdAndUpdate(
             userId,
-            { allowSearchByCode, allowFriendRequests },
+            { allowSearchByCode, allowFriendRequests,showActiveStatus },
             { new: true }
         ).populate("profile").populate("friends", "name avatar");
 

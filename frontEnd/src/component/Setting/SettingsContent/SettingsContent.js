@@ -8,6 +8,7 @@ import ChangePasswordForm from "../../EditProfile/ChangePasswordForm/ChangePassw
 import BlockedUsersList from "../../chat/ChatSidebar/Blocklist/BlockedUsersList";
 import RestrictedList from "../../chat/ChatSidebar/RestrictedList/RestrictedList";
 import SearchConnectSettings from "../SearchConnectSettings/SearchConnectSettings";
+import ActiveStatusSettings from "../ActiveStatusSettings/ActiveStatusSettings";
 
 const cx = classNames.bind(styles);
 
@@ -28,7 +29,7 @@ function SettingsContent({ activeTab }) {
             case "search_connect":
                 return <SearchConnectSettings />;
             case "active_status":
-                return <div>Trạng thái hoạt động</div>;
+                return <ActiveStatusSettings />;
             case "post_visibility":
                 return <div>Quyền riêng tư bài viết mặc định</div>;
             case "message_sound":
