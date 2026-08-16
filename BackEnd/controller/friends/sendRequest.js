@@ -23,6 +23,9 @@ exports.sendRequest = async (req, res) => {
         .status(404)
         .json({ message: "Người dùng không tồn tại", success: false });
     }
+    if (!receiver.allowFriendRequests) {
+      return res.status(403).json({ message: "Người này đang tắt tính năng nhận lời mời kết bạn", success: false });
+    }
 
     // Kiểm tra nếu đã là bạn bè
     if (sender.friends.includes(receivedId)) {

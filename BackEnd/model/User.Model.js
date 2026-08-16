@@ -59,6 +59,14 @@ const User = mongoose.Schema(
         createdAt: { type: Date, default: Date.now },
       },
     ],
+    allowSearchByCode: {
+      type: Boolean,
+      default: true
+    },
+    allowFriendRequests: {
+      type: Boolean,
+      default: true
+    },
   },
 
   { timestamps: true }
