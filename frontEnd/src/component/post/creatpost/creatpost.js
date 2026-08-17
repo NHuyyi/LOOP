@@ -16,20 +16,22 @@ function CreatePost({ setMessage, setSuccess, friendList = [] }) {
   const [preview, setPreview] = useState(null); // để preview ảnh
   const [loading, setLoading] = useState(false);
   const [content, setContent] = useState(""); // nội dung bài viết
-  const [visibility, setVisibility] = useState("friends");
-  const [denyList, setDenyList] = useState([]); // danh sách người bị chặn xem (khi custom)
+
   const dispatch = useDispatch();
 
   const stateUser = useSelector((state) => state.user);
   const currentUser = stateUser?.user;
   const author = currentUser?._id || "";
 
+  const [visibility, setVisibility] = useState(currentUser?.defaultPostVisibility || "friends");
+  const [denyList, setDenyList] = useState(currentUser?.defaultDenyList || []);
+
   // chọn file
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (file) {
       setImage(file);
-      setPreview(URL.createObjectURL(file)); // tạo link preview
+      setPreview(URL.createObjectURL(file));
     }
   };
 
@@ -68,8 +70,8 @@ function CreatePost({ setMessage, setSuccess, friendList = [] }) {
       setImage(null);
       setPreview(null);
       setContent("");
-      setVisibility("friends");
-      setDenyList([]);
+      setVisibility(currentUser?.defaultPostVisibility || "friends");
+      setDenyList(currentUser?.defaultDenyList || []);
     } catch (error) {
       setMessage(error.message);
       setSuccess(false);

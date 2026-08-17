@@ -68,6 +68,15 @@ const User = mongoose.Schema(
       default: true
     },
     showActiveStatus: { type: Boolean, default: true },
+    defaultPostVisibility: {
+      type: String,
+      enum: ["friends", "private", "custom"],
+      default: "friends",
+    },
+    defaultDenyList: [{
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User"
+    }],
   },
 
   { timestamps: true }

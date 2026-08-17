@@ -9,6 +9,7 @@ import BlockedUsersList from "../../chat/ChatSidebar/Blocklist/BlockedUsersList"
 import RestrictedList from "../../chat/ChatSidebar/RestrictedList/RestrictedList";
 import SearchConnectSettings from "../SearchConnectSettings/SearchConnectSettings";
 import ActiveStatusSettings from "../ActiveStatusSettings/ActiveStatusSettings";
+import PostVisibilitySettings from "../PostVisibilitySettings/PostVisibilitySettings";
 
 const cx = classNames.bind(styles);
 
@@ -31,7 +32,7 @@ function SettingsContent({ activeTab }) {
             case "active_status":
                 return <ActiveStatusSettings />;
             case "post_visibility":
-                return <div>Quyền riêng tư bài viết mặc định</div>;
+                return <PostVisibilitySettings />;
             case "message_sound":
                 return <div>Cài đặt Âm thanh tin nhắn</div>;
             case "push_notifications":
