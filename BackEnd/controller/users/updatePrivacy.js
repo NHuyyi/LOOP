@@ -8,7 +8,8 @@ exports.updatePrivacy = async (req, res) => {
             allowFriendRequests,
             showActiveStatus,
             defaultPostVisibility,
-            defaultDenyList
+            defaultDenyList,
+            twoFactorEnabled
         } = req.body;
 
         let updateData = {};
@@ -17,7 +18,7 @@ exports.updatePrivacy = async (req, res) => {
         if (showActiveStatus !== undefined) updateData.showActiveStatus = showActiveStatus;
         if (defaultPostVisibility !== undefined) updateData.defaultPostVisibility = defaultPostVisibility;
         if (defaultDenyList !== undefined) updateData.defaultDenyList = defaultDenyList;
-        
+        if (twoFactorEnabled !== undefined) updateData.twoFactorEnabled = twoFactorEnabled;
         const updatedUser = await UserModel.findByIdAndUpdate(
             userId,
             { $set: updateData },

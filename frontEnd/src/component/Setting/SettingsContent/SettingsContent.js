@@ -10,7 +10,7 @@ import RestrictedList from "../../chat/ChatSidebar/RestrictedList/RestrictedList
 import SearchConnectSettings from "../SearchConnectSettings/SearchConnectSettings";
 import ActiveStatusSettings from "../ActiveStatusSettings/ActiveStatusSettings";
 import PostVisibilitySettings from "../PostVisibilitySettings/PostVisibilitySettings";
-
+import TwoFactorAuthSettings from "../TwoFactorSettings/TwoFactorSettings";
 const cx = classNames.bind(styles);
 
 function SettingsContent({ activeTab }) {
@@ -40,7 +40,7 @@ function SettingsContent({ activeTab }) {
             case "device_management":
                 return <div>Quản lý thiết bị đăng nhập</div>;
             case "two_factor":
-                return <div>Xác thực 2 lớp (2FA)</div>;
+                return <TwoFactorAuthSettings />;
             case "delete_account":
                 return <div>Vô hiệu hoá / Xóa tài khoản</div>;
             case "theme":

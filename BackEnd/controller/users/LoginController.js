@@ -2,8 +2,9 @@ const bcrypt = require("bcrypt");
 const UserModel = require("../../model/User.Model");
 const jwt = require("jsonwebtoken");
 const { completeTaskForUser } = require("../../utils/streakHelper");
-const UserProfile = require("../../model/UserProfile.Model");
 
+const generateOTP = require("../../utils/generateOTP");
+const sendEmail = require("../../utils/sendEmail");
 exports.Login = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -41,6 +42,27 @@ exports.Login = async (req, res) => {
         success: false,
         message: "Tài khoản chưa xác minh, vui lòng xác thực OTP",
         user: { email: user.email, isVerified: user.isVerified },
+      });
+    }
+    // nếu tài khoản bật 2fa
+    if (user.twoFactorEnabled) {
+      const otp = generateOTP();
+      user.otp = otp;
+      user.otptype = "2fa"; // Đánh dấu loại OTP là 2fa
+      user.otpExpires = new Date(Date.now() + 5 * 60 * 1000);
+      await user.save();
+
+      await sendEmail.sendEmail(
+        user.email,
+        "Mã xác thực 2 bước (2FA)",
+        `Mã OTP đăng nhập của bạn là: ${otp}. Mã có hiệu lực trong 5 phút.`
+      );
+
+      return res.status(200).json({
+        message: "Mã bảo mật đã được gửi đến email của bạn.",
+        success: true,
+        requires2FA: true, // Cờ báo cho FE biết cần chuyển qua trang nhập OTP
+        email: user.email
       });
     }
 

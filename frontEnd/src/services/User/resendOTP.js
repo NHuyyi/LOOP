@@ -1,13 +1,13 @@
 const API_URL = process.env.REACT_APP_API_URL || "http://localhost:3001/api";
 
-exports.resendOTP = async (email) => {
+exports.resendOTP = async (email, type) => {
   try {
     const res = await fetch(`${API_URL}/users/resend-otp`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ email }),
+      body: JSON.stringify({ email, type }),
     });
     const data = await res.json();
     if (!res.ok) {

@@ -77,7 +77,10 @@ const User = mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "User"
     }],
+
+    twoFactorEnabled: { type: Boolean, default: false },
   },
+
 
   { timestamps: true }
 );

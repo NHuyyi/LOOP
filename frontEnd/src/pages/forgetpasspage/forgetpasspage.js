@@ -36,6 +36,12 @@ function Forget() {
     }
   }, [message]);
 
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") {
+      handleSendOTP(e);
+    }
+  };
+
   const handleSendOTP = async (e) => {
     e.preventDefault();
     // Gọi API đăng ký ở đây, ví dụ:
@@ -66,6 +72,7 @@ function Forget() {
             placeholder="Nhập email của bạn"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
+            onKeyDown={handleKeyDown}
           />
           <button onClick={handleSendOTP} className={cx("app-btn")}>
             {loading ? <Loading size="small" /> : "Gửi OTP"}
