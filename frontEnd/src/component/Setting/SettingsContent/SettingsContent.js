@@ -11,6 +11,7 @@ import SearchConnectSettings from "../SearchConnectSettings/SearchConnectSetting
 import ActiveStatusSettings from "../ActiveStatusSettings/ActiveStatusSettings";
 import PostVisibilitySettings from "../PostVisibilitySettings/PostVisibilitySettings";
 import TwoFactorAuthSettings from "../TwoFactorSettings/TwoFactorSettings";
+import DeviceManagement from "../DeviceManagement/DeviceManagement";
 const cx = classNames.bind(styles);
 
 function SettingsContent({ activeTab }) {
@@ -38,7 +39,7 @@ function SettingsContent({ activeTab }) {
             case "push_notifications":
                 return <div>Cài đặt Thông báo đẩy</div>;
             case "device_management":
-                return <div>Quản lý thiết bị đăng nhập</div>;
+                return <DeviceManagement />;
             case "two_factor":
                 return <TwoFactorAuthSettings />;
             case "delete_account":

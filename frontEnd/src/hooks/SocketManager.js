@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import socket from "../socker";
 import {
@@ -34,6 +34,9 @@ import {
   removeConversationInState
 } from "../redux/chatSlice";
 
+import { clearUser } from "../redux/userSlice";
+
+
 import { useLocation } from "react-router-dom";
 
 function SocketManager() {
@@ -51,13 +54,48 @@ function SocketManager() {
     (state) => state.chat.RestrictedConversationList,
   );
 
+  const [message, setMessage] = useState("");
+  const [success, setSuccess] = useState(false);
+  const [fadeOut, setFadeOut] = useState(false);
+
   useEffect(() => {
-    socket.on("testEvent", (data) => {
-      alert(`Nhận testEvent: ${data.msg}`);
-    });
+    if (message) {
+      const timer = setTimeout(() => {
+        setFadeOut(true);
+      }, 2500);
+      const removeTimer = setTimeout(() => {
+        setMessage("");
+        setFadeOut(false);
+      }, 3000);
+      return () => {
+        clearTimeout(timer);
+        clearTimeout(removeTimer);
+      };
+    }
+  }, [message]);
+
+  useEffect(() => {
 
     if (currentUser?._id) {
       socket.emit("register", currentUser._id);
+
+      socket.on("forceLogout", (data) => {
+        const currentDeviceId = localStorage.getItem("deviceId");
+
+        if (currentDeviceId && data.deviceId === currentDeviceId) {
+          setMessage("Thiết bị này vừa bị đăng xuất từ xa!");
+          setSuccess(false);
+
+          dispatch(clearUser());
+          localStorage.removeItem("token");
+          localStorage.removeItem("userData");
+
+          // Đợi thông báo biến mất rồi chuyển hướng
+          setTimeout(() => {
+            window.location.href = "/";
+          }, 3000);
+        }
+      });
 
       socket.on("friendRemoved", ({ by, conversationId }) => {
         dispatch(removeFriend(by));
@@ -273,6 +311,7 @@ function SocketManager() {
     }
 
     return () => {
+      socket.off("forceLogout");
       socket.off("friendRemoved");
       socket.off("friendRequestReceived");
       socket.off("friendRequestAccepted");
@@ -304,7 +343,19 @@ function SocketManager() {
     restrictedConversationList,
   ]);
 
-  return null; // component này không render gì, chỉ để quản lý socket
+  return (
+    <>
+      {message && (
+        <div
+          className={`app-message ${success === false ? "app-message__err" : "app-message__ok"
+            } ${fadeOut ? "fade-out" : ""}`}
+        >
+          {message}
+        </div>
+      )}
+    </>
+  );
+
 }
 
 export default SocketManager;
