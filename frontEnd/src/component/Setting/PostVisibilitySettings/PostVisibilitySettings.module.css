@@ -1,0 +1,77 @@
+.container {
+    background: #fff;
+    padding: 2rem;
+    border-radius: 0.75rem;
+    box-shadow: 0 0.25rem 0.7rem rgba(0, 0, 0, 0.05);
+}
+
+.title {
+    font-size: 1.5rem;
+    color: #333;
+    margin-bottom: 1rem;
+    font-weight: 600;
+}
+
+.description {
+    font-size: 0.95rem;
+    color: #666;
+    margin-bottom: 1.5rem;
+    line-height: 1.5;
+}
+
+.radio-group {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.radio-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 1rem;
+    border: 1px solid #e4e6eb;
+    border-radius: 0.75rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.radio-item:hover {
+    background-color: #f9f9f9;
+}
+
+.radio-item.selected {
+    border-color: #a259ff;
+    background-color: #faf5ff;
+}
+
+.radio-input {
+    appearance: radio !important;
+    -webkit-appearance: radio !important;
+    width: 18px !important;
+    height: 18px !important;
+    flex-shrink: 0;
+    margin: 0;
+    cursor: pointer;
+    accent-color: #a259ff;
+}
+
+.radio-label {
+    display: flex;
+    flex-direction: column;
+    cursor: pointer;
+    text-align: left;
+    flex: 1;
+}
+
+.radio-label h4 {
+    margin: 0 0 0.25rem 0;
+    font-size: 1.05rem;
+    color: #333;
+}
+
+.radio-label p {
+    margin: 0;
+    font-size: 0.85rem;
+    color: #777;
+}

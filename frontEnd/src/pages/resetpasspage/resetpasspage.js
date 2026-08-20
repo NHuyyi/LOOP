@@ -42,6 +42,22 @@ function Reset() {
     }
   }, [message]);
 
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") {
+      handlesubmit(e);
+    }
+  };
+
+  const handleNextFocus = (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault(); // Ngăn không cho trang bị load lại (nếu có form)
+      const nextInput = document.getElementById("confirm-password-input");
+      if (nextInput) {
+        nextInput.focus(); // Nhảy con trỏ chuột sang ô số 2
+      }
+    }
+  };
+
   const handlesubmit = async (e) => {
     e.preventDefault();
     // Gọi API đăng ký ở đây, ví dụ:
@@ -76,6 +92,7 @@ function Reset() {
               onChange={(e) => setPassword(e.target.value)}
               required
               className={cx("custom-input")}
+              onKeyDown={handleNextFocus}
             />
           </div>
           <button
@@ -90,12 +107,14 @@ function Reset() {
           <label className={cx("form-label")}>Confirm New password</label>
           <div className={cx("boder-input")}>
             <input
+              id="confirm-password-input"
               placeholder="Confirm password"
               type={showComfimPassword ? "text" : "password"}
               name="comfimPassword"
               value={comfimPassword}
               onChange={(e) => setComfimPassword(e.target.value)}
               required
+              onKeyDown={handleKeyDown}
               className={cx("custom-input")}
             />
           </div>
@@ -114,11 +133,10 @@ function Reset() {
       {message && (
         <div
           className={`${cx("app-message")}  
-                          ${
-                            success === false
-                              ? cx("app-message__err")
-                              : cx("app-message__ok")
-                          } ${fadeOut ? cx("fade-out") : ""}`}
+                          ${success === false
+              ? cx("app-message__err")
+              : cx("app-message__ok")
+            } ${fadeOut ? cx("fade-out") : ""}`}
         >
           {message}
         </div>

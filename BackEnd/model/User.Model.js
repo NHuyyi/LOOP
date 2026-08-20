@@ -59,7 +59,28 @@ const User = mongoose.Schema(
         createdAt: { type: Date, default: Date.now },
       },
     ],
+    allowSearchByCode: {
+      type: Boolean,
+      default: true
+    },
+    allowFriendRequests: {
+      type: Boolean,
+      default: true
+    },
+    showActiveStatus: { type: Boolean, default: true },
+    defaultPostVisibility: {
+      type: String,
+      enum: ["friends", "private", "custom"],
+      default: "friends",
+    },
+    defaultDenyList: [{
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User"
+    }],
+
+    twoFactorEnabled: { type: Boolean, default: false },
   },
+
 
   { timestamps: true }
 );

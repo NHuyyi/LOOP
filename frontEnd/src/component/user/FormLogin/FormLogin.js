@@ -38,13 +38,23 @@ function FormLogin({ setMessage, setSuccess }) {
         setSuccess(false);
         return;
       }
+      if (data.requires2FA) {
+        setMessage(data.message);
+        setSuccess(true);
+        setTimeout(() => {
+          navigate("/otp", { state: { email: formData.email, type: "2fa" } });
+        }, 1000);
+        return;
+      }
+
       if (data.user.isVerified === false) {
         setMessage("Vui lòng xác thực tài khoản");
         setSuccess(false);
-        await resendOTP(formData.email);
-        navigate("/otp", { state: { email: formData.email } });
+        await resendOTP(formData.email, "signup");
+        navigate("/otp", { state: { email: formData.email, type: "signup" } });
         return;
       }
+
       dispatch(setUser({ user: data.user, token: data.token }));
       // lưu vào localStorage để giữ đăng nhập sau reload
       localStorage.setItem("user", JSON.stringify(data.user));

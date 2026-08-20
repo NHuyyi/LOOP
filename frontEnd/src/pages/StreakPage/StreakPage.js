@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import styles from "./StreakPage.module.css";
 import classNames from "classnames/bind";
-import { useSelector } from "react-redux";
 import StatCard from "../../component/streak/StatCard/StatCard";
 import TaskTab from "./TaskTab/TaskTab";
 import LeaderboardSection from "./LeaderboardSection/LeaderboardSection";
@@ -10,9 +9,6 @@ import { getMyStats } from "../../services/streak/streakServices";
 const cx = classNames.bind(styles);
 
 function StreakPage() {
-  const stateUser = useSelector((state) => state.user);
-  const currentUser = stateUser?.user;
-
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
   const [errorMsg, setErrorMsg] = useState(null);

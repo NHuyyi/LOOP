@@ -3,7 +3,7 @@ const sendEmail = require("../../utils/sendEmail");
 const UserModel = require("../../model/User.Model");
 
 exports.resendOTP = async (req, res) => {
-  const { email } = req.body;
+  const { email, type } = req.body;
   try {
     // Kiểm tra xem email có được cung cấp không
     if (!email) {
@@ -24,6 +24,7 @@ exports.resendOTP = async (req, res) => {
 
     // Cập nhật OTP và thời gian hết hạn cho người dùng
     user.otp = otp;
+    user.otptype = type || "signup";
     user.otpExpires = otpExpires;
     await user.save();
 

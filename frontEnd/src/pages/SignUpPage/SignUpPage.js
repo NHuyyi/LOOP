@@ -7,7 +7,7 @@ import FormLogin from "../../component/user/FormLogin/FormLogin";
 const cx = classNames.bind(styles);
 
 function SignUpPage() {
-  const [showformsignup, setShowformsignup] = useState(true);
+  const [showformsignup, setShowformsignup] = useState(false);
   const [message, setMessage] = useState("");
   const [success, setSuccess] = useState(" ");
   const [fadeOut, setFadeOut] = useState(false);

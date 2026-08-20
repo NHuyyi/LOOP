@@ -85,6 +85,21 @@ exports.verifyOTP = async (req, res) => {
       );
     }
 
+    // SỬA LẠI ĐOẠN NÀY
+    if (user.otptype === "2fa") {
+      updatedUser = await UserModel.findOneAndUpdate(
+        { email },
+        {
+          otp: null,
+          otptype: null,
+          otpExpires: null,
+        },
+        { new: true }
+      )
+        .populate("profile")                        
+        .populate("friends", "name avatar");          
+    }
+
     const token = jwt.sign(
       { id: user._id, role: user.role },
       process.env.JWT_SECRET,

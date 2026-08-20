@@ -17,6 +17,7 @@ const PostRoute = require("./routes/post.Routes");
 const FriendRoute = require("./routes/Friend.Routes");
 const ChatRoute = require("./routes/Chat.Routes");
 const StreakRoute = require("./routes/Streak.Routes");
+const SessionRoute = require("./routes/Session.Routes");
 const http = require("http"); // thêm http
 const { initSocket } = require("./config/socker"); // sửa đường dẫn nếu cần
 const { getIO, getOnlineUsers } = require("./config/socker");
@@ -49,5 +50,6 @@ app.use("/api/posts", PostRoute);
 app.use("/api/friends", FriendRoute);
 app.use("/api/chat", ChatRoute);
 app.use("/api/streak", StreakRoute);
+app.use("/api/session", SessionRoute);
 // Xuất io & onlineUsers để các controller (removeFriend, sendRequest, …) dùng
 module.exports = { getIO, getOnlineUsers };

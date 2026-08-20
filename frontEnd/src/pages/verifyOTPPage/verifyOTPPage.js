@@ -14,7 +14,8 @@ const cx = classNames.bind(styles);
 
 function Otp() {
   const location = useLocation();
-  const email = location.state?.email;
+  const email = location.state?.email || "";
+  const otpType = location.state?.type || "signup";
   const password = location.state?.password || "";
   const [codeotp, setCodeOtp] = useState(new Array(6).fill(""));
   const [loadingverify, setLoadingverify] = useState(false);
@@ -75,6 +76,11 @@ function Otp() {
         localStorage.setItem("token", data.token);
         navigate("/home");
       }
+      if (data.otptype === "2fa") {
+        dispatch(setUser({ user: data.user, token: data.token }));
+        localStorage.setItem("userData", JSON.stringify({ user: data.user, token: data.token }));
+        navigate("/home");
+      }
       if (data.otptype === "reset") {
         navigate("/reset-password", { state: { email: email } });
       }
@@ -95,7 +101,7 @@ function Otp() {
     e.preventDefault();
     try {
       setLoadingresend(true);
-      const resuit = await resendOTP(email);
+      const resuit = await resendOTP(email, otpType);
       setMessage(resuit.message);
       setSuccess(resuit.success);
     } catch (error) {
@@ -105,8 +111,50 @@ function Otp() {
       // Hiển thị thông báo lỗi cho người dùng tại đây
     } finally {
       setLoadingresend(false);
+      codeotp.fill("");
+      document.getElementById("otp-input-0").focus();
     }
   };
+
+  const handleKeyDown = (index, e) => {
+    // Nếu phím bấm là Backspace VÀ ô hiện tại đang trống rỗng
+    if (e.key === "Backspace" && e.target.value === "") {
+      // Nhảy lùi về ô trước đó (nếu không phải là ô đầu tiên)
+      if (index > 0) {
+        const prevInput = document.getElementById(`otp-input-${index - 1}`);
+        if (prevInput) {
+          prevInput.focus();
+        }
+      }
+    }
+  };
+
+  // Xử lý sự kiện dán (Paste)
+  const handlePaste = (e) => {
+    e.preventDefault(); // Ngăn hành vi dán mặc định của trình duyệt vào 1 ô
+
+    // Lấy văn bản người dùng vừa copy/dán
+    const pastedData = e.clipboardData.getData("text");
+
+    // Lọc bỏ khoảng trắng và các ký tự không phải là số, chỉ lấy đúng 6 số đầu tiên
+    const pastedNumbers = pastedData.replace(/\D/g, "").slice(0, 6);
+
+    if (pastedNumbers.length > 0) {
+     
+      const newCodeOtp = [...codeotp];
+      for (let i = 0; i < newCodeOtp.length; i++) {
+        newCodeOtp[i] = pastedNumbers[i] || ""; 
+      }
+      setCodeOtp(newCodeOtp);
+
+      const nextFocusIndex = Math.min(pastedNumbers.length, 5);
+      const nextInput = document.getElementById(`otp-input-${nextFocusIndex}`);
+      if (nextInput) {
+        nextInput.focus();
+      }
+    }
+  };
+
 
   return (
     <div className={cx("app-container")}>
@@ -120,11 +168,15 @@ function Otp() {
             {codeotp.map((data, index) => (
               <input
                 key={index}
+                id={`otp-input-${index}`}
+                autoFocus={index === 0}
                 type="text"
                 maxLength="1"
                 value={data}
                 onChange={(e) => handleChange(e.target, index)}
                 onFocus={(e) => e.target.select()}
+                onKeyDown={(e) => handleKeyDown(index, e)}
+                onPaste={handlePaste}
                 className={cx("custom-input")}
               />
             ))}
@@ -150,11 +202,10 @@ function Otp() {
       {message && (
         <div
           className={`${cx("app-message")}  
-                      ${
-                        success === false
-                          ? cx("app-message__err")
-                          : cx("app-message__ok")
-                      } ${fadeOut ? cx("fade-out") : ""}`}
+                      ${success === false
+              ? cx("app-message__err")
+              : cx("app-message__ok")
+            } ${fadeOut ? cx("fade-out") : ""}`}
         >
           {message}
         </div>

@@ -7,7 +7,11 @@ import BasicInfoForm from "../../EditProfile/BasicInfoForm/BasicInfoForm";
 import ChangePasswordForm from "../../EditProfile/ChangePasswordForm/ChangePasswordForm";
 import BlockedUsersList from "../../chat/ChatSidebar/Blocklist/BlockedUsersList";
 import RestrictedList from "../../chat/ChatSidebar/RestrictedList/RestrictedList";
-
+import SearchConnectSettings from "../SearchConnectSettings/SearchConnectSettings";
+import ActiveStatusSettings from "../ActiveStatusSettings/ActiveStatusSettings";
+import PostVisibilitySettings from "../PostVisibilitySettings/PostVisibilitySettings";
+import TwoFactorAuthSettings from "../TwoFactorSettings/TwoFactorSettings";
+import DeviceManagement from "../DeviceManagement/DeviceManagement";
 const cx = classNames.bind(styles);
 
 function SettingsContent({ activeTab }) {
@@ -25,19 +29,19 @@ function SettingsContent({ activeTab }) {
 
             // Nhóm Giai đoạn 2 & 3
             case "search_connect":
-                return <div>Tìm kiếm & Kết bạn</div>;
+                return <SearchConnectSettings />;
             case "active_status":
-                return <div>Trạng thái hoạt động</div>;
+                return <ActiveStatusSettings />;
             case "post_visibility":
-                return <div>Quyền riêng tư bài viết mặc định</div>;
+                return <PostVisibilitySettings />;
             case "message_sound":
                 return <div>Cài đặt Âm thanh tin nhắn</div>;
             case "push_notifications":
                 return <div>Cài đặt Thông báo đẩy</div>;
             case "device_management":
-                return <div>Quản lý thiết bị đăng nhập</div>;
+                return <DeviceManagement />;
             case "two_factor":
-                return <div>Xác thực 2 lớp (2FA)</div>;
+                return <TwoFactorAuthSettings />;
             case "delete_account":
                 return <div>Vô hiệu hoá / Xóa tài khoản</div>;
             case "theme":

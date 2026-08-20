@@ -5,6 +5,7 @@ import {
   CircleCheckBig,
   UserRoundX,
   MessageCircleMore,
+  ShieldAlert
 } from "lucide-react";
 import classNames from "classnames/bind";
 import styles from "./addfriends.module.css";
@@ -65,19 +66,37 @@ function AddFriends({ currentUserId, finduser }) {
 
   if (loading) return <Loading text="Đang Tải..." />;
 
+  const isAllowRequests = finduser.allowFriendRequests !== false;
+
   return (
     <div className={cx("container")}>
       <div className={cx("userCard")}>
         <span>{finduser.name || finduser.username}</span>
         {/* nút gửi yêu cầu */}
         {status === "none" && (
-          <button
-            className={cx("addButton")}
-            onClick={handleSend}
-            disabled={isProcessing}
-          >
-            {isProcessing ? <Loading size="small" /> : <UserRoundPlus />}
-          </button>
+          <>
+            {isAllowRequests ? (
+              // Nếu cho phép kết bạn -> Hiện nút Thêm bạn
+              <button
+                className={cx("addButton")}
+                onClick={handleSend}
+                disabled={isProcessing}
+                title="Thêm bạn bè"
+              >
+                {isProcessing ? <Loading size="small" /> : <UserRoundPlus />}
+              </button>
+            ) : (
+              // Nếu TẮT kết bạn -> Ẩn nút Thêm bạn và có thể hiện Icon báo hiệu riêng tư
+              <button
+                className={cx("cancelButton")}
+                style={{ background: "#e4e6eb", color: "#65676b", cursor: "not-allowed" }}
+                disabled
+                title="Người này không nhận lời mời kết bạn"
+              >
+                <ShieldAlert size={18} />
+              </button>
+            )}
+          </>
         )}
         {/* Nút Hủy Yêu Cầu */}
         {status === "requestSent" && (

@@ -21,6 +21,9 @@ exports.findnewfriend = async (req, res) => {
         .status(404)
         .json({ message: "Không tìm thấy người dùng", success: false });
     }
+    if (!newfriend.allowSearchByCode) {
+      return res.status(404).json({ message: "Không tìm thấy người dùng", success: false });
+    }
     return res.status(200).json({ newfriend, success: true });
   } catch (error) {
     console.error("Lỗi kết bạn", error);
