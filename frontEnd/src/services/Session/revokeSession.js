@@ -3,7 +3,7 @@ const API_URL = process.env.REACT_APP_API_URL || "http://localhost:3001/api";
 export const revokeSession = async (sessionId) => {
     try {
         const token = localStorage.getItem("token");
-        const res = await fetch(`${API_URL}/sessions/revoke/${sessionId}`, {
+        const res = await fetch(`${API_URL}/session/revoke/${sessionId}`, {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json",

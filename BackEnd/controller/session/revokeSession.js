@@ -1,4 +1,5 @@
 const UserSession = require("../../model/UserSession.Model");
+const { getIO, getOnlineUsers } = require("../../config/socker");
 
 exports.revokeSession = async (req, res) => {
     try {
