@@ -22,10 +22,14 @@ function LeaderboardSection() {
       ]);
       
       if (pointsRes.success) {
-        setPointsData(pointsRes.data);
+        // Sắp xếp phòng thủ theo điểm giảm dần, rồi gán lại rank đúng thứ tự
+        const sorted = [...pointsRes.data].sort((a, b) => (b.points || 0) - (a.points || 0));
+        setPointsData(sorted.map((item, idx) => ({ ...item, rank: idx + 1 })));
       }
       if (friendsRes.success) {
-        setFriendsData(friendsRes.data);
+        // Sắp xếp phòng thủ theo streak giảm dần, rồi gán lại rank đúng thứ tự
+        const sorted = [...friendsRes.data].sort((a, b) => (b.streak || 0) - (a.streak || 0));
+        setFriendsData(sorted.map((item, idx) => ({ ...item, rank: idx + 1 })));
       }
       setLoading(false);
     };
@@ -52,24 +56,27 @@ function LeaderboardSection() {
 
   const renderTop3 = () => {
     if (data.length === 0) return null;
-    
-    // Ensure we have up to 3 items
-    const top3Data = [data[0], data[1], data[2]].filter(Boolean);
-    const order = [1, 0, 2]; // Index mapping for visual podium (2nd, 1st, 3rd)
-    
+
+    // Ensure we have up to 3 items (index 0 = rank 1, index 1 = rank 2, index 2 = rank 3)
+    const top3Data = [data[0], data[1], data[2]];
+
+    // Visual order: hiển thị hạng 2 bên trái, hạng 1 ở giữa (cao nhất), hạng 3 bên phải
+    const PODIUM_CONFIG = [
+      { dataIndex: 1, rank: 2, slot: "second" },
+      { dataIndex: 0, rank: 1, slot: "first"  },
+      { dataIndex: 2, rank: 3, slot: "third"  },
+    ];
+
     return (
       <div className={cx("top3")}>
-        {order.map((posIdx) => {
-          const entry = top3Data[posIdx];
-          if (!entry) return <div key={`empty-${posIdx}`} className={cx("podiumItem", "empty")} />;
-          
-          const rank  = posIdx === 1 ? 1 : posIdx === 0 ? 2 : 3;
-          const slots = ["second", "first", "third"];
-          
+        {PODIUM_CONFIG.map(({ dataIndex, rank, slot }) => {
+          const entry = top3Data[dataIndex];
+          if (!entry) return <div key={`empty-${slot}`} className={cx("podiumItem", "empty")} />;
+
           return (
-            <div key={entry.userId} className={cx("podiumItem", slots[posIdx])}>
-              {posIdx === 1 && <span className={cx("crown")}>👑</span>}
-              <img src={entry.avatar} alt={entry.name} className={cx("podiumAvatar", { big: posIdx === 1 })} />
+            <div key={entry.userId} className={cx("podiumItem", slot)}>
+              {slot === "first" && <span className={cx("crown")}>👑</span>}
+              <img src={entry.avatar} alt={entry.name} className={cx("podiumAvatar", { big: slot === "first" })} />
               <p className={cx("podiumName")}>{entry.name.split(" ").pop()}</p>
               <p className={cx("podiumVal")}>
                 {isPoints ? `${entry.points.toLocaleString()} ⭐` : `${entry.streak} 🔥`}

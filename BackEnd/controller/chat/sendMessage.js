@@ -39,12 +39,15 @@ const updateConversationStreak = async (conversation, senderId) => {
       conversation.streak = 0;
     }
 
-    // Reset bộ đếm cho ngày hôm nay
+    // Reset bộ đếm cho ngày hôm nay, bắt đầu với người gửi hiện tại
     conversation.currentTrackingDate = today;
     conversation.participantsChattedToday = [senderId];
   } else {
     // Nếu vẫn trong cùng một ngày
-    if (!conversation.participantsChattedToday.includes(senderId)) {
+    // Dùng .toString() để so sánh đúng giữa string và ObjectId của MongoDB
+    const alreadyTracked = conversation.participantsChattedToday
+      .some((id) => id.toString() === senderId.toString());
+    if (!alreadyTracked) {
       conversation.participantsChattedToday.push(senderId);
     }
   }
