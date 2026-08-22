@@ -1,0 +1,88 @@
+.container {
+    background: #fff;
+    padding: 2rem;
+    border-radius: 0.75rem;
+    box-shadow: 0 0.25rem 0.7rem rgba(0, 0, 0, 0.05);
+    text-align: left;
+    /* Ép toàn bộ nội dung căn trái */
+}
+
+.title {
+    font-size: 1.5rem;
+    color: #333;
+    margin-top: 0;
+    margin-bottom: 1.5rem;
+    font-weight: 600;
+}
+
+.warning-box {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 1.5rem;
+    padding: 1rem 1.2rem;
+    background: #fff0f0;
+    border: 1px solid #ffcccc;
+    border-radius: 0.5rem;
+    color: #d93025;
+    font-weight: 500;
+}
+
+.setting-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    /* Căn giữa theo chiều dọc */
+    padding: 1.5rem 0 0;
+    border-top: 1px solid #f0f2f5;
+    gap: 20px;
+    /* Tạo khoảng cách an toàn giữa chữ và nút */
+}
+
+.setting-info {
+    flex: 1;
+    /* Cho phép khối chữ chiếm toàn bộ không gian còn lại */
+}
+
+.setting-info h4 {
+    margin: 0 0 0.4rem 0;
+    font-size: 1.1rem;
+    color: #333;
+}
+
+.setting-info p {
+    margin: 0;
+    font-size: 0.95rem;
+    color: #666;
+    line-height: 1.5;
+}
+
+.deactivate-btn {
+    background: #ffe6e6;
+    color: #d93025;
+    border: none;
+    padding: 0.6rem 1.25rem;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    white-space: nowrap;
+    /* BẮT BUỘC: Ép chữ "Vô hiệu hóa" nằm trên 1 dòng */
+    flex-shrink: 0;
+    /* BẮT BUỘC: Không cho phép nút bị bóp méo khi text quá dài */
+    height: fit-content;
+    /* Giữ chiều cao nút ôm gọn chữ */
+}
+
+.deactivate-btn:hover:not(:disabled) {
+    background: #ffcccc;
+    transform: translateY(-1px);
+}
+
+.deactivate-btn:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}

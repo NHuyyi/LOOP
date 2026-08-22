@@ -14,6 +14,8 @@ const updateProfile = require("../controller/users/updateProfile");
 const requestChangePassword = require("../controller/users/requestChangePassword");
 const verifyOldPassword = require("../controller/users/verifyOldPassword");
 const updatePrivacy = require("../controller/users/updatePrivacy");
+const deactivateAccount = require("../controller/users/deactivateAccount");
+const requestReactivate = require("../controller/users/requestReactivate");
 const authorize = require("../middleware/Authorization");
 
 router.post("/signup", SignUp.SignUp); // Đăng ký người dùng
@@ -34,4 +36,6 @@ router.post("/update-profile", authorize, updateProfile.updateProfile);
 router.post("/verify-old-password", authorize, verifyOldPassword.verifyOldPassword);
 router.post("/request-change-password", authorize, requestChangePassword.requestChangePassword);
 router.post("/update-privacy", authorize, updatePrivacy.updatePrivacy);
+router.post("/deactivate", authorize, deactivateAccount.deactivateAccount);
+router.post("/request-reactivate", requestReactivate.requestReactivate);
 module.exports = router;

@@ -46,6 +46,7 @@ export const Login = async (email, password) => {
         message:
           data.message || "Đăng nhập thất bại vui lòng kiểm tra thông tin",
         user: data.user || null,
+        isDeactivated: data.isDeactivated || false,
       };
     }
 

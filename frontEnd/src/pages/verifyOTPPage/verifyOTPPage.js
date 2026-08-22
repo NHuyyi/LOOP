@@ -76,6 +76,12 @@ function Otp() {
         localStorage.setItem("token", data.token);
         navigate("/home");
       }
+      if (data.otptype === "reactivate") {
+        dispatch(setUser({ user: data.user, token: data.token }));
+        localStorage.setItem("userData", JSON.stringify({ user: data.user, token: data.token }));
+        localStorage.setItem("token", data.token);
+        navigate("/home");
+      }
       if (data.otptype === "2fa") {
         dispatch(setUser({ user: data.user, token: data.token }));
         localStorage.setItem("userData", JSON.stringify({ user: data.user, token: data.token }));
@@ -140,10 +146,10 @@ function Otp() {
     const pastedNumbers = pastedData.replace(/\D/g, "").slice(0, 6);
 
     if (pastedNumbers.length > 0) {
-     
+
       const newCodeOtp = [...codeotp];
       for (let i = 0; i < newCodeOtp.length; i++) {
-        newCodeOtp[i] = pastedNumbers[i] || ""; 
+        newCodeOtp[i] = pastedNumbers[i] || "";
       }
       setCodeOtp(newCodeOtp);
 

@@ -12,6 +12,7 @@ import ActiveStatusSettings from "../ActiveStatusSettings/ActiveStatusSettings";
 import PostVisibilitySettings from "../PostVisibilitySettings/PostVisibilitySettings";
 import TwoFactorAuthSettings from "../TwoFactorSettings/TwoFactorSettings";
 import DeviceManagement from "../DeviceManagement/DeviceManagement";
+import DeactivateAccount from "../DeactivateAccount/DeactivateAccount";
 const cx = classNames.bind(styles);
 
 function SettingsContent({ activeTab }) {
@@ -43,7 +44,7 @@ function SettingsContent({ activeTab }) {
             case "two_factor":
                 return <TwoFactorAuthSettings />;
             case "delete_account":
-                return <div>Vô hiệu hoá / Xóa tài khoản</div>;
+                return <DeactivateAccount />;
             case "theme":
                 return <div>Chế độ Sáng/Tối</div>;
             case "language":
