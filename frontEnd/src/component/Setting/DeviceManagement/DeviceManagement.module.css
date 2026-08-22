@@ -128,3 +128,14 @@
     color: #888;
     padding: 1rem 0;
 }
+
+.device-id {
+    font-size: 0.8rem;
+    color: #666;
+    font-family: monospace;
+    /* Giúp hiển thị mã ID dạng code dễ nhìn hơn */
+    background: #f4f5f7;
+    padding: 0.1rem 0.4rem;
+    border-radius: 4px;
+    width: fit-content;
+}

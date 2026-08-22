@@ -2,7 +2,6 @@ const UserSession = require("../../model/UserSession.Model");
 
 exports.getActiveSessions = async (req, res) => {
     try {
-        console.log("here")
         const userId = req.user.id; // Lấy từ middleware Authorization
         const sessions = await UserSession.find({ userId, isActive: true })
             .sort({ lastActiveAt: -1 });

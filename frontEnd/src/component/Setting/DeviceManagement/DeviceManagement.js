@@ -95,6 +95,8 @@ function DeviceManagement() {
                                             {device.deviceName} - {device.browserName}
                                             {isCurrentDevice && <span className={cx("current-badge")}>Đang dùng</span>}
                                         </h4>
+
+                                        <span className={cx("device-id")} title="Device ID">ID: {device.deviceId}</span>
                                         <div className={cx("device-meta")}>
                                             <span className={cx("meta-item")} title="Vị trí"><MapPin size={14} /> {device.location}</span>
                                             <span className={cx("meta-item")} title="IP"><Globe size={14} /> {device.ipAddress}</span>
