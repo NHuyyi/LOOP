@@ -1,15 +1,16 @@
 import { useState } from "react";
 import { Login } from "../../../services/User/Login";
+import { requestReactivateAPI } from "../../../services/User/requestReactivate";
 import styles from "../FormSignUp/FormSignUp.module.css";
 import classNames from "classnames/bind";
 import { Eye, EyeOff } from "lucide-react";
-import { useNavigate } from "react-router-dom";
-// để lưu user vào redux
+import { useNavigate, Link } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { setUser } from "../../../redux/userSlice";
-import { Link } from "react-router-dom";
 import { resendOTP } from "../../../services/User/resendOTP";
 import Loading from "../../Loading/Loading";
+import ConfirmModal from "../../common/ConfirmModal/ConfirmModal";
+
 const cx = classNames.bind(styles);
 
 function FormLogin({ setMessage, setSuccess }) {
@@ -18,8 +19,11 @@ function FormLogin({ setMessage, setSuccess }) {
     email: "",
     password: "",
   });
-  const navigate = useNavigate();
 
+  const [showRestoreModal, setShowRestoreModal] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+
+  const navigate = useNavigate();
   const dispatch = useDispatch();
 
   const handleChange = (e) => {
@@ -29,15 +33,23 @@ function FormLogin({ setMessage, setSuccess }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // Gọi API đăng ký ở đây, ví dụ:
     try {
-      setLoading(true); // bật trạng thái loading
-      const data = await Login(formData.email, formData.password);
+      setLoading(true);
+      let data = await Login(formData.email, formData.password);
+
+      if (data.isDeactivated) {
+        setShowRestoreModal(true); // Chỉ cần set true để mở modal
+        setLoading(false);
+        return;
+      }
+
       if (data.success === false) {
         setMessage(data.message);
         setSuccess(false);
+        setLoading(false);
         return;
       }
+
       if (data.requires2FA) {
         setMessage(data.message);
         setSuccess(true);
@@ -56,7 +68,6 @@ function FormLogin({ setMessage, setSuccess }) {
       }
 
       dispatch(setUser({ user: data.user, token: data.token }));
-      // lưu vào localStorage để giữ đăng nhập sau reload
       localStorage.setItem("user", JSON.stringify(data.user));
       localStorage.setItem("token", data.token);
       navigate("/home");
@@ -67,12 +78,27 @@ function FormLogin({ setMessage, setSuccess }) {
       setMessage(error.message);
       setSuccess(false);
     } finally {
-      setLoading(false); // tắt trạng thái loading
+      setLoading(false);
     }
   };
 
-  const [showPassword, setShowPassword] = useState(false);
+  const handleConfirmRestore = async () => {
+    setLoading(true); // Đặt loading = true để ConfirmModal hiện icon xoay tròn
+    const data = await requestReactivateAPI(formData.email, formData.password);
 
+    if (data.success) {
+      setMessage(data.message);
+      setSuccess(true);
+      setShowRestoreModal(false); // Đóng modal khi thành công
+      setTimeout(() => {
+        navigate("/otp", { state: { email: formData.email, type: "reactivate", password: formData.password } });
+      }, 1500);
+    } else {
+      setMessage(data.message);
+      setSuccess(false);
+    }
+    setLoading(false);
+  };
   return (
     <div className={cx("custom-container")}>
       {/* form đăng ký */}
@@ -125,8 +151,18 @@ function FormLogin({ setMessage, setSuccess }) {
           </Link>
         </form>
       </div>
+      <ConfirmModal
+        isOpen={showRestoreModal}
+        onClose={() => setShowRestoreModal(false)}
+        onConfirm={handleConfirmRestore}
+        title="Tài khoản vô hiệu hóa"
+        message="Tài khoản của bạn hiện đang bị vô hiệu hóa. Bạn có muốn nhận mã OTP qua email để khôi phục và tiếp tục sử dụng không?"
+        isProcessing={loading}
+      />
     </div>
   );
 }
+
+
 
 export default FormLogin;

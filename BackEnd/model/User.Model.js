@@ -79,6 +79,11 @@ const User = mongoose.Schema(
     }],
 
     twoFactorEnabled: { type: Boolean, default: false },
+
+    isdelete: {
+      type: Boolean,
+      default: false,
+    },
   },
 
 

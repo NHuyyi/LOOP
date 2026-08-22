@@ -132,6 +132,21 @@ exports.verifyOTP = async (req, res) => {
         .populate("friends", "name avatar");
     }
 
+    if (user.otptype === "reactivate") {
+      updatedUser = await UserModel.findOneAndUpdate(
+        { email },
+        {
+          isdelete: false, // Mở khóa tài khoản
+          otp: null,
+          otptype: null,
+          otpExpires: null,
+        },
+        { new: true }
+      )
+        .populate("profile")
+        .populate("friends", "name avatar");
+    }
+
     const token = jwt.sign(
       { id: user._id, role: user.role, deviceId: deviceId },
       process.env.JWT_SECRET,

@@ -37,7 +37,7 @@ async function getLocationFromIP(ip) {
 }
 exports.Login = async (req, res) => {
   try {
-    const { email, password, deviceId } = req.body;
+    const { email, password, deviceId} = req.body;
 
     if (!email || !password) {
       return res.status(400).json({
@@ -72,6 +72,14 @@ exports.Login = async (req, res) => {
       return res
         .status(400)
         .json({ message: "Thông tin đăng nhập sai", success: false });
+    }
+
+    if (user.isdelete) {
+      return res.status(403).json({
+        message: "Tài khoản của bạn đã bị vô hiệu hóa. Bạn có muốn khôi phục lại không?",
+        success: false,
+        isDeactivated: true // Cờ cho Frontend hiện Modal
+      });
     }
 
     // ✅ Kiểm tra xác minh OTP
