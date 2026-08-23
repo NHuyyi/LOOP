@@ -60,7 +60,7 @@ const chatSlice = createSlice({
     },
     // Khi có tin nhắn mới (mình gửi hoặc người ta gửi), cập nhật lại "tin nhắn cuối" và đẩy người đó lên top 1
     updateLastMessage: (state, action) => {
-      const { conversationId, message, reorder = true } = action.payload;
+      const { conversationId, message, reorder = true, streak } = action.payload;
 
       // 1. TÌM TRONG DANH SÁCH BÌNH THƯỜNG
       const index = state.ConversationList.findIndex(
@@ -69,6 +69,10 @@ const chatSlice = createSlice({
 
       if (index !== -1) {
         state.ConversationList[index].lastMessage = message;
+        // Cập nhật streak real-time nếu backend gửi kèm
+        if (streak !== undefined) {
+          state.ConversationList[index].streak = streak;
+        }
         if (reorder) {
           const updatedConversation = state.ConversationList.splice(
             index,
@@ -90,6 +94,10 @@ const chatSlice = createSlice({
 
       if (restrictedIndex !== -1) {
         state.RestrictedConversationList[restrictedIndex].lastMessage = message;
+        // Cập nhật streak real-time nếu backend gửi kèm
+        if (streak !== undefined) {
+          state.RestrictedConversationList[restrictedIndex].streak = streak;
+        }
         if (reorder) {
           const updatedRestricted = state.RestrictedConversationList.splice(
             restrictedIndex,
@@ -105,6 +113,7 @@ const chatSlice = createSlice({
         _id: conversationId,
         participants: [message.senderId, state.activeReceiver].filter(Boolean),
         lastMessage: message,
+        streak: streak ?? 0,
         updatedAt: new Date().toISOString(),
       };
       state.ConversationList.unshift(newConversation);
