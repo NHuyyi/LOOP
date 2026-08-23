@@ -153,12 +153,11 @@ exports.sendMessage = async (req, res) => {
       conversation.restrictedBy.includes(receiverId);
 
     if (onlineUsers[receiverId]) {
-      // Nhớ populate thêm phần replyTo để hiển thị nội dung tin bị reply
-
       io.to(onlineUsers[receiverId]).emit("newMessage", {
         conversationId: conversation._id,
         message: populatedMessage,
         isRestricted: isRestricted,
+        streak: conversation.streak,  // Gửi streak để FE cập nhật real-time
       });
     }
     // This emit is used to update the last message in the conversation list for the sender
@@ -166,6 +165,7 @@ exports.sendMessage = async (req, res) => {
       io.to(onlineUsers[senderId]).emit("updateLastMessage", {
         conversationId: conversation._id,
         message: populatedMessage,
+        streak: conversation.streak,  // Gửi streak để FE cập nhật real-time
       });
     }
 
