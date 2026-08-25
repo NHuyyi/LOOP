@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import socket from "../socker";
 import {
@@ -57,6 +57,13 @@ function SocketManager() {
   const [message, setMessage] = useState("");
   const [success, setSuccess] = useState(false);
   const [fadeOut, setFadeOut] = useState(false);
+
+  const notiSettings = useSelector((state) => state.user.notificationSettings);
+  const settingsRef = useRef(notiSettings);
+
+  useEffect(() => {
+    settingsRef.current = notiSettings;
+  }, [notiSettings]);
 
   useEffect(() => {
     if (message) {
@@ -211,7 +218,7 @@ function SocketManager() {
         const finalIsRestricted =
           isRestricted || conversation?.restrictedBy?.includes(currentUser._id);
         const isChatpage = location.pathname.startsWith("/chat");
-
+        const isMyMessage = String(message.senderId?._id || message.senderId) === String(currentUser._id);
         dispatch(addMessage({ conversationId, message }));
 
         if (!finalIsRestricted) {
@@ -235,6 +242,39 @@ function SocketManager() {
                 conversationId,
               }),
             );
+          }
+
+          if (!isMyMessage && !isMuted) {
+            const currentSettings = settingsRef.current;
+
+            // Xử lý Âm thanh tin nhắn
+            if (currentSettings?.messageSound?.enabled) {
+              try {
+                const sound = currentSettings.messageSound.soundType || "pop";
+                const volume = currentSettings.messageSound.volume || 0.8;
+
+                // Gọi require tương đối từ thư mục hooks (Lưu ý: phải có file trong asset/sounds/)
+                const soundFile = require(`../asset/sounds/${sound}.mp3`);
+                const audio = new Audio(soundFile);
+                audio.volume = volume;
+                audio.play().catch(() => console.log("Trình duyệt chặn autoplay"));
+              } catch (err) {
+                console.error("Lỗi load âm thanh socket", err);
+              }
+            }
+
+            // Xử lý Thông báo đẩy trình duyệt
+            if (currentSettings?.pushEnabled && document.hidden) {
+              if (Notification.permission === "granted") {
+                const senderName = message.senderId?.name || "Ai đó";
+                const notifyText = message.text ? message.text : "Đã gửi tệp đính kèm";
+
+                new Notification(`Tin nhắn mới từ ${senderName}`, {
+                  body: notifyText,
+                  icon: message.senderId?.avatar || "/default-avatar.png"
+                });
+              }
+            }
           }
 
           if (!isChatpage && !isMuted) {

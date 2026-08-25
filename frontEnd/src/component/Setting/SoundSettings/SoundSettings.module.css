@@ -1,0 +1,144 @@
+.container {
+    background: #fff;
+    padding: 2rem;
+    border-radius: 0.75rem;
+    box-shadow: 0 0.25rem 0.7rem rgba(0, 0, 0, 0.05);
+}
+
+.title {
+    font-size: 1.5rem;
+    color: #333;
+    margin: 0 0 0.5rem 0;
+    font-weight: 600;
+}
+
+.subtitle {
+    font-size: 0.95rem;
+    color: #666;
+    margin-bottom: 1.5rem;
+}
+
+.settings-wrapper {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Row Layout */
+.sound-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.2rem 1rem;
+    border-bottom: 1px solid #f0f2f5;
+    gap: 1rem;
+    transition: background 0.2s;
+}
+
+.sound-row:last-child {
+    border-bottom: none;
+}
+
+.sound-row.master {
+    background-color: #faf5ff;
+    border-radius: 0.5rem;
+    border: 1px solid #e9d5ff;
+    margin-bottom: 1rem;
+    border-bottom: 1px solid #e9d5ff;
+}
+
+.label {
+    font-weight: 600;
+    font-size: 1.05rem;
+    color: #333;
+}
+
+.controls {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+/* UI Elements */
+.custom-select {
+    padding: 0.5rem;
+    border-radius: 0.4rem;
+    border: 1px solid #ccc;
+    outline: none;
+    cursor: pointer;
+    min-width: 140px;
+    transition: all 0.2s;
+}
+
+.custom-select:disabled {
+    background: #f0f0f0;
+    cursor: not-allowed;
+}
+
+.volume-control {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.custom-range {
+    accent-color: #a259ff;
+    width: 100px;
+    cursor: pointer;
+    transition: accent-color 0.2s;
+}
+
+.custom-range:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.vol-text {
+    font-size: 0.85rem;
+    color: #555;
+    min-width: 35px;
+    transition: color 0.2s;
+}
+
+.mute-btn {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    color: #a259ff;
+    padding: 0.4rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: 0.2s;
+}
+
+.mute-btn:hover {
+    background: #f0e6ff;
+}
+
+.mute-btn.muted {
+    color: #d93025;
+}
+
+.mute-btn.muted:hover {
+    background: #ffe0e0;
+}
+
+
+.custom-select.mixed-state {
+    color: #888;
+    font-style: italic;
+    background-color: #f9f9f9;
+    border-color: #e0e0e0;
+}
+
+.custom-range.mixed-state {
+    accent-color: #a0aabf;
+    /* Đổi màu thanh trượt sang xám tro */
+    opacity: 0.8;
+}
+
+.vol-text.mixed-state {
+    color: #a0aabf;
+    font-style: italic;
+}
