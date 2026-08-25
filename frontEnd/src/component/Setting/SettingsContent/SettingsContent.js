@@ -13,6 +13,7 @@ import PostVisibilitySettings from "../PostVisibilitySettings/PostVisibilitySett
 import TwoFactorAuthSettings from "../TwoFactorSettings/TwoFactorSettings";
 import DeviceManagement from "../DeviceManagement/DeviceManagement";
 import DeactivateAccount from "../DeactivateAccount/DeactivateAccount";
+import SoundSettings from "../SoundSettings/SoundSettings";
 const cx = classNames.bind(styles);
 
 function SettingsContent({ activeTab }) {
@@ -36,7 +37,7 @@ function SettingsContent({ activeTab }) {
             case "post_visibility":
                 return <PostVisibilitySettings />;
             case "message_sound":
-                return <div>Cài đặt Âm thanh tin nhắn</div>;
+                return <SoundSettings />;
             case "push_notifications":
                 return <div>Cài đặt Thông báo đẩy</div>;
             case "device_management":

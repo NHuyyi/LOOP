@@ -4,6 +4,7 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
   user: null, // chưa đăng nhập
   token: null,
+  notificationSettings: null,
 };
 
 // tạo slide
@@ -26,8 +27,12 @@ const userSlice = createSlice({
       state.token = null;
       localStorage.removeItem("userData");
     },
+
+    setNotiSettings: (state, action) => {
+      state.notificationSettings = action.payload;
+    },
   },
 });
 
-export const { setUser, clearUser } = userSlice.actions;
+export const { setUser, clearUser, setNotiSettings } = userSlice.actions;
 export default userSlice.reducer;
