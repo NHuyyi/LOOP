@@ -38,12 +38,14 @@ import { clearUser } from "../redux/userSlice";
 
 
 import { useLocation } from "react-router-dom";
+import { usePlaySound } from "./usePlaySound";
 
 function SocketManager() {
   const currentUser = useSelector((state) => state.user.user);
   const dispatch = useDispatch();
-
+  const { playSound } = usePlaySound();
   const location = useLocation();
+
 
   const conversationList = useSelector((state) => state.chat.ConversationList);
   const activeConversationId = useSelector(
@@ -186,6 +188,12 @@ function SocketManager() {
       });
       socket.on("createPost", ({ post }) => {
         dispatch(addPost(post));
+        const currentSettings = settingsRef.current;
+        if (currentSettings?.postSound?.enabled) {
+          const sound = currentSettings.postSound.soundType || "Am_1";
+          const volume = currentSettings.postSound.volume || 0.8;
+          playSound(sound, volume);
+        }
       });
 
       socket.on("Deletepost", ({ postid }) => {
@@ -250,31 +258,11 @@ function SocketManager() {
 
             // Xử lý Âm thanh tin nhắn
             if (currentSettings?.messageSound?.enabled) {
-              try {
-                const sound = currentSettings.messageSound.soundType || "pop";
-                const volume = currentSettings.messageSound.volume || 0.8;
+              const sound = currentSettings.messageSound.soundType || "Am_2";
+              const volume = currentSettings.messageSound.volume || 0.5;
 
-                // Gọi require tương đối từ thư mục hooks (Lưu ý: phải có file trong asset/sounds/)
-                const soundFile = require(`../asset/sounds/${sound}.mp3`);
-                const audio = new Audio(soundFile);
-                audio.volume = volume;
-                audio.play().catch(() => console.log("Trình duyệt chặn autoplay"));
-              } catch (err) {
-                console.error("Lỗi load âm thanh socket", err);
-              }
-            }
-
-            // Xử lý Thông báo đẩy trình duyệt
-            if (currentSettings?.pushEnabled && document.hidden) {
-              if (Notification.permission === "granted") {
-                const senderName = message.senderId?.name || "Ai đó";
-                const notifyText = message.text ? message.text : "Đã gửi tệp đính kèm";
-
-                new Notification(`Tin nhắn mới từ ${senderName}`, {
-                  body: notifyText,
-                  icon: message.senderId?.avatar || "/default-avatar.png"
-                });
-              }
+              // Gọi trực tiếp từ custom hook
+              playSound(sound, volume);
             }
           }
 
@@ -302,6 +290,10 @@ function SocketManager() {
 
       socket.on("UpdateReactionMessage", (data) => {
         dispatch(UpdateReactionMessage(data));
+        const currentSettings = settingsRef.current;
+        if (currentSettings?.messageSound?.enabled) {
+          playSound(currentSettings.messageSound.soundType || "Am_2", currentSettings.messageStatusSound.volume || 0.5);
+        }
       });
 
       socket.on("messageRead", ({ conversationId, readerId }) => {
@@ -313,11 +305,23 @@ function SocketManager() {
             currentUserId: readerId,
           }),
         );
+        const currentSettings = settingsRef.current;
+        if (currentSettings?.messageStatusSound?.enabled) {
+          const sound = currentSettings.messageStatusSound.soundType || "Am_2";
+          const volume = currentSettings.messageStatusSound.volume || 0.5;
+          playSound(sound, volume);
+        }
       });
 
       // LẮNG NGHE TYPING
       socket.on("userTyping", ({ conversationId }) => {
         dispatch(setTyping({ conversationId, isTyping: true }));
+        const currentSettings = settingsRef.current;
+        if (currentSettings?.typingSound?.enabled) {
+          const sound = currentSettings.typingSound.soundType || "Am_3";
+          const volume = currentSettings.typingSound.volume || 0.3;
+          playSound(sound, volume);
+        }
       });
 
       socket.on("userStopTyping", ({ conversationId }) => {
@@ -379,6 +383,7 @@ function SocketManager() {
     activeConversationId,
     conversationList,
     restrictedConversationList,
+    playSound,
   ]);
 
   return (

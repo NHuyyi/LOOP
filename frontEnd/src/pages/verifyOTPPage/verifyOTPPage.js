@@ -5,9 +5,10 @@ import { verifyOTP } from "../../services/User/verifyOTP";
 import { resendOTP } from "../../services/User/resendOTP";
 // để lưu user vào redux
 import { useDispatch } from "react-redux";
-import { setUser } from "../../redux/userSlice";
+import { setUser, setNotiSettings } from "../../redux/userSlice";
 import classNames from "classnames/bind";
 import styles from "./verifyOTPPage.module.css";
+import { getSettingsSounds } from "../../services/notifications/getNotiSettings";
 
 import Loading from "../../component/Loading/Loading";
 const cx = classNames.bind(styles);
@@ -74,17 +75,41 @@ function Otp() {
         // lưu vào localStorage để giữ đăng nhập sau reload
         localStorage.setItem("user", JSON.stringify(data.user));
         localStorage.setItem("token", data.token);
+        try {
+          const notiRes = await getSettingsSounds();
+          if (notiRes.success && notiRes.data) {
+            dispatch(setNotiSettings(notiRes.data));
+          }
+        } catch (error) {
+          console.error("Lỗi lấy âm thanh khi đăng nhập:", error);
+        }
         navigate("/home");
       }
       if (data.otptype === "reactivate") {
         dispatch(setUser({ user: data.user, token: data.token }));
         localStorage.setItem("userData", JSON.stringify({ user: data.user, token: data.token }));
         localStorage.setItem("token", data.token);
+        try {
+          const notiRes = await getSettingsSounds();
+          if (notiRes.success && notiRes.data) {
+            dispatch(setNotiSettings(notiRes.data));
+          }
+        } catch (error) {
+          console.error("Lỗi lấy âm thanh khi đăng nhập:", error);
+        }
         navigate("/home");
       }
       if (data.otptype === "2fa") {
         dispatch(setUser({ user: data.user, token: data.token }));
         localStorage.setItem("userData", JSON.stringify({ user: data.user, token: data.token }));
+        try {
+          const notiRes = await getSettingsSounds();
+          if (notiRes.success && notiRes.data) {
+            dispatch(setNotiSettings(notiRes.data));
+          }
+        } catch (error) {
+          console.error("Lỗi lấy âm thanh khi đăng nhập:", error);
+        }
         navigate("/home");
       }
       if (data.otptype === "reset") {

@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
-import { setUser } from "../redux/userSlice";
+import { setUser, setNotiSettings } from "../redux/userSlice";
+import { getSettingsSounds } from "../services/notifications/getNotiSettings";
 
 export function usePersistedUser() {
   const dispatch = useDispatch();
@@ -8,8 +9,15 @@ export function usePersistedUser() {
   useEffect(() => {
     const saved = localStorage.getItem("userData");
     if (saved) {
-      const parsed = JSON.parse(saved); // { user, token }
-      dispatch(setUser(parsed)); // không bị lồng nữa
+      const parsed = JSON.parse(saved);
+      dispatch(setUser(parsed));
+
+      // Nạp dữ liệu âm thanh
+      getSettingsSounds().then((res) => {
+        if (res.success && res.data) {
+          dispatch(setNotiSettings(res.data));
+        }
+      });
     }
   }, [dispatch]);
 }
