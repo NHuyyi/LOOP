@@ -1,36 +1,107 @@
 .container {
-    background: #fff;
-    padding: 2rem;
-    border-radius: 0.75rem;
-    box-shadow: 0 0.25rem 0.7rem rgba(0, 0, 0, 0.05);
+    background: #ffffff;
+    padding: 2.5rem;
+    border-radius: 1rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05), 0 1px 3px rgba(0, 0, 0, 0.03);
+    font-family: inherit;
 }
 
 .title {
-    font-size: 1.5rem;
-    color: #333;
+    font-size: 1.6rem;
+    color: #1a1a2e;
     margin: 0 0 0.5rem 0;
-    font-weight: 600;
+    font-weight: 700;
+    letter-spacing: -0.5px;
 }
 
 .subtitle {
     font-size: 0.95rem;
-    color: #666;
-    margin-bottom: 1.5rem;
+    color: #6c757d;
+    margin-bottom: 2rem;
+    line-height: 1.5;
 }
 
 .settings-wrapper {
     display: flex;
     flex-direction: column;
+    gap: 1.5rem;
 }
 
-/* Row Layout */
+/* --- Nhóm Accordion (Thả xuống) --- */
+.setting-group {
+    background: #ffffff;
+    border: 1px solid #f1f3f5;
+    border-radius: 1rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.setting-group:hover {
+    box-shadow: 0 4px 12px rgba(162, 89, 255, 0.08);
+    border-color: #e9d5ff;
+}
+
+.group-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.25rem 1.5rem;
+    background: #fafafb;
+    cursor: pointer;
+    transition: background 0.2s ease;
+    user-select: none;
+}
+
+.group-header:hover {
+    background: #f1f3f5;
+}
+
+.group-title {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #1a1a2e;
+}
+
+.group-title svg {
+    color: #a259ff;
+}
+
+.chevron {
+    color: #6c757d;
+    transition: transform 0.3s ease;
+}
+
+.group-content {
+    display: flex;
+    flex-direction: column;
+    border-top: 1px solid #f1f3f5;
+    background: #fff;
+    animation: slideDown 0.3s ease-out forwards;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* --- Từng Row bên trong Nhóm --- */
 .sound-row {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 1.2rem 1rem;
-    border-bottom: 1px solid #f0f2f5;
-    gap: 1rem;
+    padding: 1.25rem 1.5rem;
+    border-bottom: 1px solid #f1f3f5;
     transition: background 0.2s;
 }
 
@@ -38,107 +109,164 @@
     border-bottom: none;
 }
 
-.sound-row.master {
-    background-color: #faf5ff;
-    border-radius: 0.5rem;
-    border: 1px solid #e9d5ff;
-    margin-bottom: 1rem;
-    border-bottom: 1px solid #e9d5ff;
+.sound-row:hover {
+    background: #fdfbff;
 }
 
+/* --- Dòng Master (Đứng độc lập) --- */
+.master-section {
+    margin-bottom: 0.5rem;
+}
+
+.sound-row.master {
+    background: linear-gradient(145deg, #faf5ff, #ffffff);
+    border: 1px solid #e9d5ff;
+    border-radius: 1rem;
+    position: relative;
+}
+
+.sound-row.master::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+    background: linear-gradient(to bottom, #a259ff, #daabff);
+    border-radius: 4px 0 0 4px;
+}
+
+/* --- Typography & Controls --- */
 .label {
     font-weight: 600;
     font-size: 1.05rem;
     color: #333;
+    text-align: left;
+    flex: 1;
+    padding-right: 1rem;
 }
 
 .controls {
     display: flex;
     align-items: center;
-    gap: 1.5rem;
+    gap: 1.25rem;
 }
 
-/* UI Elements */
 .custom-select {
-    padding: 0.5rem;
-    border-radius: 0.4rem;
-    border: 1px solid #ccc;
+    padding: 0.6rem 1rem;
+    border-radius: 0.5rem;
+    border: 1px solid #e4e6eb;
+    background-color: #f8f9fa;
+    color: #333;
+    font-size: 0.95rem;
+    font-weight: 500;
     outline: none;
     cursor: pointer;
-    min-width: 140px;
-    transition: all 0.2s;
+    min-width: 150px;
+    transition: all 0.2s ease;
+}
+
+.custom-select:hover:not(:disabled) {
+    border-color: #a259ff;
+    background-color: #fff;
+}
+
+.custom-select:focus {
+    border-color: #a259ff;
+    box-shadow: 0 0 0 3px rgba(162, 89, 255, 0.15);
+    background-color: #fff;
 }
 
 .custom-select:disabled {
-    background: #f0f0f0;
+    background: #f0f2f5;
+    color: #adb5bd;
     cursor: not-allowed;
+    border-color: #e9ecef;
 }
 
 .volume-control {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: 0.75rem;
+    background: #f8f9fa;
+    padding: 0.5rem 1rem;
+    border-radius: 2rem;
+    border: 1px solid #f1f3f5;
+    transition: background 0.2s ease;
+}
+
+.volume-control:hover {
+    background: #fff;
+    border-color: #e9d5ff;
 }
 
 .custom-range {
     accent-color: #a259ff;
     width: 100px;
+    height: 4px;
+    background: #e9ecef;
+    border-radius: 2px;
     cursor: pointer;
     transition: accent-color 0.2s;
 }
 
 .custom-range:disabled {
-    opacity: 0.5;
+    opacity: 0.4;
     cursor: not-allowed;
 }
 
 .vol-text {
     font-size: 0.85rem;
-    color: #555;
-    min-width: 35px;
-    transition: color 0.2s;
+    color: #495057;
+    font-weight: 600;
+    min-width: 38px;
+    text-align: right;
 }
 
 .mute-btn {
-    background: transparent;
-    border: none;
+    background: #f8f9fa;
+    border: 1px solid #e4e6eb;
     cursor: pointer;
     color: #a259ff;
-    padding: 0.4rem;
+    width: 40px;
+    height: 40px;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: 0.2s;
+    transition: all 0.2s ease;
 }
 
 .mute-btn:hover {
     background: #f0e6ff;
+    border-color: #d1b3ff;
+    transform: scale(1.05);
 }
 
 .mute-btn.muted {
-    color: #d93025;
+    color: #e03131;
+    background: #fff5f5;
+    border-color: #ffc9c9;
 }
 
 .mute-btn.muted:hover {
-    background: #ffe0e0;
+    background: #ffe3e3;
+    border-color: #ffa8a8;
 }
 
-
+/* Mixed States */
 .custom-select.mixed-state {
-    color: #888;
+    color: #868e96;
     font-style: italic;
-    background-color: #f9f9f9;
-    border-color: #e0e0e0;
+    background-color: #f8f9fa;
+    border-color: #dee2e6;
 }
 
 .custom-range.mixed-state {
-    accent-color: #a0aabf;
-    /* Đổi màu thanh trượt sang xám tro */
-    opacity: 0.8;
+    accent-color: #adb5bd;
 }
 
 .vol-text.mixed-state {
-    color: #a0aabf;
+    color: #adb5bd;
     font-style: italic;
 }

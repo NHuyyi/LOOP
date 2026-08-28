@@ -10,6 +10,8 @@ import { setUser } from "../../../redux/userSlice";
 import { resendOTP } from "../../../services/User/resendOTP";
 import Loading from "../../Loading/Loading";
 import ConfirmModal from "../../common/ConfirmModal/ConfirmModal";
+import { setNotiSettings } from "../../../redux/userSlice";
+import { getSettingsSounds } from "../../../services/notifications/getNotiSettings";
 
 const cx = classNames.bind(styles);
 
@@ -70,6 +72,14 @@ function FormLogin({ setMessage, setSuccess }) {
       dispatch(setUser({ user: data.user, token: data.token }));
       localStorage.setItem("user", JSON.stringify(data.user));
       localStorage.setItem("token", data.token);
+      try {
+        const notiRes = await getSettingsSounds();
+        if (notiRes.success && notiRes.data) {
+          dispatch(setNotiSettings(notiRes.data));
+        }
+      } catch (error) {
+        console.error("Lỗi lấy âm thanh khi đăng nhập:", error);
+      }
       navigate("/home");
       setMessage(data.message);
       setSuccess(data.success);
