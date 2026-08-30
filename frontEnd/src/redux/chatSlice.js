@@ -259,6 +259,22 @@ const chatSlice = createSlice({
           });
         }
       }
+
+      // Cập nhật trạng thái "read" cho các tin nhắn đang hiển thị trong MiniChat
+      const miniChatIndex = state.miniChat.findIndex(
+        (c) => String(c.conversationId) === String(conversationId)
+      );
+      if (miniChatIndex !== -1) {
+        state.miniChat[miniChatIndex].message.forEach((msg) => {
+          const msgSenderId = msg.senderId?._id || msg.senderId;
+          if (
+            String(msgSenderId) !== String(currentUserId) &&
+            msg.status !== "read"
+          ) {
+            msg.status = "read";
+          }
+        });
+      }
     },
 
     UpdateReactionMessage: (state, action) => {
@@ -271,6 +287,18 @@ const chatSlice = createSlice({
         );
         if (msgIndex !== -1) {
           state.currentMessages[msgIndex].reactions = reactions;
+        }
+      }
+
+      const miniChatIndex = state.miniChat.findIndex(
+        (c) => String(c.conversationId) === String(conversationId)
+      );
+      if (miniChatIndex !== -1) {
+        const msgIndex = state.miniChat[miniChatIndex].message.findIndex(
+          (m) => String(m._id) === String(messageId)
+        );
+        if (msgIndex !== -1) {
+          state.miniChat[miniChatIndex].message[msgIndex].reactions = reactions;
         }
       }
     },
@@ -315,9 +343,20 @@ const chatSlice = createSlice({
         if (
           state.ConversationList[convIdex].lastMessage &&
           String(state.ConversationList[convIdex].lastMessage._id) ===
-            String(messageId)
+          String(messageId)
         ) {
           state.ConversationList[convIdex].lastMessage.isrevoked = true;
+        }
+      }
+      const miniChatIndex = state.miniChat.findIndex(
+        (c) => String(c.conversationId) === String(conversationId)
+      );
+      if (miniChatIndex !== -1) {
+        const msgIndex = state.miniChat[miniChatIndex].message.findIndex(
+          (m) => String(m._id) === String(messageId)
+        );
+        if (msgIndex !== -1) {
+          state.miniChat[miniChatIndex].message[msgIndex].isrevoked = true;
         }
       }
     },

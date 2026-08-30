@@ -62,6 +62,7 @@ function SocketManager() {
 
   const notiSettings = useSelector((state) => state.user.notificationSettings);
   const settingsRef = useRef(notiSettings);
+  const lastPlayedMessageIdRef = useRef(new Set());
 
   useEffect(() => {
     settingsRef.current = notiSettings;
@@ -256,12 +257,14 @@ function SocketManager() {
           if (!isMyMessage && !isMuted) {
             const currentSettings = settingsRef.current;
 
-            // Xử lý Âm thanh tin nhắn
-            if (currentSettings?.messageSound?.enabled) {
+            // Chốt chặn kiểm tra: Khác ID tin nhắn vừa phát thì mới cho kêu
+            if (
+              currentSettings?.messageSound?.enabled &&
+              lastPlayedMessageIdRef.current !== message._id
+            ) {
+              lastPlayedMessageIdRef.current = message._id; // Cập nhật ID tin nhắn
               const sound = currentSettings.messageSound.soundType || "Am_2";
               const volume = currentSettings.messageSound.volume || 0.5;
-
-              // Gọi trực tiếp từ custom hook
               playSound(sound, volume);
             }
           }
