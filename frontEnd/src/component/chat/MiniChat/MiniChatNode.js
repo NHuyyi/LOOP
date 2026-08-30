@@ -16,6 +16,7 @@ import MessageItem from "../MessageList/MessageItem";
 import TimeSeparator from "../MessageList/TimeSeparator";
 import { markAsRead } from "../../../services/chat/markAsRead";
 import classNames from "classnames/bind";
+import TypingIndicator from "../MessageList/TypingIndicator";
 
 const cx = classNames.bind(styles);
 
@@ -63,10 +64,12 @@ export default function MiniChatNode({ chatData, windowIndex, bubbleIndex }) {
   const isLastMessageMine =
     lastMessage &&
     String(lastMessage.senderId?._id || lastMessage.senderId) ===
-      String(currentUser?._id);
+    String(currentUser?._id);
   const defaultStatusId = isLastMessageMine ? lastMessage._id : null;
   const activeStatusId = clickedMsgId !== null ? clickedMsgId : defaultStatusId;
   const [isUnread, setIsUnread] = useState(true);
+  const typingConversations = useSelector((state) => state.chat.typingConversations);
+  const isTyping = typingConversations.includes(conversationId);
 
   const startRight = isWindowOpen ? 70 + (windowIndex + 1) * 350 : 20;
   // Lưu ý: Đã đổi 350 thành 340 (độ rộng 330px + 10px khoảng cách) để các cửa sổ khít hơn
@@ -76,7 +79,7 @@ export default function MiniChatNode({ chatData, windowIndex, bubbleIndex }) {
     if (
       lastMessage &&
       String(lastMessage.senderId?._id || lastMessage.senderId) ===
-        String(receiverId) &&
+      String(receiverId) &&
       lastMessage.status !== "read"
     ) {
       setIsUnread(true);
@@ -92,7 +95,7 @@ export default function MiniChatNode({ chatData, windowIndex, bubbleIndex }) {
       // Nếu tin nhắn cuối là của đối phương gửi tới
       if (
         String(lastMsg.senderId?._id || lastMsg.senderId) ===
-          String(receiverId) &&
+        String(receiverId) &&
         isUnread === true
       ) {
         setPreviewMsg(lastMsg.text);
@@ -289,6 +292,8 @@ export default function MiniChatNode({ chatData, windowIndex, bubbleIndex }) {
                   }
                 }
 
+                console.log("msg: ", msg)
+
                 return (
                   <React.Fragment key={msg._id || idx}>
                     {showTimeSeparator && (
@@ -321,6 +326,7 @@ export default function MiniChatNode({ chatData, windowIndex, bubbleIndex }) {
                 Chưa có tin nhắn nào
               </p>
             )}
+            {isTyping && <TypingIndicator activeReceiver={receiver} />}
           </div>
 
           <div className={cx("inputArea")}>
