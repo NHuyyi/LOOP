@@ -214,8 +214,7 @@ function SocketManager() {
         }
       });
 
-
-      socket.on("newMessage", ({ conversationId, message, isRestricted }) => {
+      socket.on("newMessage", ({ conversationId, message, isRestricted, streak }) => {
         const conversation =
           conversationList.find(
             (conv) => String(conv._id) === String(conversationId),
@@ -237,11 +236,12 @@ function SocketManager() {
               updateLastMessage({
                 conversationId,
                 message,
+                streak,
                 reorder: false,
               }),
             );
           } else {
-            dispatch(updateLastMessage({ conversationId, message }));
+            dispatch(updateLastMessage({ conversationId, message, streak }));
           }
 
           if (message.senderId) {
@@ -270,13 +270,10 @@ function SocketManager() {
           }
 
           if (!isChatpage && !isMuted) {
-            // Lấy người dùng còn lại trong conversation
-            // GIỐNG HỆT CÁCH MiniChatPortal ĐANG LÀM
             const otherUser = conversation?.participants?.find(
               (p) => String(p._id) !== String(currentUser._id),
             );
 
-            // Chỉ mở MiniChat nếu tìm được user
             if (otherUser) {
               dispatch(
                 OpenMiniChat({
@@ -290,8 +287,8 @@ function SocketManager() {
         }
       });
       // This event is listens for forwarded messages and updates the last message,
-      socket.on("updateLastMessage", ({ conversationId, message }) => {
-        dispatch(updateLastMessage({ conversationId, message }));
+      socket.on("updateLastMessage", ({ conversationId, message, streak }) => {
+        dispatch(updateLastMessage({ conversationId, message, streak }));
       });
 
       socket.on("UpdateReactionMessage", (data) => {

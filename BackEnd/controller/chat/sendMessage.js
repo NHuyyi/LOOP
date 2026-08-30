@@ -39,12 +39,15 @@ const updateConversationStreak = async (conversation, senderId) => {
       conversation.streak = 0;
     }
 
-    // Reset bộ đếm cho ngày hôm nay
+    // Reset bộ đếm cho ngày hôm nay, bắt đầu với người gửi hiện tại
     conversation.currentTrackingDate = today;
     conversation.participantsChattedToday = [senderId];
   } else {
     // Nếu vẫn trong cùng một ngày
-    if (!conversation.participantsChattedToday.includes(senderId)) {
+    // Dùng .toString() để so sánh đúng giữa string và ObjectId của MongoDB
+    const alreadyTracked = conversation.participantsChattedToday
+      .some((id) => id.toString() === senderId.toString());
+    if (!alreadyTracked) {
       conversation.participantsChattedToday.push(senderId);
     }
   }
@@ -150,12 +153,11 @@ exports.sendMessage = async (req, res) => {
       conversation.restrictedBy.includes(receiverId);
 
     if (onlineUsers[receiverId]) {
-      // Nhớ populate thêm phần replyTo để hiển thị nội dung tin bị reply
-
       io.to(onlineUsers[receiverId]).emit("newMessage", {
         conversationId: conversation._id,
         message: populatedMessage,
         isRestricted: isRestricted,
+        streak: conversation.streak,  // Gửi streak để FE cập nhật real-time
       });
     }
     // This emit is used to update the last message in the conversation list for the sender
@@ -163,6 +165,7 @@ exports.sendMessage = async (req, res) => {
       io.to(onlineUsers[senderId]).emit("updateLastMessage", {
         conversationId: conversation._id,
         message: populatedMessage,
+        streak: conversation.streak,  // Gửi streak để FE cập nhật real-time
       });
     }
 
