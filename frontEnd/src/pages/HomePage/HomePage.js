@@ -11,6 +11,7 @@ import { setPosts } from "../../redux/postSlice";
 import MiniProfile from "../../component/user/minipofile/miniprofile";
 import FriendFilterList from "../../component/friends/FriendFilterList/FriendFilterList";
 import Loading from "../../component/Loading/Loading";
+import { subscribeToPush } from "../../hooks/usePushNotification";
 
 const cx = classNames.bind(styles);
 
@@ -31,6 +32,16 @@ function HomePage() {
     currentUser?.friends || [],
     currentUser?._id,
   );
+
+  const notiSettings = useSelector((state) => state.user.notificationSettings);
+
+  useEffect(() => {
+    // Chỉ kích hoạt khi đã có thông tin người dùng VÀ trường pushEnabled = true
+    if (currentUser?._id && notiSettings?.pushEnabled ==! false) {
+      subscribeToPush();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentUser?._id, notiSettings?.pushEnabled]);
 
   // Đẩy dữ liệu từ API vào redux
   useEffect(() => {
@@ -118,11 +129,10 @@ function HomePage() {
       {message && (
         <div
           className={`${cx("app-message")}  
-                          ${
-                            success === false
-                              ? cx("app-message__err")
-                              : cx("app-message__ok")
-                          } ${fadeOut ? cx("fade-out") : ""}`}
+                          ${success === false
+              ? cx("app-message__err")
+              : cx("app-message__ok")
+            } ${fadeOut ? cx("fade-out") : ""}`}
         >
           {message}
         </div>

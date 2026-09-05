@@ -3,26 +3,27 @@ const Message = require("../../model/Message.Model");
 const Block = require("../../model/Block.Model");
 const { getIO, getOnlineUsers } = require("../../config/socker");
 const { completeTaskForUser } = require("../../utils/streakHelper");
+const sendPushNotification = require("../../utils/sendPushNotification");
 
 // ── Tính streak nhắn tin cho 1 conversation ──────────────────
 const updateConversationStreak = async (conversation, senderId) => {
-  const now   = new Date();
+  const now = new Date();
   const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
 
   let trackingDate = conversation.currentTrackingDate
     ? new Date(
-        conversation.currentTrackingDate.getFullYear(),
-        conversation.currentTrackingDate.getMonth(),
-        conversation.currentTrackingDate.getDate()
-      )
+      conversation.currentTrackingDate.getFullYear(),
+      conversation.currentTrackingDate.getMonth(),
+      conversation.currentTrackingDate.getDate()
+    )
     : null;
 
   let lastIncDate = conversation.streakLastIncrementedDate
     ? new Date(
-        conversation.streakLastIncrementedDate.getFullYear(),
-        conversation.streakLastIncrementedDate.getMonth(),
-        conversation.streakLastIncrementedDate.getDate()
-      )
+      conversation.streakLastIncrementedDate.getFullYear(),
+      conversation.streakLastIncrementedDate.getMonth(),
+      conversation.streakLastIncrementedDate.getDate()
+    )
     : null;
 
   // Nếu qua ngày mới
@@ -123,10 +124,10 @@ exports.sendMessage = async (req, res) => {
 
     // ── Auto-complete nhiệm vụ ────────────────────────────────
     // Task 1: Nhắn tin cho 1 người bạn (20 điểm)
-    completeTaskForUser(senderId, 1).catch(() => {});
+    completeTaskForUser(senderId, 1).catch(() => { });
     // Task 6: Nhắn tin 7 ngày liên tiếp (200 điểm) — nếu streak >= 7
     if ((conversation.streak || 0) >= 7) {
-      completeTaskForUser(senderId, 6).catch(() => {});
+      completeTaskForUser(senderId, 6).catch(() => { });
     }
     //socket.io sẽ lắng nghe sự kiện "newMessage" và gửi tin nhắn mới đến người nhận
     const io = getIO();
@@ -157,6 +158,14 @@ exports.sendMessage = async (req, res) => {
         message: populatedMessage,
         isRestricted: isRestricted,
       });
+    } else {
+      // GỌI HÀM Ở ĐÂY NẾU USER OFFLINE
+      await sendPushNotification(
+        receiverId,
+        `${populatedMessage.senderId.name}`,
+        `${text}`,
+        "/chat"
+      );
     }
     // This emit is used to update the last message in the conversation list for the sender
     if (onlineUsers[senderId]) {

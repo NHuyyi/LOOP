@@ -1,5 +1,6 @@
 const User = require("../../model/User.Model");
 const { getIO, getOnlineUsers } = require("../../config/socker");
+const sendPushNotification = require("../../utils/sendPushNotification");
 
 // Gửi lời mời kết bạn
 exports.sendRequest = async (req, res) => {
@@ -58,6 +59,14 @@ exports.sendRequest = async (req, res) => {
           friendCode: sender.friendCode,
         },
       });
+    } else {
+      // GỌI HÀM Ở ĐÂY NẾU USER OFFLINE
+      await sendPushNotification(
+        receivedId,
+        "Lời mời kết bạn mới",
+        `${sender.name} đã gửi cho bạn một lời mời kết bạn`,
+        "/friends"
+      );
     }
 
     return res

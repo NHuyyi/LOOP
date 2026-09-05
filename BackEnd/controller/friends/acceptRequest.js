@@ -1,6 +1,7 @@
 const User = require("../../model/User.Model");
 const { getIO, getOnlineUsers } = require("../../config/socker");
 const { completeTaskForUser } = require("../../utils/streakHelper");
+const sendPushNotification = require("../../utils/sendPushNotification");
 // chấp nhận lời mời kết bạn
 exports.acceptRequest = async (req, res) => {
   try {
@@ -64,6 +65,14 @@ exports.acceptRequest = async (req, res) => {
       io.to(onlineUsers[senderId]).emit("friendRequestAccepted", {
         by: userId,
       });
+    } else {
+      // GỌI HÀM Ở ĐÂY NẾU USER OFFLINE
+      await sendPushNotification(
+        senderId,
+        "Lời mời kết bạn đã được chấp nhận",
+        `${user.name} đã chấp nhận lời mời kết bạn của bạn`,
+        `/friend/${userId}`
+      );
     }
 
     return res

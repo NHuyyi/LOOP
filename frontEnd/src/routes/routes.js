@@ -10,7 +10,7 @@ import StreakPage from "../pages/StreakPage/StreakPage";
 import MyProfilePage from "../pages/MyProfilePage/MyProfilePage";
 import EditProfilePage from "../pages/EditProfilePage/EditProfilePage";
 import SettingsPage from "../pages/SettingsPage/SettingsPage";
-
+import PostPage from "../pages/PostPage/PostPage";
 const routes = [
   {
     path: "/",
@@ -75,6 +75,11 @@ const routes = [
     path: "settings",
     Element: <SettingsPage />,
     isHeader: true,
+  },
+  {
+    path: "post/:id",
+    Element: <PostPage />,
+    isHeader: true, // Hiển thị Header
   },
 ];
 
