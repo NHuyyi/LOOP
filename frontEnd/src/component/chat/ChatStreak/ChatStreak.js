@@ -22,7 +22,6 @@ function ChatStreak({ streak = 0, size = "md", showLabel = true }) {
     <div className={cx("wrap", size, { hot: isHot, warm: isWarm })}>
       <span className={cx("flame")}>🔥</span>
       <span className={cx("count")}>{streak}</span>
-      {showLabel && <span className={cx("label")}>ngày</span>}
     </div>
   );
 }
