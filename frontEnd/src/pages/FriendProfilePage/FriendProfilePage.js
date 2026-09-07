@@ -6,7 +6,7 @@ import styles from "./FriendProfilePage.module.css";
 
 // Services & Components
 import { getUserbyId } from "../../services/User/getUserbyId";
-import { getFriendStreakLeaderboard } from "../../services/streak/streakServices";
+import { getFriendStreakLeaderboard, getPointsLeaderboard } from "../../services/streak/streakServices";
 import { useGetPost } from "../../hooks/getpost";
 import ProfileHeader from "../../component/user/ProfileHeader/ProfileHeader";
 import ProfileActions from "../../component/user/ProfileActions/ProfileActions"; // Tái sử dụng ProfileActions
@@ -14,6 +14,7 @@ import ProfileInfoCard from "../../component/user/ProfileInfoCard/ProfileInfoCar
 import PostCard from "../../component/post/postItem/PostCard"; // Tái sử dụng PostCard
 import Loading from "../../component/Loading/Loading";
 import { setPosts } from "../../redux/postSlice";
+
 const cx = classNames.bind(styles);
 
 function FriendProfilePage() {
@@ -34,6 +35,8 @@ function FriendProfilePage() {
     currentUser?._id,
   );
 
+  const [friendPointsData, setFriendPointsData] = useState({ points: 0, rank: null });
+
   useEffect(() => {
     if (fetchedPosts && fetchedPosts.length > 0) {
       dispatch(setPosts(fetchedPosts));
@@ -46,9 +49,10 @@ function FriendProfilePage() {
     const fetchFriendInfo = async () => {
       setLoading(true);
       try {
-        const [res, leaderboardRes] = await Promise.all([
+        const [res, leaderboardRes, pointsRes] = await Promise.all([
           getUserbyId(id),
           getFriendStreakLeaderboard(),
+          getPointsLeaderboard(),
         ]);
 
         // Thay thế đoạn kiểm tra cũ bằng đoạn này:
@@ -65,6 +69,14 @@ function FriendProfilePage() {
               (item) => String(item.userId) === String(id)
             );
             setFriendStreak(entry?.streak || 0);
+          }
+
+          if (pointsRes?.success && Array.isArray(pointsRes.data)) {
+            const sorted = [...pointsRes.data].sort((a, b) => (b.points || 0) - (a.points || 0));
+            const index = sorted.findIndex((item) => String(item.userId) === String(id));
+            if (index !== -1 && index < 100) {
+              setFriendPointsData({ points: sorted[index].points, rank: index + 1 });
+            }
           }
         } else {
           navigate("/home");
@@ -103,7 +115,10 @@ function FriendProfilePage() {
     0,
   );
 
-  const stats = { totalFriends, totalPosts, totalReactions, totalComments };
+  const stats = {
+    totalFriends, totalPosts, totalReactions, totalComments, points: friendPointsData.points,
+    rank: friendPointsData.rank
+  };
 
   const safeProfile = (friendData?.profile && typeof friendData.profile === "object")
     ? friendData.profile

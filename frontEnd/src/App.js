@@ -7,6 +7,8 @@ import { usePersistedUser } from "./hooks/usePersistedUser";
 import { useFriendLoader } from "./hooks/useFriendLoader"; // 🚀 Tải danh sách bạn bè ngay khi mở app
 import SocketManager from "./hooks/SocketManager.js";
 import MiniChatPortal from "./component/chat/MiniChat/MiniChatPortal.js";
+import { useSelector } from "react-redux";
+import AuthRedirect from "./component/AuthRedirect/AuthRedirect.js";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 const cx = classNames.bind(styles);
@@ -14,11 +16,13 @@ const cx = classNames.bind(styles);
 function App() {
   usePersistedUser();
   useFriendLoader(); // 🚀 Đảm bảo friends luôn có trong Redux, dù ở bất kỳ trang nào
+  const currentUser = useSelector((state) => state.user.user);
   return (
     <div className={cx("App")}>
       <Router>
+        <AuthRedirect />
         <SocketManager />
-        <MiniChatPortal />
+        {currentUser && <MiniChatPortal />}
         <Routes>
           {routes.map((route, index) => (
             <Route

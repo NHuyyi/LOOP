@@ -1,5 +1,7 @@
 const NotificationSetting = require("../../model/NotificationSetting.Model");
 
+// API quản lý các thiết bị được đăng ký để nhận push notification (Web Push)
+
 exports.subscribePush = async (req, res) => {
     try {
         const userId = req.user.id; // Lấy từ middleware xác thực token
