@@ -6,6 +6,7 @@ import onlineRecuder from "./onlineSlice";
 import postsReducer from "./postSlice";
 import friendReducer from "./friendSlice";
 import chatReducer from "./chatSlice";
+import notificationReducer from "./notificationSlice";
 
 export const store = configureStore({
   reducer: {
@@ -16,5 +17,6 @@ export const store = configureStore({
     online: onlineRecuder,
     friend: friendReducer,
     chat: chatReducer,
+    notification: notificationReducer,
   },
 });

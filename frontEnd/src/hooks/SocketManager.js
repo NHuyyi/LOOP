@@ -40,6 +40,8 @@ import { clearUser } from "../redux/userSlice";
 import { useLocation } from "react-router-dom";
 import { usePlaySound } from "./usePlaySound";
 
+import { addNotification } from "../redux/notificationSlice";
+
 function SocketManager() {
   const currentUser = useSelector((state) => state.user.user);
   const dispatch = useDispatch();
@@ -348,13 +350,14 @@ function SocketManager() {
         const isViewingMiniChat = currentMiniChat.some(
           (c) => String(c.conversationId) === String(conversationId) && c.isWindowOpen
         );
-        if( isViewingMainChat || isViewingMiniChat){
-        const currentSettings = settingsRef.current;
-        if (currentSettings?.typingSound?.enabled) {
-          const sound = currentSettings.typingSound.soundType || "Am_3";
-          const volume = currentSettings.typingSound.volume || 0.3;
-          playSound(sound, volume);
-        }}
+        if (isViewingMainChat || isViewingMiniChat) {
+          const currentSettings = settingsRef.current;
+          if (currentSettings?.typingSound?.enabled) {
+            const sound = currentSettings.typingSound.soundType || "Am_3";
+            const volume = currentSettings.typingSound.volume || 0.3;
+            playSound(sound, volume);
+          }
+        }
       });
 
       socket.on("userStopTyping", ({ conversationId }) => {
@@ -383,6 +386,16 @@ function SocketManager() {
           }
         }
       });
+
+      socket.on("newNotification", (notification) => {
+        dispatch(addNotification(notification));
+
+        // Bạn có thể dùng usePlaySound ở đây để phát âm thanh thông báo
+        const currentSettings = settingsRef.current;
+        if (currentSettings?.defaultSound?.enabled) {
+          playSound(currentSettings.defaultSound.soundType || "ding", currentSettings.defaultSound.volume || 0.5);
+        }
+      });
     }
 
     return () => {
@@ -408,6 +421,7 @@ function SocketManager() {
       socket.off("updateLastMessage");
       socket.off("messageRevoked");
       socket.off("blockStatusChanged");
+      socket.off("newNotification");
     };
   }, [
     currentUser,

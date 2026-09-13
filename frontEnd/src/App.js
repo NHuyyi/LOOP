@@ -10,12 +10,13 @@ import MiniChatPortal from "./component/chat/MiniChat/MiniChatPortal.js";
 import { useSelector } from "react-redux";
 import AuthRedirect from "./component/AuthRedirect/AuthRedirect.js";
 import "bootstrap/dist/css/bootstrap.min.css";
-
+import { useNotificationLoader } from "./hooks/useNotificationLoader";
 const cx = classNames.bind(styles);
 
 function App() {
   usePersistedUser();
   useFriendLoader(); // 🚀 Đảm bảo friends luôn có trong Redux, dù ở bất kỳ trang nào
+  useNotificationLoader();
   const currentUser = useSelector((state) => state.user.user);
   return (
     <div className={cx("App")}>

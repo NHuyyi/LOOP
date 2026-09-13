@@ -1,6 +1,7 @@
 const User = require("../../model/User.Model");
 const { getIO, getOnlineUsers } = require("../../config/socker");
 const sendPushNotification = require("../../utils/sendPushNotification");
+const { createAndEmitNotification } = require("../../utils/notificationHelper");
 
 // Gửi lời mời kết bạn
 exports.sendRequest = async (req, res) => {
@@ -45,6 +46,13 @@ exports.sendRequest = async (req, res) => {
 
     await sender.save();
     await receiver.save();
+
+    await createAndEmitNotification({
+      recipientId: receivedId,
+      senderId: senderId,
+      type: "friend_request",
+      url: `/friends`,
+    });
 
     // emit socket cho receiver nếu online
     const io = getIO();

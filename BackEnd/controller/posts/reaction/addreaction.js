@@ -4,6 +4,8 @@ const { getIO, getOnlineUsers } = require("../../../config/socker");
 const calculateCounts = require("../../../utils/reaction");
 const { completeTaskForUser } = require("../../../utils/streakHelper");
 const sendPushNotification = require("../../../utils/sendPushNotification");
+const { createAndEmitNotification } = require("../../../utils/notificationHelper");
+
 exports.addReaction = async (req, res) => {
   try {
     const { postId, userId, reactionType } = req.body; // FE gửi postId + userId + reactionType
@@ -43,6 +45,16 @@ exports.addReaction = async (req, res) => {
       post.reactions.push({ user: userId, type: reactionType });
     }
     await post.save();
+
+    if (existingReactionIndex === -1) { // Chỉ thông báo khi thêm mới
+      await createAndEmitNotification({
+        recipientId: post.author,
+        senderId: userId,
+        type: "reaction",
+        postId: post._id,
+        url: `/post/${post._id}`,
+      });
+    }
 
     // ── Streak auto-completion ──
     // Task 3: React bài viết của bạn bè (10 điểm)

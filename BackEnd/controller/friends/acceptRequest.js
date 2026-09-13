@@ -2,6 +2,8 @@ const User = require("../../model/User.Model");
 const { getIO, getOnlineUsers } = require("../../config/socker");
 const { completeTaskForUser } = require("../../utils/streakHelper");
 const sendPushNotification = require("../../utils/sendPushNotification");
+const { createAndEmitNotification } = require("../../utils/notificationHelper");
+
 // chấp nhận lời mời kết bạn
 exports.acceptRequest = async (req, res) => {
   try {
@@ -54,10 +56,17 @@ exports.acceptRequest = async (req, res) => {
     await user.save();
     await sender.save();
 
+    await createAndEmitNotification({
+      recipientId: senderId, // Người nhận thông báo là người đã gửi request ban đầu
+      senderId: userId, // Người đồng ý là user hiện tại
+      type: "friend_accept",
+      url: `/friends`,
+    });
+
     // ── Streak auto-completion ──
     // Task 7: Kết bạn với người mới (100 điểm)
-    completeTaskForUser(userId, 7).catch(() => {});
-    completeTaskForUser(senderId, 7).catch(() => {});
+    completeTaskForUser(userId, 7).catch(() => { });
+    completeTaskForUser(senderId, 7).catch(() => { });
 
     const io = getIO();
     const onlineUsers = getOnlineUsers();
