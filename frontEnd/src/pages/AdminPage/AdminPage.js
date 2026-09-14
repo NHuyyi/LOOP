@@ -1,27 +1,33 @@
 import React from "react";
 import { useSelector } from "react-redux";
-import { Navigate } from "react-router-dom";
+import { Navigate, Routes, Route } from "react-router-dom";
+import AdminHeader from "../../component/Header/AdminHeader/AdminHeader";
 
 function AdminPage() {
     const currentUser = useSelector((state) => state.user.user);
 
-    // Nếu chưa đăng nhập hoặc không phải admin -> Đẩy về trang chủ / login
     if (!currentUser) return <Navigate to="/" />;
     if (currentUser.role !== "admin") return <Navigate to="/home" />;
 
     return (
-        <div style={{ padding: "30px", background: "#f9f9f9", minHeight: "100vh" }}>
-            <h1>Bảng Điều Khiển Admin</h1>
-            <p>Xin chào Admin: <strong>{currentUser.name}</strong></p>
+        <div style={{ background: "#f9f9f9", minHeight: "100vh" }}>
+            <AdminHeader />
 
-            <div style={{ marginTop: "20px" }}>
-                <h3>Các chức năng sẽ phát triển:</h3>
-                <ul>
-                    <li>Nhận và quản lý các báo cáo của user</li>
-                    <li>Khóa / Xóa tài khoản user</li>
-                    <li>Gửi tin nhắn trực tiếp đến user không cần kết bạn</li>
-                    <li>Xóa tin nhắn giữa admin và user</li>
-                </ul>
+            <div style={{ padding: "30px", maxWidth: "1200px", margin: "0 auto" }}>
+                <Routes>
+                    {/* Route mặc định của Admin */}
+                    <Route path="/" element={
+                        <div>
+                            <h1>Bảng Điều Khiển Admin</h1>
+                            <p>Chọn chức năng trên thanh điều hướng để quản lý hệ thống.</p>
+                        </div>
+                    } />
+
+                    {/* Các component này bạn sẽ tạo tương ứng với quyền hạn */}
+                    <Route path="/reports" element={<div>Giao diện Nhận báo cáo User</div>} />
+                    <Route path="/accounts" element={<div>Giao diện Khóa / Xóa tài khoản</div>} />
+                    <Route path="/chat" element={<div>Giao diện Nhắn tin & Xóa tin nhắn hệ thống</div>} />
+                </Routes>
             </div>
         </div>
     );
