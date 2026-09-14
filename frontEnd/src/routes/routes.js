@@ -11,6 +11,7 @@ import MyProfilePage from "../pages/MyProfilePage/MyProfilePage";
 import EditProfilePage from "../pages/EditProfilePage/EditProfilePage";
 import SettingsPage from "../pages/SettingsPage/SettingsPage";
 import PostPage from "../pages/PostPage/PostPage";
+import AdminPage from "../pages/AdminPage/AdminPage";
 const routes = [
   {
     path: "/",
@@ -80,6 +81,11 @@ const routes = [
     path: "post/:id",
     Element: <PostPage />,
     isHeader: true, // Hiển thị Header
+  },
+  {
+    path: "admin/*",
+    Element: <AdminPage />,
+    isHeader: false, // Đặt false nếu bạn định làm Sidebar/Header riêng cho Admin
   },
 ];
 

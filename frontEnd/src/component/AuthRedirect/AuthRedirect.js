@@ -1,46 +1,50 @@
-import { useNavigate, useLocation } from "react-router-dom";
 import { useEffect } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
+import { useSelector } from "react-redux";
 
-// Hàm hỗ trợ giải mã JWT và kiểm tra hạn sử dụng
-const isTokenExpired = (token) => {
-  if (!token) return true;
-  try {
-    // Lấy phần Payload của JWT (nằm giữa 2 dấu chấm)
-    const payload = JSON.parse(atob(token.split('.')[1]));
-    // payload.exp tính bằng giây, Date.now() tính bằng mili-giây
-    return Date.now() >= payload.exp * 1000;
-  } catch (error) {
-    return true; // Nếu chuỗi token lỗi/không đúng định dạng thì coi như hết hạn
-  }
-};
-
-export default function AuthRedirect() {
+function AuthRedirect() {
   const navigate = useNavigate();
   const location = useLocation();
-
-  const token = localStorage.getItem("token");
+  const currentUser = useSelector((state) => state.user.user);
 
   useEffect(() => {
-    const publicPaths = ["/", "/otp", "/forget-password", "/reset-password"];
-    const isPublicPath = publicPaths.includes(location.pathname);
+    // 1. Lấy token trực tiếp từ localStorage để check (tránh độ trễ của Redux)
+    const token = localStorage.getItem("token");
 
-    // Kiểm tra token thực sự còn hạn hay không
-    const expired = isTokenExpired(token);
+    // 2. Danh sách các đường dẫn Public (không cần đăng nhập)
+    const publicRoutes = ["/", "/otp", "/forget-password", "/reset-password"];
+    const isPublicRoute = publicRoutes.includes(location.pathname);
 
-    if (expired && token) {
-      // Dọn dẹp dữ liệu cũ ngay khi phát hiện token hết hạn
-      localStorage.removeItem("token");
-      localStorage.removeItem("userData");
+    // KỊCH BẢN 1: KHÔNG CÓ TOKEN NHƯNG CỐ VÀO TRANG BÊN TRONG (/home, /chat,...)
+    if (!token && !isPublicRoute) {
+      navigate("/"); // Lập tức đuổi về trang đăng nhập
+      return;
     }
 
-    const isValidSession = token && !expired;
-
-    if (isValidSession && isPublicPath) {
-      navigate("/home");
-    } else if (!isValidSession && !isPublicPath) {
-      navigate("/");
+    // KỊCH BẢN 2: ĐÃ CÓ TOKEN NHƯNG LẠI VÀO TRANG ĐĂNG NHẬP (/)
+    if (token && isPublicRoute && currentUser) {
+      // Dựa vào Role để đẩy về đúng màn hình
+      if (currentUser.role === "admin") {
+        navigate("/admin");
+      } else {
+        navigate("/home");
+      }
     }
-  }, [token, location.pathname, navigate]);
 
-  return null;
+    // KỊCH BẢN 3: ADMIN CỐ VÀO TRANG USER HOẶC NGƯỢC LẠI
+    if (token && currentUser) {
+      const isAdminRoute = location.pathname.startsWith("/admin");
+
+      if (currentUser.role === "admin" && !isAdminRoute) {
+        navigate("/admin"); // Admin thì chỉ được ở /admin
+      } else if (currentUser.role !== "admin" && isAdminRoute) {
+        navigate("/home"); // User thường cố vào /admin thì đẩy về /home
+      }
+    }
+
+  }, [location.pathname, navigate, currentUser]);
+
+  return null; // Component này chạy ngầm, không render ra UI
 }
+
+export default AuthRedirect;

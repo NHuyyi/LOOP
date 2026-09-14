@@ -16,7 +16,8 @@ const verifyOldPassword = require("../controller/users/verifyOldPassword");
 const updatePrivacy = require("../controller/users/updatePrivacy");
 const deactivateAccount = require("../controller/users/deactivateAccount");
 const requestReactivate = require("../controller/users/requestReactivate");
-const authorize = require("../middleware/Authorization");
+const authorize = require("../middleware/authorize");
+const Authorization = require("../middleware/Authorization");
 
 router.post("/signup", SignUp.SignUp); // Đăng ký người dùng
 router.post("/verify-otp", verifyOTP.verifyOTP); // Xác thực OTP
@@ -24,18 +25,18 @@ router.post("/resend-otp", resendOTP.resendOTP); // Gửi lại OTP
 router.post("/login", Login.Login); // Đăng nhập
 router.post("/forget", forgetPassword.forgetPassword); // quên mật khẩu
 router.post("/reset", resetpassword.resetpassword); // đặt lại mật khẩu
-router.post("/getUserById", authorize, getUserById.getUserById); // Lấy thông tin người dùng theo ID
-router.post("/toggle-block", authorize, toggleBlockUser.toggleBlockUser);
+router.post("/getUserById",Authorization, authorize("user"), getUserById.getUserById); // Lấy thông tin người dùng theo ID
+router.post("/toggle-block",Authorization, authorize("user"), toggleBlockUser.toggleBlockUser);
 router.get(
   "/check-block/:targetId",
-  authorize,
+  Authorization, authorize("user"),
   checkBlockStatus.checkBlockStatus,
 );
-router.get("/blocked-list", authorize, getBlockList.getBlockList);
-router.post("/update-profile", authorize, updateProfile.updateProfile);
-router.post("/verify-old-password", authorize, verifyOldPassword.verifyOldPassword);
-router.post("/request-change-password", authorize, requestChangePassword.requestChangePassword);
-router.post("/update-privacy", authorize, updatePrivacy.updatePrivacy);
-router.post("/deactivate", authorize, deactivateAccount.deactivateAccount);
+router.get("/blocked-list", Authorization, authorize("user"), getBlockList.getBlockList);
+router.post("/update-profile", Authorization, authorize("user"), updateProfile.updateProfile);
+router.post("/verify-old-password",Authorization, authorize("user"), verifyOldPassword.verifyOldPassword);
+router.post("/request-change-password",Authorization, authorize("user"), requestChangePassword.requestChangePassword);
+router.post("/update-privacy", Authorization, authorize("user"), updatePrivacy.updatePrivacy);
+router.post("/deactivate",Authorization, authorize("user"), deactivateAccount.deactivateAccount);
 router.post("/request-reactivate", requestReactivate.requestReactivate);
 module.exports = router;

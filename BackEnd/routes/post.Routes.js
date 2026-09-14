@@ -23,25 +23,25 @@ const { updateComment } = require("../controller/posts/comment/updatecomment");
 const { deletePost } = require("../controller/posts/deletepost");
 const { editPost } = require("../controller/posts/editpost");
 const { changePostVisibility } = require("../controller/posts/postvisibility");
+const authorize = require("../middleware/authorize");
 const Authorization = require("../middleware/Authorization");
 
-router.post("/uploadImage", Authorization, upload.single("image"), uploadImage);
-router.post("/newpost", Authorization, NewPost);
-router.post("/getNewsFeed", Authorization, getNewsFeed);
-router.post("/addReaction", Authorization, addReaction);
-router.post("/countReactions", Authorization, countReactions);
-router.get("/:postId/reactions/list", Authorization, getReactionList);
-router.post("/createComments", Authorization, createComment);
-router.get("/:postId/comments/list", Authorization, getCommentsList);
-router.post("/reactcomment", Authorization, reactComment);
+router.post("/uploadImage",Authorization, authorize("user"), upload.single("image"), uploadImage);
+router.post("/newpost",Authorization, authorize("user"), NewPost);
+router.post("/getNewsFeed",Authorization, authorize("user"), getNewsFeed);
+router.post("/addReaction",Authorization, authorize("user"), addReaction);
+router.post("/countReactions",Authorization, authorize("user"), countReactions);
+router.get("/:postId/reactions/list",Authorization, authorize("user"), getReactionList);
+router.post("/createComments",Authorization, authorize("user"), createComment);
+router.get("/:postId/comments/list",Authorization, authorize("user"), getCommentsList);
+router.post("/reactcomment",Authorization, authorize("user"), reactComment);
 router.get(
-  "/:postId/comments/reactions/list",
-  Authorization,
+  "/:postId/comments/reactions/list",Authorization, authorize("user"),
   getReactComentList
 );
-router.post("/delete/comments", Authorization, deleteComment);
-router.post("/update/comments", Authorization, updateComment);
-router.post("/delete/post", Authorization, deletePost);
-router.post("/edit/post", Authorization, editPost);
-router.post("/change/post/visibility", Authorization, changePostVisibility);
+router.post("/delete/comments",Authorization, authorize("user"), deleteComment);
+router.post("/update/comments",Authorization, authorize("user"), updateComment);
+router.post("/delete/post",Authorization, authorize("user"), deletePost);
+router.post("/edit/post",Authorization, authorize("user"), editPost);
+router.post("/change/post/visibility",Authorization, authorize("user"), changePostVisibility);
 module.exports = router;

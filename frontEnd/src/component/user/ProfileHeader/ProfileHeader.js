@@ -71,27 +71,29 @@ function ProfileHeader({ friendData, stats }) {
         </div>
 
         <h2 className={cx("name")}>{friendData.name}</h2>
-        {rank && rank <= 100 ? (
-          <div className={cx("friend-code-wrapper")}>
-            <span className={cx("code-label")}>Tổng điểm: </span>
-            <span className={cx("code-value")}>{points.toLocaleString()}</span>
-            <span className={cx("code-label")} style={{ marginLeft: "12px" }}>Thứ hạng: </span>
-            <span className={cx("code-value")}>Top {rank}</span>
+        {/* 1. LUÔN LUÔN HIỂN THỊ MÃ ID */}
+        <div className={cx("friend-code-wrapper")}>
+          <span className={cx("code-label")}>Mã ID: </span>
+          <span className={cx("code-value")}>{friendData.friendCode}</span>
+          <div className={cx("copy-container")}>
+            <button
+              className={cx("copy-btn", { copied: isCopied })}
+              onClick={handleCopyCode}
+              title="Copy mã"
+            >
+              {isCopied ? <Check size={14} /> : <Copy size={14} />}
+            </button>
+            {isCopied && <span className={cx("copy-tooltip")}>Đã chép!</span>}
           </div>
-        ) : (
-          <div className={cx("friend-code-wrapper")}>
-            <span className={cx("code-label")}>Mã ID: </span>
-            <span className={cx("code-value")}>{friendData.friendCode}</span>
-            <div className={cx("copy-container")}>
-              <button
-                className={cx("copy-btn", { copied: isCopied })}
-                onClick={handleCopyCode}
-                title="Copy mã"
-              >
-                {isCopied ? <Check size={14} /> : <Copy size={14} />}
-              </button>
-              {isCopied && <span className={cx("copy-tooltip")}>Đã chép!</span>}
-            </div>
+        </div>
+
+        {/* 2. HIỂN THỊ ĐIỂM VÀ RANK ĐỘC LẬP (NẾU THỎA ĐIỀU KIỆN) */}
+        {rank && rank <= 100 && (
+          <div className={cx("friend-code-wrapper")} style={{ marginTop: "-8px", backgroundColor: "#fff4e6" }}>
+            <span className={cx("code-label")}>Điểm: </span>
+            <span className={cx("code-value")}>{points.toLocaleString()}</span>
+            <span className={cx("code-label")} style={{ marginLeft: "12px" }}>Hạng: </span>
+            <span className={cx("code-value")} style={{ color: "#ff8c00" }}>Top {rank}</span>
           </div>
         )}
 

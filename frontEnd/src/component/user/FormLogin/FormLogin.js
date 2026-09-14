@@ -70,7 +70,7 @@ function FormLogin({ setMessage, setSuccess }) {
       }
 
       dispatch(setUser({ user: data.user, token: data.token }));
-      localStorage.setItem("user", JSON.stringify(data.user));
+      localStorage.setItem("userData", JSON.stringify({ user: data.user, token: data.token }));
       localStorage.setItem("token", data.token);
       try {
         const notiRes = await getSettingsSounds();
@@ -80,7 +80,11 @@ function FormLogin({ setMessage, setSuccess }) {
       } catch (error) {
         console.error("Lỗi lấy âm thanh khi đăng nhập:", error);
       }
-      navigate("/home");
+      if (data.user.role === "admin") {
+        navigate("/admin");
+      } else {
+        navigate("/home");
+      }
       setMessage(data.message);
       setSuccess(data.success);
     } catch (error) {

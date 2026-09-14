@@ -110,7 +110,11 @@ function Otp() {
         } catch (error) {
           console.error("Lỗi lấy âm thanh khi đăng nhập:", error);
         }
-        navigate("/home");
+        if (data.user.role === "admin") {
+          navigate("/admin");
+        } else {
+          navigate("/home");
+        }
       }
       if (data.otptype === "reset") {
         navigate("/reset-password", { state: { email: email } });
