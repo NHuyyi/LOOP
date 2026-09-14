@@ -7,9 +7,8 @@ exports.markAsRead = async (req, res) => {
     const { conversationId } = req.params;
     const userId = req.user.id;
 
-    // tìm và cập nhật tất cả tin nhắn trong cuộc trò chuyện này
-    // điều kiện: người gửi không phải là mình  ($ne: userId) và isRead đang là false
-    await Message.updateMany(
+    // 1. Lưu lại kết quả của lệnh update
+    const updateResult = await Message.updateMany(
       {
         conversationId: conversationId,
         senderId: { $ne: userId },
@@ -18,37 +17,32 @@ exports.markAsRead = async (req, res) => {
       { $set: { status: "read" } },
     );
 
-    // Tìm cuộc trò chuyện để lấy ra ID của đối tác chat (THIẾU ĐOẠN NÀY)
-    const conversation = await Conversation.findById(conversationId);
+    // 2. CHỈ bắn socket nếu thực sự có tin nhắn được chuyển sang "read"
+    if (updateResult.modifiedCount > 0) {
+      const conversation = await Conversation.findById(conversationId);
+      if (conversation) {
+        const receiverIds = conversation.participants.filter(
+          (p) => p.toString() !== userId.toString(),
+        );
 
-    if (conversation) {
-      // Lấy ra ID của người kia (lọc bỏ ID của chính mình)
-      const receiverIds = conversation.participants.filter(
-        (p) => p.toString() !== userId.toString(),
-      );
+        const io = getIO();
+        const onlineUsers = getOnlineUsers();
 
-      // Bắn thông báo qua socket
-      const io = getIO();
-      const onlineUsers = getOnlineUsers();
-
-      // Phát sự kiện đến tất cả mọi người (hoặc tìm đúng socketId của đối tác chat để bắn)
-      // 3. Gửi socket riêng (private) cho người kia (nếu họ đang online)
-      receiverIds.forEach((receiverId) => {
-        // Lấy socket.id của người đó từ mảng onlineUsers
-        const receiverSocketId = onlineUsers[receiverId.toString()];
-
-        if (receiverSocketId) {
-          // Gửi riêng cho họ sự kiện "messageRead"
-          io.to(receiverSocketId).emit("messageRead", {
-            conversationId: conversationId,
-            readerId: userId, // ID của bạn (người vừa xem)
-          });
-        }
-      });
+        receiverIds.forEach((receiverId) => {
+          const receiverSocketId = onlineUsers[receiverId.toString()];
+          if (receiverSocketId) {
+            io.to(receiverSocketId).emit("messageRead", {
+              conversationId: conversationId,
+              readerId: userId,
+            });
+          }
+        });
+      }
     }
+
     return res
       .status(200)
-      .json({ success: true, message: "Đã cập nhật trạng thái đọc" });
+      .json({ success: true, message: "Cập nhật trạng thái thành công" });
   } catch (err) {
     console.error("Lỗi markAsRead:", err);
     return res.status(500).json({ success: false, message: "Lỗi server" });

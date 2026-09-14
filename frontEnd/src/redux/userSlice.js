@@ -26,6 +26,8 @@ const userSlice = createSlice({
       state.user = null;
       state.token = null;
       localStorage.removeItem("userData");
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
     },
 
     setNotiSettings: (state, action) => {

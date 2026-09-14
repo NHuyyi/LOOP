@@ -27,7 +27,8 @@ const NotificationSettingSchema = new mongoose.Schema({
         enabled: { type: Boolean, default: true },
         soundType: { type: String, default: "Am_2" },
         volume: { type: Number, default: 0.5 },
-    }
+    },
+    pushSubscriptions: [{ type: Object }]
 }, { timestamps: true });
 
 module.exports = mongoose.model("NotificationSetting", NotificationSettingSchema);

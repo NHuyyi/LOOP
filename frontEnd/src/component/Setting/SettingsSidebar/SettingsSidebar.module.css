@@ -6,8 +6,21 @@
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
     display: flex;
     flex-direction: column;
-    /* Đổi thành fit-content để sidebar tự động dài ra theo nội dung, loại bỏ scroll */
-    height: fit-content;
+    position: sticky;
+    top: 90px;
+    /* Căn chỉnh khoảng cách từ top xuống (bù trừ cho chiều cao của Header) */
+    max-height: calc(100vh - 110px);
+    /* Đảm bảo menu không vượt quá màn hình */
+    overflow-y: auto;
+}
+
+.sidebar::-webkit-scrollbar {
+    width: 5px;
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+    background-color: rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
 }
 
 .title {

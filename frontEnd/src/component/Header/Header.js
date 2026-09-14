@@ -3,6 +3,7 @@ import { Link, NavLink } from "react-router-dom";
 import styles from "./Header.module.css";
 import classNames from "classnames/bind";
 import logo from "../../img/logo.png";
+import NotificationDropdown from "./NotificationDropdown/NotificationDropdown";
 
 const cx = classNames.bind(styles);
 
@@ -45,14 +46,24 @@ function Header() {
         >
           Bạn bè
         </NavLink>
+        <NavLink
+          to="/settings"
+          className={({ isActive }) => cx({ active: isActive })}
+        >
+          Cài đặt
+        </NavLink>
+
       </nav>
 
-      <Link to="/profile" style={{ textDecoration: "none", color: "inherit" }}>
-        <div className={cx("userSection")}>
-          <img src={currentUser.avatar} alt="avatar" className={cx("avatar")} />
-          <p className={cx("userName")}>{currentUser.name || "Người dùng"}</p>
-        </div>
-      </Link>
+      <nav className={cx("nav")}>
+        <NotificationDropdown />
+        <Link to="/profile" style={{ textDecoration: "none", color: "inherit" }}>
+          <div className={cx("userSection")}>
+            <img src={currentUser.avatar} alt="avatar" className={cx("avatar")} />
+            <p className={cx("userName")}>{currentUser.name || "Người dùng"}</p>
+          </div>
+        </Link>
+      </nav>
     </header>
   );
 }

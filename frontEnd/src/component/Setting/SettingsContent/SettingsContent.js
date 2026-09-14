@@ -14,6 +14,7 @@ import TwoFactorAuthSettings from "../TwoFactorSettings/TwoFactorSettings";
 import DeviceManagement from "../DeviceManagement/DeviceManagement";
 import DeactivateAccount from "../DeactivateAccount/DeactivateAccount";
 import SoundSettings from "../SoundSettings/SoundSettings";
+import PushNotificationSettings from "../PushNotificationSettings/PushNotificationSettings";
 const cx = classNames.bind(styles);
 
 function SettingsContent({ activeTab }) {
@@ -39,7 +40,7 @@ function SettingsContent({ activeTab }) {
             case "message_sound":
                 return <SoundSettings />;
             case "push_notifications":
-                return <div>Cài đặt Thông báo đẩy</div>;
+                return <PushNotificationSettings />;
             case "device_management":
                 return <DeviceManagement />;
             case "two_factor":

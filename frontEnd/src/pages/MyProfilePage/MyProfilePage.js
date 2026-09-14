@@ -1,4 +1,5 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
+import { getMyStats } from "../../services/streak/streakServices";
 import { useSelector, useDispatch } from "react-redux";
 import classNames from "classnames/bind";
 import styles from "../FriendProfilePage/FriendProfilePage.module.css"; // Tái sử dụng luôn CSS của FriendProfilePage
@@ -20,11 +21,23 @@ function MyProfilePage() {
     const posts = useSelector((state) => state.posts.posts);
     const dispatch = useDispatch();
 
+    const [pointsData, setPointsData] = useState({ points: 0, rank: null });
+
     // Load lại post nếu cần (hoặc dùng thẳng từ Redux nếu đã load ở trang Home)
     const { posts: fetchedPosts, loading: loadingPosts } = useGetPost(
         currentUser?.friends || [],
         currentUser?._id,
     );
+
+    useEffect(() => {
+        const fetchPoints = async () => {
+            const res = await getMyStats();
+            if (res.success) {
+                setPointsData({ points: res.data.totalPoints, rank: res.data.rank });
+            }
+        };
+        if (currentUser) fetchPoints();
+    }, [currentUser]);
 
     useEffect(() => {
         if (fetchedPosts && fetchedPosts.length > 0) {
@@ -53,7 +66,7 @@ function MyProfilePage() {
         0,
     );
 
-    const stats = { totalFriends, totalPosts, totalReactions, totalComments };
+    const stats = { totalFriends, totalPosts, totalReactions, totalComments, points: pointsData.points, rank: pointsData.rank };
 
     const safeProfile = (currentUser?.profile && typeof currentUser.profile === "object")
         ? currentUser.profile

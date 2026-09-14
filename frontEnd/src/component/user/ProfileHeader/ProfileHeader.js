@@ -3,7 +3,6 @@ import classNames from "classnames/bind";
 import styles from "./ProfileHeader.module.css";
 // Import thêm các icon mới
 import {
-  Flame,
   Users,
   FileText,
   Heart,
@@ -17,12 +16,6 @@ const cx = classNames.bind(styles);
 // Nhận thêm prop stats
 function ProfileHeader({ friendData, stats }) {
   const [isCopied, setIsCopied] = useState(false);
-  // Hash cứng tạo bợ chờ dữ liệu thật
-  const mockStreak = {
-    hash: "dummy_streak_hash_123456789",
-    count: 15,
-    isActive: true,
-  };
 
   // Trích xuất dữ liệu, gán giá trị mặc định là 0 nếu chưa có
   const {
@@ -30,6 +23,8 @@ function ProfileHeader({ friendData, stats }) {
     totalPosts = 0,
     totalReactions = 0,
     totalComments = 0,
+    points = 0,
+    rank = null,
   } = stats || {};
 
   const handleCopyCode = async () => {
@@ -55,10 +50,10 @@ function ProfileHeader({ friendData, stats }) {
         style={
           friendData?.profile?.coverPhoto
             ? {
-                backgroundImage: `url(${friendData.profile.coverPhoto})`,
-                backgroundSize: "cover",
-                backgroundPosition: "center",
-              }
+              backgroundImage: `url(${friendData.profile.coverPhoto})`,
+              backgroundSize: "cover",
+              backgroundPosition: "center",
+            }
             : {}
         }
       ></div>
@@ -73,22 +68,13 @@ function ProfileHeader({ friendData, stats }) {
             alt={friendData.name}
             className={cx("avatar")}
           />
-          {mockStreak.isActive && (
-            <div
-              className={cx("streak-badge", "floating-badge")}
-              title="Streak"
-            >
-              <Flame size={16} color="#ff9800" />
-              <span>{mockStreak.count}</span>
-            </div>
-          )}
         </div>
 
         <h2 className={cx("name")}>{friendData.name}</h2>
+        {/* 1. LUÔN LUÔN HIỂN THỊ MÃ ID */}
         <div className={cx("friend-code-wrapper")}>
           <span className={cx("code-label")}>Mã ID: </span>
           <span className={cx("code-value")}>{friendData.friendCode}</span>
-
           <div className={cx("copy-container")}>
             <button
               className={cx("copy-btn", { copied: isCopied })}
@@ -97,11 +83,19 @@ function ProfileHeader({ friendData, stats }) {
             >
               {isCopied ? <Check size={14} /> : <Copy size={14} />}
             </button>
-
-            {/* Tooltip hiển thị "Đã chép" */}
             {isCopied && <span className={cx("copy-tooltip")}>Đã chép!</span>}
           </div>
         </div>
+
+        {/* 2. HIỂN THỊ ĐIỂM VÀ RANK ĐỘC LẬP (NẾU THỎA ĐIỀU KIỆN) */}
+        {rank && rank <= 100 && (
+          <div className={cx("friend-code-wrapper")} style={{ marginTop: "-8px", backgroundColor: "#fff4e6" }}>
+            <span className={cx("code-label")}>Điểm: </span>
+            <span className={cx("code-value")}>{points.toLocaleString()}</span>
+            <span className={cx("code-label")} style={{ marginLeft: "12px" }}>Hạng: </span>
+            <span className={cx("code-value")} style={{ color: "#ff8c00" }}>Top {rank}</span>
+          </div>
+        )}
 
         {/* Vùng chứa thống kê dạng Pills hiện đại */}
         <div className={cx("stats-container")}>

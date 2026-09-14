@@ -292,8 +292,6 @@ export default function MiniChatNode({ chatData, windowIndex, bubbleIndex }) {
                   }
                 }
 
-                console.log("msg: ", msg)
-
                 return (
                   <React.Fragment key={msg._id || idx}>
                     {showTimeSeparator && (

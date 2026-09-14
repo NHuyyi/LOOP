@@ -4,7 +4,8 @@ const Block = require("../../../model/Block.Model");
 const { getIO, getOnlineUsers } = require("../../../config/socker");
 const sanitizeHtml = require("sanitize-html"); // ⚠️ cần cài nếu dùng: npm install sanitize-html
 const { completeTaskForUser } = require("../../../utils/streakHelper");
-
+const sendPushNotification = require("../../../utils/sendPushNotification");
+const { createAndEmitNotification } = require("../../../utils/notificationHelper");
 exports.createComment = async (req, res) => {
   try {
     const { postId, text: rawText, parentId } = req.body;
@@ -62,9 +63,17 @@ exports.createComment = async (req, res) => {
     post.comments.push(newComment);
     await post.save();
 
+    await createAndEmitNotification({
+      recipientId: post.author,
+      senderId: userId,
+      type: "comment",
+      postId: post._id,
+      url: `/post/${post._id}`,
+    });
+
     // ── Streak auto-completion ──
     // Task 5: Bình luận bài viết (15 điểm)
-    completeTaskForUser(userId, 5).catch(() => {});
+    completeTaskForUser(userId, 5).catch(() => { });
 
     // Lấy lại comment vừa thêm với populate user
     const populated = await PostModel.findById(postId)
@@ -111,6 +120,15 @@ exports.createComment = async (req, res) => {
         });
       }
     });
+
+    if (!onlineUsers[post.author]) {
+      await sendPushNotification(
+        post.author,
+        "Bình luận mới",
+        `${created.user.name} đã bình luận về bài viết của bạn.`,
+        `/post/${postId}` // <--- Dẫn thẳng vào bài viết
+      );
+    }
 
     return res.status(201).json({
       success: true,
