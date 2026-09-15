@@ -6,11 +6,13 @@ import blockUser from "../../../../services/User/blockUser";
 import { updateBlockStatusRealtime } from "../../../../redux/chatSlice";
 import style from "./BlockButton.module.css";
 import classNames from "classnames/bind";
+import { useToast } from "../../../../context/ToastContext";
 
 const cx = classNames.bind(style);
 
 function BlockButton({ targetUserId, type = "in", className, onModalClose, onCloseMenu }) {
   const dispatch = useDispatch();
+  const toast = useToast();
 
   const blockStatus = useSelector((state) => state.chat.blockStatus) || {};
   const isBlocked = blockStatus.isBlockedByMe;
@@ -45,7 +47,7 @@ function BlockButton({ targetUserId, type = "in", className, onModalClose, onClo
         }),
       );
     } catch (error) {
-      alert(error.message || "Có lỗi xảy ra");
+      toast.error(error.message || "Có lỗi xảy ra");
     } finally {
       if(onCloseMenu) onCloseMenu(false)
       setLoading(false);

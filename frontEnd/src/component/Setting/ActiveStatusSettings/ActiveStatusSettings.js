@@ -5,12 +5,14 @@ import styles from "./ActiveStatusSettings.module.css";
 import { updatePrivacyAPI } from "../../../services/User/updatePrivacyAPI";
 import { setUser } from "../../../redux/userSlice";
 import socket from "../../../socker";
+import { useToast } from "../../../context/ToastContext";
 
 const cx = classNames.bind(styles);
 
 function ActiveStatusSettings() {
     const { user, token } = useSelector((state) => state.user);
     const dispatch = useDispatch();
+    const toast = useToast();
 
     const [showActive, setShowActive] = useState(user?.showActiveStatus ?? true);
 
@@ -28,7 +30,7 @@ function ActiveStatusSettings() {
 
         } else {
             setShowActive(!newValue);
-            alert(res.message);
+            toast.error(res.message);
         }
     };
 

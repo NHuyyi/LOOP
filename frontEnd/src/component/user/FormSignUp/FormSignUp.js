@@ -5,9 +5,12 @@ import classNames from "classnames/bind";
 import { useNavigate } from "react-router-dom";
 import { Eye, EyeOff } from "lucide-react";
 import Loading from "../../Loading/Loading";
+import { useToast } from "../../../context/ToastContext";
+
 const cx = classNames.bind(styles);
 
-function FormSignUp({ setMessage, setSuccess }) {
+function FormSignUp() {
+  const toast = useToast();
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
@@ -33,16 +36,13 @@ function FormSignUp({ setMessage, setSuccess }) {
         formData.password,
         formData.checkpassword,
       );
-      setMessage(data.message);
-      setSuccess(data.success);
+      toast.error(data.message);
       if (data.success === true)
         navigate("/otp", { state: { email: formData.email } });
       // Hiển thị thông báo thành công hoặc chuyển trang tại đây
     } catch (error) {
       console.error("API error:", error.message);
-      setMessage(error.message);
-      setSuccess(false);
-      // Hiển thị thông báo lỗi cho người dùng tại đây
+      toast.error(error.message);
     } finally {
       setLoading(false); // tắt trạng thái loading
     }

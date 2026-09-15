@@ -12,10 +12,12 @@ import Loading from "../../Loading/Loading";
 import ConfirmModal from "../../common/ConfirmModal/ConfirmModal";
 import { setNotiSettings } from "../../../redux/userSlice";
 import { getSettingsSounds } from "../../../services/notifications/getNotiSettings";
+import { useToast } from "../../../context/ToastContext";
 
 const cx = classNames.bind(styles);
 
-function FormLogin({ setMessage, setSuccess }) {
+function FormLogin() {
+  const toast = useToast();
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     email: "",
@@ -46,15 +48,13 @@ function FormLogin({ setMessage, setSuccess }) {
       }
 
       if (data.success === false) {
-        setMessage(data.message);
-        setSuccess(false);
+        toast.error(data.message);
         setLoading(false);
         return;
       }
 
       if (data.requires2FA) {
-        setMessage(data.message);
-        setSuccess(true);
+        toast.error("Vui lòng xác thực tài khoản");
         setTimeout(() => {
           navigate("/otp", { state: { email: formData.email, type: "2fa" } });
         }, 1000);
@@ -62,8 +62,7 @@ function FormLogin({ setMessage, setSuccess }) {
       }
 
       if (data.user.isVerified === false) {
-        setMessage("Vui lòng xác thực tài khoản");
-        setSuccess(false);
+        toast.error("Vui lòng xác thực tài khoản");
         await resendOTP(formData.email, "signup");
         navigate("/otp", { state: { email: formData.email, type: "signup" } });
         return;
@@ -85,12 +84,15 @@ function FormLogin({ setMessage, setSuccess }) {
       } else {
         navigate("/home");
       }
-      setMessage(data.message);
-      setSuccess(data.success);
+      if (data.success) {
+        toast.success(data.message);
+      }
+      else {
+        toast.error(data.message);
+      }
     } catch (error) {
       console.error("API error:", error.message);
-      setMessage(error.message);
-      setSuccess(false);
+      toast.error(error.message);
     } finally {
       setLoading(false);
     }
@@ -101,15 +103,13 @@ function FormLogin({ setMessage, setSuccess }) {
     const data = await requestReactivateAPI(formData.email, formData.password);
 
     if (data.success) {
-      setMessage(data.message);
-      setSuccess(true);
+      toast.success(data.message);
       setShowRestoreModal(false); // Đóng modal khi thành công
       setTimeout(() => {
         navigate("/otp", { state: { email: formData.email, type: "reactivate", password: formData.password } });
       }, 1500);
     } else {
-      setMessage(data.message);
-      setSuccess(false);
+      toast.error(data.message);
     }
     setLoading(false);
   };

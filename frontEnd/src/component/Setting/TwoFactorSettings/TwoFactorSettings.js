@@ -5,12 +5,14 @@ import styles from "./TwoFactorSettings.module.css";
 import { updatePrivacyAPI } from "../../../services/User/updatePrivacyAPI";
 import { setUser } from "../../../redux/userSlice";
 import { ShieldCheck } from "lucide-react";
+import { useToast } from "../../../context/ToastContext";
 
 const cx = classNames.bind(styles);
 
 function TwoFactorSettings() {
     const { user, token } = useSelector((state) => state.user);
     const dispatch = useDispatch();
+    const toast = useToast();
 
     const [is2FA, setIs2FA] = useState(user?.twoFactorEnabled ?? false);
 
@@ -23,7 +25,7 @@ function TwoFactorSettings() {
             dispatch(setUser({ user: res.user, token }));
         } else {
             setIs2FA(!newValue);
-            alert(res.message);
+            toast.error(res.message);
         }
     };
 

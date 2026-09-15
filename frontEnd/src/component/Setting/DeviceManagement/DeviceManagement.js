@@ -5,6 +5,7 @@ import { Monitor, Smartphone, Globe, LogOut, MapPin } from "lucide-react";
 import { getActiveSessions } from "../../../services/Session/getActiveSessions";
 import { revokeSession } from "../../../services/Session/revokeSession";
 import Loading from "../../Loading/Loading";
+import { useToast } from "../../../context/ToastContext";
 
 const cx = classNames.bind(styles);
 
@@ -12,33 +13,14 @@ function DeviceManagement() {
     const [devices, setDevices] = useState([]);
     const [loading, setLoading] = useState(true);
     const [processingId, setProcessingId] = useState(null);
-
-    // States dùng cho thông báo
-    const [message, setMessage] = useState("");
-    const [success, setSuccess] = useState("");
-    const [fadeOut, setFadeOut] = useState(false);
+    const Toast = useToast();
 
     const currentDeviceId = localStorage.getItem("deviceId");
 
-    // Hiệu ứng tự động tắt thông báo sau 3s
-    useEffect(() => {
-        if (message) {
-            const timer = setTimeout(() => {
-                setFadeOut(true);
-            }, 2500);
-            const removeTimer = setTimeout(() => {
-                setMessage("");
-                setFadeOut(false);
-            }, 3000);
-            return () => {
-                clearTimeout(timer);
-                clearTimeout(removeTimer);
-            };
-        }
-    }, [message]);
 
     useEffect(() => {
         fetchDevices();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const fetchDevices = async () => {
@@ -47,8 +29,7 @@ function DeviceManagement() {
         if (res.success) {
             setDevices(res.data);
         } else {
-            setMessage(res.message || "Không thể tải danh sách thiết bị");
-            setSuccess(false);
+            Toast.error("Không thể tải danh sách thiết bị");
         }
         setLoading(false);
     };
@@ -59,12 +40,10 @@ function DeviceManagement() {
         setProcessingId(null);
 
         if (res.success) {
-            setMessage("Đã đăng xuất thiết bị thành công");
-            setSuccess(true);
+            Toast.success("Đã đăng xuất thiết bị thành công");
             setDevices((prev) => prev.filter((d) => d._id !== sessionId));
         } else {
-            setMessage(res.message || "Lỗi khi đăng xuất thiết bị");
-            setSuccess(false);
+            Toast.error("Lỗi khi đăng xuất thiết bị");
         }
     };
 
@@ -124,17 +103,6 @@ function DeviceManagement() {
                         );
                     })}
                     {devices.length === 0 && <p className={cx("empty-text")}>Không có dữ liệu thiết bị.</p>}
-                </div>
-            )}
-
-            {/* Khối hiển thị thông báo */}
-            {message && (
-                <div
-                    className={`${cx("app-message")}
-                        ${success === false ? cx("app-message__err") : cx("app-message__ok")} 
-                        ${fadeOut ? cx("fade-out") : ""}`}
-                >
-                    {message}
                 </div>
             )}
         </div>

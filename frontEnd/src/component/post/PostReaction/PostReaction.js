@@ -7,6 +7,7 @@ import addreaction from "../../../services/Post/reaction/addreaction";
 import { FaStar } from "react-icons/fa";
 
 import { useReactions } from "../../../hooks/useReactions";
+import { useToast } from "../../../context/ToastContext";
 
 const cx = classNames.bind(styles);
 
@@ -14,7 +15,7 @@ function PostReaction({ postId, userID, onReacted }) {
   const [showMenu, setShowMenu] = useState(false);
   const closeTimer = useRef(null);
   const { reactions, getReactionByType } = useReactions();
-
+  const toast = useToast();
   // ✅ Lấy post từ Redux --> tự động re-render khi Redux update
   const post = useSelector((state) =>
     state.posts?.posts?.find((p) => p._id === postId),
@@ -26,7 +27,7 @@ function PostReaction({ postId, userID, onReacted }) {
 
   // ✅ Không lưu reaction trong local state -> Redux upd là UI tự đổi
   const handleReaction = async (type) => {
-    if (!userID) return alert("Vui lòng đăng nhập để thực hiện phản ứng.");
+    if (!userID) return toast.error("Vui lòng đăng nhập để thực hiện phản ứng.");
 
     try {
       const res = await addreaction(postId, userID, type);
@@ -35,11 +36,11 @@ function PostReaction({ postId, userID, onReacted }) {
         setShowMenu(false);
         onReacted?.(); // socket sẽ update redux
       } else {
-        alert(res?.message || "Có lỗi khi thực hiện.");
+        toast.error(res?.message || "Có lỗi khi thực hiện.");
       }
     } catch (err) {
       console.error(err);
-      alert("Lỗi mạng, vui lòng thử lại.");
+      toast.error("Lỗi mạng, vui lòng thử lại.");
     }
   };
 

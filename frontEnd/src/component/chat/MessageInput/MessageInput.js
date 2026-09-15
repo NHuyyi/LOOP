@@ -20,6 +20,7 @@ import ImageUpload from "./ImageUpload";
 import uploadImage from "../../../services/Post/uploadImage";
 import EmojiStickerPicker from "./EmojiStickerPicker";
 import { useRichTextEditor } from "../../../hooks/useRichTextEditor";
+import { useToast } from "../../../context/ToastContext";
 const cx = classNames.bind(styles);
 let typingTimeout = null;
 
@@ -31,7 +32,7 @@ function MessageInput({ receiverId, conversationIdProp }) {
   const dispatch = useDispatch();
   const stateUser = useSelector((state) => state.user);
   const currentUser = stateUser?.user;
-
+  const toast = useToast();
   const { activeConversationId, currentMessages, replyMessage } = useSelector(
     (state) => state.chat,
   );
@@ -88,7 +89,7 @@ function MessageInput({ receiverId, conversationIdProp }) {
         if (imageRes.data?.url) {
           uploadedImageUrl = imageRes.data.url;
         } else {
-          alert("Tải ảnh thất bại!");
+          toast.error("Tải ảnh thất bại!");
           setIsUploading(false);
           return;
         }
