@@ -11,9 +11,6 @@ const cx = classNames.bind(styles);
 function PostMenu({ post, friendList = [] }) {
   const [open, setOpen] = useState(false);
   const menuRef = useRef();
-  const [message, setMessage] = useState("");
-  const [success, setSuccess] = useState(" ");
-  const [fadeOut, setFadeOut] = useState(false);
   const token = localStorage.getItem("token");
   // Đóng menu khi click ra ngoài
   useEffect(() => {
@@ -33,26 +30,6 @@ function PostMenu({ post, friendList = [] }) {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  // 👇 tự động xóa message sau 5s
-  useEffect(() => {
-    if (message) {
-      // Sau 4.5s bắt đầu fade out
-      const timer = setTimeout(() => {
-        setFadeOut(true);
-      }, 2500);
-
-      // Sau 5s thì xóa message
-      const removeTimer = setTimeout(() => {
-        setMessage("");
-        setFadeOut(false);
-      }, 3000);
-
-      return () => {
-        clearTimeout(timer);
-        clearTimeout(removeTimer);
-      };
-    }
-  }, [message]);
 
   return (
     <div className={cx("post-menu-wrapper")} ref={menuRef}>
@@ -70,8 +47,6 @@ function PostMenu({ post, friendList = [] }) {
               postId={post._id}
               currentContent={post.content}
               token={token}
-              setMessage={setMessage}
-              setSuccess={setSuccess}
             />
           </div>
 
@@ -88,18 +63,6 @@ function PostMenu({ post, friendList = [] }) {
               token={token}
             />
           </div>
-        </div>
-      )}
-      {message && (
-        <div
-          className={`${cx("app-message")}  
-                      ${
-                        success === false
-                          ? cx("app-message__err")
-                          : cx("app-message__ok")
-                      } ${fadeOut ? cx("fade-out") : ""}`}
-        >
-          {message}
         </div>
       )}
     </div>

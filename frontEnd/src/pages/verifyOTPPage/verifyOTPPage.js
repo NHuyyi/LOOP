@@ -1,5 +1,5 @@
 // Otp.js
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { verifyOTP } from "../../services/User/verifyOTP";
 import { resendOTP } from "../../services/User/resendOTP";
@@ -11,6 +11,7 @@ import styles from "./verifyOTPPage.module.css";
 import { getSettingsSounds } from "../../services/notifications/getNotiSettings";
 
 import Loading from "../../component/Loading/Loading";
+import { useToast } from "../../context/ToastContext";
 const cx = classNames.bind(styles);
 
 function Otp() {
@@ -21,9 +22,7 @@ function Otp() {
   const [codeotp, setCodeOtp] = useState(new Array(6).fill(""));
   const [loadingverify, setLoadingverify] = useState(false);
   const [loadingresend, setLoadingresend] = useState(false);
-  const [message, setMessage] = useState("");
-  const [success, setSuccess] = useState("");
-  const [fadeOut, setFadeOut] = useState(false);
+  const toast = useToast();
 
   const dispatch = useDispatch();
   const navigate = useNavigate(); // ✅ hook để điều hướng
@@ -41,35 +40,19 @@ function Otp() {
     }
   };
 
-  // 👇 tự động xóa message sau 5s
-  useEffect(() => {
-    if (message) {
-      // Sau 4.5s bắt đầu fade out
-      const timer = setTimeout(() => {
-        setFadeOut(true);
-      }, 2500);
-
-      // Sau 5s thì xóa message
-      const removeTimer = setTimeout(() => {
-        setMessage("");
-        setFadeOut(false);
-      }, 3000);
-
-      return () => {
-        clearTimeout(timer);
-        clearTimeout(removeTimer);
-      };
-    }
-  }, [message]);
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       const otp = codeotp.join("");
       setLoadingverify(true);
       const data = await verifyOTP(email, password, otp);
-      setMessage(data.message);
-      setSuccess(data.success);
+      
+      if (data.success) {
+        toast.success(data.message);
+      } else {
+        toast.error(data.message);
+      }
+
       if (data.otptype === "signup") {
         dispatch(setUser({ user: data.user, token: data.token }));
         // lưu vào localStorage để giữ đăng nhập sau reload
@@ -124,9 +107,7 @@ function Otp() {
       }
     } catch (error) {
       console.error("API error:", error.message);
-      setMessage(error.message);
-      setSuccess(false);
-      // Hiển thị thông báo lỗi cho người dùng tại đây
+      toast.error(error.message);
     } finally {
       setLoadingverify(false);
     }
@@ -137,13 +118,15 @@ function Otp() {
     try {
       setLoadingresend(true);
       const resuit = await resendOTP(email, otpType);
-      setMessage(resuit.message);
-      setSuccess(resuit.success);
+      if (resuit.success){
+        toast.success(resuit.message)
+      }
+      else{
+        toast.error(resuit.message)
+      }
     } catch (error) {
       console.error("API error:", error.message);
-      setMessage(error.message);
-      setSuccess(false);
-      // Hiển thị thông báo lỗi cho người dùng tại đây
+      toast.error(error.message);
     } finally {
       setLoadingresend(false);
       codeotp.fill("");
@@ -234,17 +217,7 @@ function Otp() {
           </div>
         </form>
       </div>
-      {message && (
-        <div
-          className={`${cx("app-message")}  
-                      ${success === false
-              ? cx("app-message__err")
-              : cx("app-message__ok")
-            } ${fadeOut ? cx("fade-out") : ""}`}
-        >
-          {message}
-        </div>
-      )}
+      
     </div>
   );
 }

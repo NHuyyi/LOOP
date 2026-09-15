@@ -1,0 +1,59 @@
+.actions {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.action-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    background: transparent;
+}
+
+/* Nút Nhắn tin - Xanh dương */
+.msg-btn {
+    color: #1877f2;
+    background: #e7f3ff;
+}
+
+.msg-btn:hover {
+    background: #d1e8ff;
+}
+
+/* Nút Khóa - Màu Cam (Cảnh báo/Tạm ngưng) */
+.lock-btn {
+    color: #e67700;
+    background: #fff4e6;
+}
+
+.lock-btn:hover {
+    background: #ffe8cc;
+}
+
+/* Nút Mở khóa - Màu Xanh lá */
+.unlock-btn {
+    color: #2b8a3e;
+    background: #e0ffe6;
+}
+
+.unlock-btn:hover {
+    background: #b2f2bb;
+}
+
+/* Nút Xóa - Màu Đỏ (Nguy hiểm) */
+.delete-btn {
+    color: #c92a2a;
+    background: #ffe3e3;
+}
+
+.delete-btn:hover {
+    background: #ffc9c9;
+}

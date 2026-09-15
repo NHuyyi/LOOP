@@ -1,8 +1,9 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import styles from "./forgetpassspage.module.css";
 import classNames from "classnames/bind";
 import { forgetpassword } from "../../services/User/forgetpassword";
 import { useNavigate } from "react-router-dom";
+import { useToast } from "../../context/ToastContext";
 
 import Loading from "../../component/Loading/Loading";
 
@@ -11,30 +12,8 @@ const cx = classNames.bind(styles);
 function Forget() {
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState("");
-  const [success, setSuccess] = useState("");
-  const [fadeOut, setFadeOut] = useState(false);
+  const toast = useToast();
   const navigate = useNavigate();
-
-  useEffect(() => {
-    if (message) {
-      // Sau 4.5s bắt đầu fade out
-      const timer = setTimeout(() => {
-        setFadeOut(true);
-      }, 2500);
-
-      // Sau 5s thì xóa message
-      const removeTimer = setTimeout(() => {
-        setMessage("");
-        setFadeOut(false);
-      }, 3000);
-
-      return () => {
-        clearTimeout(timer);
-        clearTimeout(removeTimer);
-      };
-    }
-  }, [message]);
 
   const handleKeyDown = (e) => {
     if (e.key === "Enter") {
@@ -48,13 +27,16 @@ function Forget() {
     try {
       setLoading(true); // bật trạng thái loading
       const data = await forgetpassword(email);
-      setMessage(data.message);
-      setSuccess(data.success);
+      if(data.success){
+        toast.success(data.message)
+      }
+      else{
+        toast.error(data.message)
+      }
       if (data.success === true) navigate("/otp", { state: { email: email } });
     } catch (error) {
       console.error("API error:", error.message);
-      setMessage(error.message);
-      setSuccess(false);
+      toast.error(error.message)
     } finally {
       setLoading(false); // tắt trạng thái loading
     }
@@ -78,18 +60,6 @@ function Forget() {
             {loading ? <Loading size="small" /> : "Gửi OTP"}
           </button>
         </div>
-        {message && (
-          <div
-            className={`${cx("app-message")}  
-                          ${
-                            success === false
-                              ? cx("app-message__err")
-                              : cx("app-message__ok")
-                          } ${fadeOut ? cx("fade-out") : ""}`}
-          >
-            {message}
-          </div>
-        )}
       </div>
     </div>
   );

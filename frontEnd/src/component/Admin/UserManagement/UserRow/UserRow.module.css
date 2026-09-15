@@ -1,0 +1,53 @@
+.user-row {
+    transition: background 0.2s;
+}
+
+.user-row:hover td {
+    background: #fdfbff;
+}
+
+.user-row td {
+    padding: 16px;
+    vertical-align: middle;
+    border-bottom: 1px solid #f1f3f5;
+    color: #333;
+    font-size: 0.95rem;
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 1px solid #e9ecef;
+}
+
+.name {
+    font-weight: 600;
+    color: #1a1a2e;
+}
+
+.code {
+    font-family: monospace;
+    color: #a259ff;
+    font-weight: 600;
+    background: #f5f0ff;
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-size: 0.9rem;
+}
+
+.email {
+    color: #6c757d;
+}
+
+.points {
+    font-weight: 700;
+    color: #ff8c00;
+}

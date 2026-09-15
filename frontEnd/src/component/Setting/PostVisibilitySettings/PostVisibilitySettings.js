@@ -4,6 +4,7 @@ import classNames from "classnames/bind";
 import styles from "./PostVisibilitySettings.module.css";
 import { updatePrivacyAPI } from "../../../services/User/updatePrivacyAPI";
 import { setUser } from "../../../redux/userSlice";
+import { useToast } from "../../../context/ToastContext";
 
 import CustomVisibilityModal from "../../post/CustomVisibility/CustomVisibility";
 
@@ -12,6 +13,7 @@ const cx = classNames.bind(styles);
 function PostVisibilitySettings() {
     const { user, token } = useSelector((state) => state.user);
     const dispatch = useDispatch();
+    const toast = useToast();
 
     const [visibility, setVisibility] = useState(user?.defaultPostVisibility || "friends");
     const [showCustomModal, setShowCustomModal] = useState(false);
@@ -28,7 +30,7 @@ function PostVisibilitySettings() {
             dispatch(setUser({ user: res.user, token }));
         } else {
             setVisibility(user?.defaultPostVisibility || "friends");
-            alert(res.message);
+            toast.error(res.message);
         }
     };
 
@@ -49,7 +51,7 @@ function PostVisibilitySettings() {
             dispatch(setUser({ user: res.user, token }));
         } else {
             setVisibility(user?.defaultPostVisibility || "friends");
-            alert(res.message);
+            toast.error(res.message);
         }
     };
 

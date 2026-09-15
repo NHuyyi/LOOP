@@ -1,13 +1,8 @@
 const express = require("express");
 const router = express.Router();
-
-// Import 2 middleware
 const Authorization = require("../middleware/Authorization");
 const authorize = require("../middleware/authorize");
+const { getAllUsers } = require("../controller/admin/getAllUsers"); // Thêm dòng này
 
-router.post("/lock-user", Authorization, authorize("admin"), async (req, res) => {
-    // Logic khóa tài khoản
-    res.json({ success: true, message: "Đã khóa tài khoản user" });
-});
-
+router.get("/users", Authorization, authorize("admin"), getAllUsers);
 module.exports = router;

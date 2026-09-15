@@ -2,7 +2,7 @@ import styles from "./HomePage.module.css";
 import classNames from "classnames/bind";
 import CreatePost from "../../component/post/creatpost/creatpost";
 import PostCard from "../../component/post/postItem/PostCard";
-import { useState, useEffect } from "react";
+import {  useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useGetPost } from "../../hooks/getpost";
 import { updateReaction } from "../../redux/reactionSlide";
@@ -13,12 +13,9 @@ import FriendFilterList from "../../component/friends/FriendFilterList/FriendFil
 import Loading from "../../component/Loading/Loading";
 import { subscribeToPush } from "../../hooks/usePushNotification";
 
-const cx = classNames.bind(styles);
+const cx = classNames.bind(styles); 
 
 function HomePage() {
-  const [message, setMessage] = useState("");
-  const [success, setSuccess] = useState("");
-  const [fadeOut, setFadeOut] = useState(false);
 
   // Lấy user hiện tại từ redux
   const stateUser = useSelector((state) => state.user);
@@ -37,7 +34,7 @@ function HomePage() {
 
   useEffect(() => {
     // Chỉ kích hoạt khi đã có thông tin người dùng VÀ trường pushEnabled = true
-    if (currentUser?._id && notiSettings?.pushEnabled ==! false) {
+    if (currentUser?._id && notiSettings?.pushEnabled !== false) {
       subscribeToPush();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -66,20 +63,6 @@ function HomePage() {
     });
   }, [posts, dispatch]);
 
-  useEffect(() => {
-    if (message) {
-      const timer = setTimeout(() => setFadeOut(true), 2500);
-      const removeTimer = setTimeout(() => {
-        setMessage("");
-        setFadeOut(false);
-      }, 3000);
-
-      return () => {
-        clearTimeout(timer);
-        clearTimeout(removeTimer);
-      };
-    }
-  }, [message]);
 
   return (
     <div className={cx("home-container")}>
@@ -87,14 +70,10 @@ function HomePage() {
         <MiniProfile
           user={currentUser}
           post={posts}
-          setMessage={setMessage}
-          setSuccess={setSuccess}
         />
       </div>
       <div className={cx("content")}>
         <CreatePost
-          setMessage={setMessage}
-          setSuccess={setSuccess}
           friendList={currentUser?.friends || []}
         />
 
@@ -126,17 +105,6 @@ function HomePage() {
           <FriendFilterList />
         </div>
       </div>
-      {message && (
-        <div
-          className={`${cx("app-message")}  
-                          ${success === false
-              ? cx("app-message__err")
-              : cx("app-message__ok")
-            } ${fadeOut ? cx("fade-out") : ""}`}
-        >
-          {message}
-        </div>
-      )}
     </div>
   );
 }

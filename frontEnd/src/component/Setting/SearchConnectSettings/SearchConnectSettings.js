@@ -4,12 +4,14 @@ import classNames from "classnames/bind";
 import styles from "./SearchConnectSettings.module.css";
 import { updatePrivacyAPI } from "../../../services/User/updatePrivacyAPI";
 import { setUser } from "../../../redux/userSlice";
+import { useToast } from "../../../context/ToastContext";
 
 const cx = classNames.bind(styles);
 
 function SearchConnectSettings() {
     const { user, token } = useSelector((state) => state.user);
     const dispatch = useDispatch();
+    const toast = useToast();
 
     const [allowSearch, setAllowSearch] = useState(user?.allowSearchByCode ?? true);
     const [allowRequest, setAllowRequest] = useState(user?.allowFriendRequests ?? true);
@@ -24,7 +26,7 @@ function SearchConnectSettings() {
             dispatch(setUser({ user: res.user, token }));
         } else {
             setAllowSearch(!newValue);
-            alert(res.message);
+            toast.error(res.message);
         }
     };
 
@@ -38,7 +40,7 @@ function SearchConnectSettings() {
             dispatch(setUser({ user: res.user, token }));
         } else {
             setAllowRequest(!newValue);
-            alert(res.message);
+            toast.error(res.message);
         }
     };
 

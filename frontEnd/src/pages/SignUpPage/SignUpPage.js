@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import FormSignUp from "../../component/user/FormSignUp/FormSignUp";
 import styles from "./SignUpPage.module.css";
 import classNames from "classnames/bind";
@@ -8,37 +8,14 @@ const cx = classNames.bind(styles);
 
 function SignUpPage() {
   const [showformsignup, setShowformsignup] = useState(false);
-  const [message, setMessage] = useState("");
-  const [success, setSuccess] = useState(" ");
-  const [fadeOut, setFadeOut] = useState(false);
 
-  // 👇 tự động xóa message sau 5s
-  useEffect(() => {
-    if (message) {
-      // Sau 4.5s bắt đầu fade out
-      const timer = setTimeout(() => {
-        setFadeOut(true);
-      }, 2500);
-
-      // Sau 5s thì xóa message
-      const removeTimer = setTimeout(() => {
-        setMessage("");
-        setFadeOut(false);
-      }, 3000);
-
-      return () => {
-        clearTimeout(timer);
-        clearTimeout(removeTimer);
-      };
-    }
-  }, [message]);
   return (
     <div className={cx("custom-container")}>
       <div className={cx("custom-half")}>
         {showformsignup ? (
-          <FormSignUp setMessage={setMessage} setSuccess={setSuccess} />
+          <FormSignUp />
         ) : (
-          <FormLogin setMessage={setMessage} setSuccess={setSuccess} />
+          <FormLogin />
         )}
       </div>
       <div className={cx("custom-half-action")}>
@@ -121,18 +98,6 @@ function SignUpPage() {
           </div>
         </div>
       </div>
-      {message && (
-        <div
-          className={`${cx("app-message")}  
-                      ${
-                        success === false
-                          ? cx("app-message__err")
-                          : cx("app-message__ok")
-                      } ${fadeOut ? cx("fade-out") : ""}`}
-        >
-          {message}
-        </div>
-      )}
     </div>
   );
 }

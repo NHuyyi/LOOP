@@ -6,6 +6,7 @@ import { useDispatch } from "react-redux";
 import styles from "./editpost.module.css";
 import { FaEdit } from "react-icons/fa";
 import { createPortal } from "react-dom";
+import { useToast } from "../../../context/ToastContext";
 
 import Loading from "../../Loading/Loading";
 
@@ -17,11 +18,11 @@ function EditPost({ postId, currentContent, token, setMessage, setSuccess }) {
 
   const [newContent, setNewContent] = useState(currentContent);
   const dispatch = useDispatch();
+  const toast = useToast();
 
   const handleEdit = async () => {
     if (newContent.trim() === "") {
-      setMessage("Nội dung không được để trống");
-      setSuccess(false);
+      toast.error("Nội dung không được để trống");
       return;
     }
     setLoading(true);
@@ -30,11 +31,9 @@ function EditPost({ postId, currentContent, token, setMessage, setSuccess }) {
     if (result.success) {
       dispatch(updatePost(result.post));
       setShowEdit(false);
-      setMessage("Cập nhật bài viết thành công");
-      setSuccess(true);
+      toast.success("Cập nhật bài viết thành công");
     } else {
-      setMessage(result.message);
-      setSuccess(false);
+      toast.error(result.message);
     }
   };
   return (

@@ -2,16 +2,17 @@ import styles from "./miniprofile.module.css";
 import classNames from "classnames/bind";
 import MiniPost from "../minipostinprofile/minipost";
 import { Copy } from "lucide-react"; // icon copy
+import { useToast } from "../../../context/ToastContext";
 
 const cx = classNames.bind(styles);
 
-function MiniProfile({ user, post = [], setMessage, setSuccess }) {
+function MiniProfile({ user, post = [] }) {
+  const toast = useToast();
   const mypost = post.filter((p) => p.author._id === user?._id);
 
   const handleCopy = () => {
     navigator.clipboard.writeText(user?.friendCode || "");
-    setMessage("Đã sao chép Friend Code!");
-    setSuccess(true);
+    toast.success("Đã sao chép Friend Code!");
   };
 
   return (
