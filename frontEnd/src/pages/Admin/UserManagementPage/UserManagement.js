@@ -6,6 +6,7 @@ import Loading from "../../../component/Loading/Loading";
 import UserTable from "../../../component/Admin/UserManagement/UserTable/UserTable";
 import { useToast } from "../../../context/ToastContext";
 import UserFilter from "../../../component/Admin/UserManagement/UserFilter/UserFilter";
+import UserCharts from "../../../component/Admin/UserManagement/UserCharts/UserCharts";
 
 const cx = classNames.bind(styles);
 
@@ -59,6 +60,7 @@ function UserManagement() {
     return (
         <div className={cx("management-container")}>
             {/* Tương lai: Thêm Thanh tìm kiếm và Biểu đồ ở đây */}
+            <UserCharts users={users}/>
 
             <div className={cx("card")}>
                 <UserFilter

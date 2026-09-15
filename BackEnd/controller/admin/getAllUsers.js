@@ -28,6 +28,7 @@ exports.getAllUsers = async (req, res) => {
             points: streakMap[u._id.toString()] || 0,
             isVerified: u.isVerified,
             isdelete: u.isdelete,
+            createdAt: u.createdAt,
             // banUntil: u.banUntil // (Sẽ thêm vào model sau cho tính năng khóa thời hạn)
         }));
 
