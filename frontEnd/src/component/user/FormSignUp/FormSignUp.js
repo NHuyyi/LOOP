@@ -36,9 +36,12 @@ function FormSignUp() {
         formData.password,
         formData.checkpassword,
       );
-      toast.error(data.message);
-      if (data.success === true)
-        navigate("/otp", { state: { email: formData.email } });
+      if (!data?.success) {
+        toast.error(data.message);
+        return
+      }
+      toast.success(data.message);
+      navigate("/otp", { state: { email: formData.email } });
       // Hiển thị thông báo thành công hoặc chuyển trang tại đây
     } catch (error) {
       console.error("API error:", error.message);

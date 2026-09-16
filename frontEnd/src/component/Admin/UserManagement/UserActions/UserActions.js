@@ -5,7 +5,8 @@ import { Lock, Unlock, MessageSquare, Trash2 } from "lucide-react";
 
 const cx = classNames.bind(styles);
 
-function UserActions({ user }) {
+function UserActions({ user, openDeleteModal }) {
+
     // Các hàm xử lý click sẽ được gắn vào sau
     return (
         <div className={cx("actions")}>
@@ -23,7 +24,8 @@ function UserActions({ user }) {
                 </button>
             )}
 
-            <button className={cx("action-btn", "delete-btn")} title="Xóa vĩnh viễn">
+            <button className={cx("action-btn", "delete-btn")} title="Xóa vĩnh viễn"
+                onClick={() => openDeleteModal(user)}>
                 <Trash2 size={16} />
             </button>
         </div>

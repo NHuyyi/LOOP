@@ -5,7 +5,7 @@ import UserRow from "../UserRow/UserRow";
 
 const cx = classNames.bind(styles);
 
-function UserTable({ users }) {
+function UserTable({ users, openDeleteModal }) {
     if (!users || users.length === 0) {
         return (
             <div className={cx("empty-state")}>
@@ -29,7 +29,7 @@ function UserTable({ users }) {
                 </thead>
                 <tbody>
                     {users.map((user) => (
-                        <UserRow key={user.id} user={user} />
+                        <UserRow key={user.id} user={user} openDeleteModal={openDeleteModal} />
                     ))}
                 </tbody>
             </table>
