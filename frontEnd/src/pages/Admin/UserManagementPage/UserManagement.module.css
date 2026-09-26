@@ -17,3 +17,54 @@
     color: #1a1a2e;
     font-weight: 700;
 }
+
+/* Bổ sung vào cuối file UserManagement.module.css */
+
+.reason-buttons-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.reason-btn {
+    padding: 8px 16px;
+    border-radius: 20px;
+    border: 2px solid var(--btn-color);
+    /* Lấy màu từ biến inline */
+    background-color: transparent;
+    color: var(--btn-color);
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    outline: none;
+}
+
+.reason-btn:hover {
+    /* Hiệu ứng hover nhạt bằng màu của viền */
+    background-color: color-mix(in srgb, var(--btn-color) 10%, transparent);
+}
+
+.reason-btn.active {
+    /* Khi được chọn (active) -> Nền đổi thành màu viền, chữ màu trắng */
+    background-color: var(--btn-color);
+    color: #ffffff;
+}
+
+.penalty-select {
+    width: 100%;
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid #ced4da;
+    outline: none;
+    font-size: 0.95rem;
+    color: #333;
+    background-color: #fff;
+    cursor: pointer;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.penalty-select:focus {
+    border-color: #339af0;
+    box-shadow: 0 0 0 2px rgba(51, 154, 240, 0.2);
+}

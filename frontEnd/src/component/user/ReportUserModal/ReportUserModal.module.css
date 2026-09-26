@@ -1,0 +1,155 @@
+.modal-body {
+    margin: 16px 0;
+    font-size: 0.95rem;
+    text-align: left;
+    color: #333;
+}
+
+.description-text {
+    margin-bottom: 16px;
+    line-height: 1.5;
+    color: #495057;
+}
+
+.highlight-name {
+    color: #212529;
+    font-weight: 600;
+}
+
+.form-group {
+    margin-bottom: 16px;
+}
+
+.form-label {
+    font-weight: 600;
+    display: block;
+    margin-bottom: 8px;
+    color: #343a40;
+}
+
+/* Kiểu dáng chung cho cả Select và Textarea */
+.form-control {
+    width: 100%;
+    padding: 10px 12px;
+    border-radius: 8px;
+    border: 1px solid #ced4da;
+    font-size: 14px;
+    color: #495057;
+    background-color: #fff;
+    outline: none;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    font-family: inherit;
+    box-sizing: border-box;
+}
+
+/* Riêng phần thả xuống (Dropdown) */
+.form-select {
+    cursor: pointer;
+    appearance: auto;
+    /* Giữ lại icon mũi tên mặc định của hệ điều hành */
+}
+
+/* Riêng phần nhập văn bản */
+textarea.form-control {
+    resize: none;
+    line-height: 1.5;
+}
+
+/* Hiệu ứng khi bấm vào (Focus) - Đồng bộ với màu chủ đạo của dự án */
+.form-control:focus {
+    border-color: #228be6;
+    box-shadow: 0 0 0 2px rgba(34, 139, 230, 0.2);
+}
+
+/* Hiệu ứng khi bị vô hiệu hóa (Đang gọi API) */
+.form-control:disabled {
+    background-color: #e9ecef;
+    color: #868e96;
+    cursor: not-allowed;
+}
+
+/* ... (Giữ nguyên các class .modal-body, .form-group, .form-control cũ) ... */
+
+/* Bọc ngoài dropdown để canh vị trí tuyệt đối */
+.custom-select-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+/* Nút bấm giả làm Select */
+.custom-select-trigger {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    user-select: none;
+}
+
+.custom-select-trigger.disabled {
+    background-color: #e9ecef;
+    color: #868e96;
+    cursor: not-allowed;
+}
+
+/* Hiệu ứng xoay mũi tên khi mở menu */
+.arrow-icon {
+    color: #868e96;
+    transition: transform 0.3s ease;
+}
+
+.arrow-icon.open {
+    transform: rotate(180deg);
+}
+
+/* Menu thả xuống (thay thế thẻ select mặc định) */
+.custom-options-list {
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0;
+    width: 100%;
+    background-color: #ffffff;
+    border: 1px solid #ced4da;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    z-index: 100;
+    /* Đảm bảo đè lên thẻ textarea bên dưới */
+    overflow: hidden;
+    /* Cắt góc bo tròn */
+    animation: fadeInDown 0.2s ease;
+}
+
+/* Từng dòng Option */
+.custom-option {
+    padding: 10px 12px;
+    font-size: 14px;
+    color: #495057;
+    cursor: pointer;
+    transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.custom-option:hover {
+    background-color: #f8f9fa;
+    color: #212529;
+}
+
+/* Option đang được chọn */
+.custom-option.selected {
+    background-color: #e7f5ff;
+    /* Nền xanh nhạt */
+    color: #1971c2;
+    /* Chữ xanh đậm */
+    font-weight: 600;
+}
+
+/* Animation mở menu mượt mà */
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-8px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

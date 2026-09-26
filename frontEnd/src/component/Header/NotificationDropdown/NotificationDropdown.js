@@ -52,6 +52,8 @@ function NotificationDropdown() {
             case "reaction": return "đã bày tỏ cảm xúc về bài viết của bạn.";
             case "friend_request": return "đã gửi cho bạn một lời mời kết bạn.";
             case "friend_accept": return "đã chấp nhận lời mời kết bạn của bạn.";
+            case "report_processed": return "báo cáo của bạn đã được xử lý.";
+            case "report_rejected": return "báo cáo của bạn đã bị từ chối.";
             default: return "đã tương tác với bạn.";
         }
     };

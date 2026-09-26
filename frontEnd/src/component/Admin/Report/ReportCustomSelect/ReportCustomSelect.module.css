@@ -1,0 +1,91 @@
+.custom-select-wrapper {
+    position: relative;
+    width: 100%;
+    min-width: 160px;
+    /* Đảm bảo độ rộng tối thiểu */
+}
+
+.custom-select-trigger {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 12px;
+    background-color: #ffffff;
+    border: 1px solid #ced4da;
+    border-radius: 8px;
+    cursor: pointer;
+    user-select: none;
+    transition: all 0.2s ease;
+}
+
+.custom-select-trigger:hover {
+    border-color: #a259ff;
+}
+
+.select-text {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #495057;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.arrow-icon {
+    color: #868e96;
+    transition: transform 0.3s ease;
+    flex-shrink: 0;
+    margin-left: 8px;
+}
+
+.arrow-icon.open {
+    transform: rotate(180deg);
+}
+
+.custom-options-list {
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0;
+    width: 100%;
+    min-width: max-content;
+    background-color: #ffffff;
+    border: 1px solid #ced4da;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    z-index: 100;
+    overflow: hidden;
+    animation: fadeInDown 0.2s ease;
+}
+
+.custom-option {
+    padding: 10px 12px;
+    font-size: 0.9rem;
+    color: #495057;
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+}
+
+.custom-option:hover {
+    background-color: #f8f9fa;
+    color: #212529;
+}
+
+.custom-option.selected {
+    background-color: #f3e5f5;
+    /* Tím nhạt */
+    color: #7b1fa2;
+    /* Tím đậm */
+    font-weight: 600;
+}
+
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-4px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

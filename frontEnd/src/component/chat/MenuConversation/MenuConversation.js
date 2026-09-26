@@ -12,6 +12,8 @@ import SharedImages from "./SharedImages/SharedImages";
 import ToggleMuteButton from "./ToggleMuteButton/ToggleMuteButton";
 import ToggleRestrictButton from "./ToggleRestrictButton/ToggleRestrictButton";
 import BlockButton from "./BlockButton/BlockButton";
+import { useSubmitReport } from "../../../hooks/useSubmitReport";
+import ReportUserModal from "../../../component/user/ReportUserModal/ReportUserModal";
 
 const cx = classNames.bind(style);
 
@@ -43,6 +45,13 @@ function MenuConverSation({
   const dispatch = useDispatch();
 
   const [chatImages, setChatImages] = useState([]);
+
+  const {
+    modalState, reasonLabel, setReasonLabel, description, setDescription,
+    imagePreview, handleImageChange, // Thêm 2 trường này vào đây
+    isSubmitting, openReportModal, closeReportModal, handleReport
+  } = useSubmitReport();
+
 
   useEffect(() => {
     if (isOpen && conversationId) {
@@ -245,7 +254,7 @@ function MenuConverSation({
                 </div>
 
                 <div className={cx("Btn-group")}>
-                  <button className={cx("reportBtn")}>Báo cáo</button>
+                  <button className={cx("reportBtn")} onClick={() => openReportModal(otherUser)}>Báo cáo</button>
                   <ToggleRestrictButton
                     conversationId={conversationId}
                     // logic kiểm tra xem cuộc trò chuyện có nằm trong RestrictedConversationList không
@@ -272,6 +281,20 @@ function MenuConverSation({
         title="Xóa cuộc trò chuyện?"
         message={`Bạn sẽ không thể xem lại tin nhắn với ${otherUser.name}. Tuy nhiên, người kia vẫn có thể nhìn thấy lịch sử trò chuyện này.`}
         isProcessing={isDeleting}
+      />
+
+      <ReportUserModal
+        isOpen={modalState.isOpen}
+        onClose={closeReportModal}
+        onConfirm={handleReport}
+        isSubmitting={isSubmitting}
+        targetUser={modalState.targetUser}
+        reasonLabel={reasonLabel}
+        setReasonLabel={setReasonLabel}
+        description={description}
+        setDescription={setDescription}
+        imagePreview={imagePreview}          // Bổ sung dòng này
+        handleImageChange={handleImageChange}  // Bổ sung dòng này
       />
     </>
   );

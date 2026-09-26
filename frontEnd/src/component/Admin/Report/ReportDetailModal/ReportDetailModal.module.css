@@ -1,0 +1,267 @@
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    backdrop-filter: blur(3px);
+    animation: fadeIn 0.2s ease-out;
+}
+
+.modal {
+    background-color: #ffffff;
+    border-radius: 12px;
+    width: 100%;
+    max-width: 550px;
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    animation: slideUp 0.3s ease-out;
+    overflow: hidden;
+}
+
+/* --- HEADER (Căn chuẩn form cũ) --- */
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 24px;
+    border-bottom: 1px solid #f1f3f5;
+    background-color: #ffffff;
+}
+
+.modal-title {
+    margin: 0;
+    font-size: 1.25rem;
+    color: #1a1a2e;
+    font-weight: 700;
+    text-align: left;
+}
+
+.close-btn {
+    background: transparent;
+    border: none;
+    color: #868e96;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.2s;
+    padding: 4px;
+}
+
+.close-btn:hover {
+    color: #fa5252;
+}
+
+/* --- BODY (Dồn hoàn toàn sang trái) --- */
+.modal-body {
+    padding: 20px 24px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    text-align: left;
+    /* Chặn thuộc tính dồn giữa từ App.css */
+}
+
+.info-row {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 12px;
+}
+
+.info-group {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    /* Dồn mọi thứ sang trái */
+    gap: 8px;
+    width: 100%;
+}
+
+.reject-group {
+    animation: fadeInDown 0.3s ease-out;
+}
+
+.label {
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: #495057;
+    min-width: 120px;
+    text-align: left;
+}
+
+.user-chip {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 12px;
+    background-color: #f8f9fa;
+    border-radius: 20px;
+    border: 1px solid #e9ecef;
+    font-weight: 500;
+    color: #212529;
+}
+
+.user-chip img {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.text-danger {
+    color: #e03131;
+}
+
+.reason-badge {
+    display: inline-block;
+    padding: 6px 12px;
+    background-color: #fff5f5;
+    color: #e03131;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    width: fit-content;
+    border: 1px solid #ffe3e3;
+}
+
+.description-box {
+    padding: 12px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    border: 1px solid #e9ecef;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    color: #343a40;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.empty-text {
+    color: #adb5bd;
+    font-style: italic;
+}
+
+.evidence-image {
+    width: 100%;
+}
+
+.evidence-image img {
+    width: 100%;
+    max-height: 350px;
+    border-radius: 8px;
+    border: 1px solid #dee2e6;
+    object-fit: contain;
+    background-color: #f8f9fa;
+}
+
+.reject-input {
+    width: 100%;
+    padding: 10px 12px;
+    border-radius: 8px;
+    border: 1px solid #ced4da;
+    outline: none;
+    font-size: 0.95rem;
+    transition: border-color 0.2s;
+    font-family: inherit;
+    box-sizing: border-box;
+}
+
+.reject-input:focus {
+    border-color: #339af0;
+    box-shadow: 0 0 0 2px rgba(51, 154, 240, 0.2);
+}
+
+/* --- FOOTER --- */
+.modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    padding: 16px 24px;
+    border-top: 1px solid #f1f3f5;
+    background-color: #ffffff;
+}
+
+.btn-reject,
+.btn-ban {
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 140px;
+}
+
+.btn-reject {
+    background-color: #f1f3f5;
+    color: #495057;
+}
+
+.btn-reject:hover:not(:disabled) {
+    background-color: #e9ecef;
+    color: #212529;
+}
+
+.btn-ban {
+    background-color: #fa5252;
+    color: #fff;
+}
+
+.btn-ban:hover:not(:disabled) {
+    background-color: #e03131;
+}
+
+.btn-reject:disabled,
+.btn-ban:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* --- ANIMATIONS --- */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

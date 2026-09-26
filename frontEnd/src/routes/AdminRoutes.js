@@ -3,7 +3,7 @@ import { useSelector } from "react-redux";
 import { Navigate, Routes, Route } from "react-router-dom";
 import AdminHeader from "../component/Header/AdminHeader/AdminHeader";
 import UserManagement from "../pages/Admin/UserManagementPage/UserManagement";
-
+import ReportDashboard from "../pages/Admin/ReportDashboard/ReportDashboard";
 function AdminPage() {
     const currentUser = useSelector((state) => state.user.user);
 
@@ -25,7 +25,7 @@ function AdminPage() {
                     } />
 
                     {/* Các component này bạn sẽ tạo tương ứng với quyền hạn */}
-                    <Route path="/reports" element={<div>Giao diện Nhận báo cáo User</div>} />
+                    <Route path="/reports" element={<ReportDashboard />} />
                     <Route path="/accounts" element={<UserManagement />} />
                     <Route path="/chat" element={<div>Giao diện Nhắn tin & Xóa tin nhắn hệ thống</div>} />
                 </Routes>

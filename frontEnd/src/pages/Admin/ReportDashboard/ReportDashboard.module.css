@@ -1,0 +1,182 @@
+.dashboard-container {
+    padding: 0px 24px 24px;
+    max-width: 1300px;
+    margin: 0 auto;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+/* === TẦNG TRÊN: Chia 2 nửa === */
+.top-panel {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    /* Chia đôi 50-50 */
+    gap: 24px;
+    align-items: stretch;
+}
+
+/* Khu vực thẻ thống kê (Làm Grid 2x2) */
+.stats-wrapper {
+    display: flex;
+    flex-direction: column;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    /* 2 cột */
+    grid-template-rows: repeat(2, 1fr);
+    /* 2 hàng */
+    gap: 16px;
+    height: 100%;
+}
+
+.stat-card {
+    display: flex;
+    align-items: center;
+    padding: 20px;
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    border-left: 4px solid transparent;
+    height: 100%;
+}
+
+/* Màu thẻ */
+.stat-card.primary {
+    border-left-color: #339af0;
+}
+
+.stat-card.primary .stat-icon {
+    color: #339af0;
+    background: #e7f5ff;
+}
+
+.stat-card.warning {
+    border-left-color: #fcc419;
+}
+
+.stat-card.warning .stat-icon {
+    color: #f59f00;
+    background: #fff9db;
+}
+
+.stat-card.success {
+    border-left-color: #51cf66;
+}
+
+.stat-card.success .stat-icon {
+    color: #40c057;
+    background: #ebfbee;
+}
+
+.stat-card.danger {
+    border-left-color: #ff6b6b;
+}
+
+.stat-card.danger .stat-icon {
+    color: #fa5252;
+    background: #fff5f5;
+}
+
+.stat-icon {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    margin-right: 16px;
+    flex-shrink: 0;
+}
+
+.stat-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.stat-label {
+    font-size: 0.85rem;
+    color: #868e96;
+    font-weight: 500;
+    margin-bottom: 4px;
+}
+
+.stat-value {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #343a40;
+}
+
+.stat-value.text-sm {
+    font-size: 1.1rem;
+}
+
+/* Khu vực biểu đồ */
+.chart-wrapper {
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.chart-title {
+    margin: 0 0 16px 0;
+    font-size: 1.1rem;
+    color: #212529;
+    text-align: center;
+}
+
+.empty-chart {
+    justify-content: center;
+    align-items: center;
+    min-height: 250px;
+    color: #868e96;
+    font-size: 0.95rem;
+}
+
+/* === TẦNG DƯỚI: Bảng === */
+.bottom-panel {
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    padding: 24px;
+    width: 100%;
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid #f1f3f5;
+}
+
+.section-header h3 {
+    margin: 0;
+    font-size: 1.1rem;
+    color: #212529;
+}
+
+.status-filter {
+    padding: 8px 12px;
+    border-radius: 8px;
+    border: 1px solid #ced4da;
+    outline: none;
+    font-size: 0.9rem;
+}
+
+/* Reponsive cho màn hình nhỏ gọn */
+@media (max-width: 1024px) {
+    .top-panel {
+        grid-template-columns: 1fr;
+        /* Chuyển thành 1 cột xếp chồng */
+    }
+}

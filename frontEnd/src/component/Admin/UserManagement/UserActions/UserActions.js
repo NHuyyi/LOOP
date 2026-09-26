@@ -5,7 +5,9 @@ import { Lock, Unlock, MessageSquare, Trash2 } from "lucide-react";
 
 const cx = classNames.bind(styles);
 
-function UserActions({ user, openDeleteModal }) {
+function UserActions({ user, openDeleteModal, openBanModal, openUnlockModal }) {
+
+    console.log("user", user)
 
     // Các hàm xử lý click sẽ được gắn vào sau
     return (
@@ -14,12 +16,12 @@ function UserActions({ user, openDeleteModal }) {
                 <MessageSquare size={16} />
             </button>
 
-            {user.isdelete ? (
-                <button className={cx("action-btn", "unlock-btn")} title="Mở khóa">
+            {user.isBanned ? (
+                <button className={cx("action-btn", "unlock-btn")} title="Mở khóa" onClick={() => openUnlockModal(user)}>
                     <Unlock size={16} />
                 </button>
             ) : (
-                <button className={cx("action-btn", "lock-btn")} title="Khóa tài khoản">
+                <button className={cx("action-btn", "lock-btn")} title="Khóa tài khoản" onClick={() => openBanModal(user)}>
                     <Lock size={16} />
                 </button>
             )}

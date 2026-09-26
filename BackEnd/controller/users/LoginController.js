@@ -4,6 +4,7 @@ const UserSessionModel = require("../../model/UserSession.Model");
 const jwt = require("jsonwebtoken");
 const { completeTaskForUser } = require("../../utils/streakHelper");
 const UAParser = require("ua-parser-js");
+const UserPenalty = require("../../model/UserPenalty.Model");
 
 const generateOTP = require("../../utils/generateOTP");
 const sendEmail = require("../../utils/sendEmail");
@@ -37,7 +38,7 @@ async function getLocationFromIP(ip) {
 }
 exports.Login = async (req, res) => {
   try {
-    const { email, password, deviceId} = req.body;
+    const { email, password, deviceId } = req.body;
 
     if (!email || !password) {
       return res.status(400).json({
@@ -80,6 +81,47 @@ exports.Login = async (req, res) => {
         success: false,
         isDeactivated: true // Cờ cho Frontend hiện Modal
       });
+    }
+
+    const penalty = await UserPenalty.findOne({ user: user._id });
+
+    if (penalty && penalty.penaltyLevel > 0) {
+      const now = new Date();
+      // Nếu tài khoản chờ duyệt vĩnh viễn (Level 5) HOẶC thời gian hiện tại nhỏ hơn thời gian hết hạn ban
+      if (penalty.isPendingPermanent || (penalty.banUntil && now < penalty.banUntil)) {
+
+        // 1. Lấy lịch sử phạt gần nhất để biết lý do
+        const latestHistory = penalty.history && penalty.history.length > 0
+          ? penalty.history[penalty.history.length - 1]
+          : null;
+
+        // 2. Map lý do ra tiếng Việt
+        const REASON_MAP = {
+          spam: "Spam / Tin rác",
+          harassment: "Quấy rối / Bắt nạt",
+          hate_speech: "Ngôn từ thù ghét",
+          inappropriate_content: "Nội dung phản cảm",
+          other: "Lý do khác"
+        };
+
+        let reasonText = "Vi phạm tiêu chuẩn cộng đồng";
+        if (latestHistory && latestHistory.reasonLabels && latestHistory.reasonLabels.length > 0) {
+          reasonText = latestHistory.reasonLabels.map(r => REASON_MAP[r] || r).join(", ");
+        }
+
+        // 3. Xử lý ngày hiển thị
+        const unlockDate = penalty.isPendingPermanent || !penalty.banUntil
+          ? "Vĩnh viễn"
+          : penalty.banUntil.toLocaleString('vi-VN');
+
+        // 4. Định dạng chuỗi với ký tự xuống dòng (\n)
+        const formattedMessage = `Tài khoản của bạn đã bị khóa\nLý do: ${reasonText}\nLoại khóa: Level ${penalty.penaltyLevel}\nNgày mở khóa: ${unlockDate}`;
+
+        return res.status(403).json({
+          success: false,
+          message: formattedMessage
+        });
+      }
     }
 
     // ✅ Kiểm tra xác minh OTP

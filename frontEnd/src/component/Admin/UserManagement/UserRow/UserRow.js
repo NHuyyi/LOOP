@@ -6,7 +6,7 @@ import UserActions from "../UserActions/UserActions";
 
 const cx = classNames.bind(styles);
 
-function UserRow({ user, openDeleteModal }) {
+function UserRow({ user, openDeleteModal, openBanModal, openUnlockModal }) {
     return (
         <tr className={cx("user-row")}>
             <td>
@@ -22,7 +22,7 @@ function UserRow({ user, openDeleteModal }) {
                 <UserBadge isdelete={user.isdelete} isVerified={user.isVerified} />
             </td>
             <td>
-                <UserActions user={user} openDeleteModal={openDeleteModal} />
+                <UserActions user={user} openDeleteModal={openDeleteModal} openBanModal={openBanModal} openUnlockModal={openUnlockModal} />
             </td>
         </tr>
     );
