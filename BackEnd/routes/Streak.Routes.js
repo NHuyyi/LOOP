@@ -10,14 +10,14 @@ const getFriendStreakLeaderboard = require("../controller/streak/getFriendStreak
 // ── Thống kê cá nhân ─────────────────────────────────────────
 // GET /api/streak/my-stats
 // Trả về: tổng điểm, điểm hôm nay, xếp hạng, danh sách tasks + completed
-router.get("/my-stats", Authorization, authorize("user"), getMyStats.getMyStats);
+router.get("/my-stats", Authorization, authorize("user", "admin"), getMyStats.getMyStats);
 
 // ── Bảng xếp hạng điểm toàn cầu ─────────────────────────────
 // GET /api/streak/leaderboard/points?limit=50
-router.get("/leaderboard/points",Authorization, authorize("user"), getPointsLeaderboard.getPointsLeaderboard);
+router.get("/leaderboard/points",Authorization, authorize("user", "admin"), getPointsLeaderboard.getPointsLeaderboard);
 
 // ── Bảng xếp hạng chuỗi bạn bè ──────────────────────────────
 // GET /api/streak/leaderboard/friends?limit=50
-router.get("/leaderboard/friends",Authorization, authorize("user"), getFriendStreakLeaderboard.getFriendStreakLeaderboard);
+router.get("/leaderboard/friends",Authorization, authorize("user", "admin"), getFriendStreakLeaderboard.getFriendStreakLeaderboard);
 
 module.exports = router;

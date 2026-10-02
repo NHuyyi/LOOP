@@ -32,6 +32,17 @@ const ConversationSchema = new mongoose.Schema(
       },
     ],
 
+    type: {
+      type: String,
+      enum: ["normal", "admin_direct"],
+      default: "normal"
+    },
+    status: {
+      type: String,
+      enum: ["active", "closed"],
+      default: "active"
+    },
+
     // ── Streak nhắn tin ───────────────────────────────────────
     // Số ngày liên tiếp CẢ 2 NGƯỜI đã nhắn tin cho nhau
     streak: { type: Number, default: 0 },

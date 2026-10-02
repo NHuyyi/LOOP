@@ -21,7 +21,7 @@ exports.getConversations = async (req, res) => {
       deleteBy: { $ne: userId },
       restrictedBy: { $ne: userId },
     })
-      .populate("participants", "name avatar friendCode username")
+      .populate("participants", "name avatar friendCode username role")
       .populate("lastMessage")
       .sort({ updatedAt: -1 });
 

@@ -10,8 +10,8 @@ export function useNotificationLoader() {
     useEffect(() => {
         const fetchNotis = async () => {
             if (currentUser?._id) {
-                const res = await getNotificationList();
-                if (res?.success && res.data) {
+            const res = await getNotificationList();
+            if (res?.success && res.data) {
                     dispatch(setNotifications(res.data)); // Đẩy mảng thông báo vào Redux
                     console.log("res", res)
                 }

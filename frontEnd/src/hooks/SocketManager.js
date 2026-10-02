@@ -31,7 +31,8 @@ import {
   updateBlockStatusRealtime,
   moveConversationToBlocked,
   removeConversationFromBlocked,
-  removeConversationInState
+  removeConversationInState,
+  updateConversationStatus,
 } from "../redux/chatSlice";
 
 import { clearUser } from "../redux/userSlice";
@@ -396,6 +397,15 @@ function SocketManager() {
           playSound(currentSettings.defaultSound.soundType || "ding", currentSettings.defaultSound.volume || 0.5);
         }
       });
+
+      socket.on("adminClosedChat", ({ conversationId }) => {
+        //Dispatch action vào chatSlice để cập nhật status = "closed"
+        dispatch(updateConversationStatus({ conversationId, status: 'closed' }));
+      });
+
+      socket.on("adminReopenedChat", ({ conversationId, status }) => {
+        dispatch(updateConversationStatus({ conversationId, status }));
+      });
     }
 
     return () => {
@@ -422,6 +432,8 @@ function SocketManager() {
       socket.off("messageRevoked");
       socket.off("blockStatusChanged");
       socket.off("newNotification");
+      socket.off("adminClosedChat");
+      socket.off("adminReopenedChat");
     };
   }, [
     currentUser,

@@ -21,6 +21,8 @@ import uploadImage from "../../../services/Post/uploadImage";
 import EmojiStickerPicker from "./EmojiStickerPicker";
 import { useRichTextEditor } from "../../../hooks/useRichTextEditor";
 import { useToast } from "../../../context/ToastContext";
+import { setMiniChatMessages } from "../../../redux/chatSlice";
+import { useStartAdminChat } from "../../../hooks/admin/Chat/useStartAdminChat";
 const cx = classNames.bind(styles);
 let typingTimeout = null;
 
@@ -33,11 +35,18 @@ function MessageInput({ receiverId, conversationIdProp }) {
   const stateUser = useSelector((state) => state.user);
   const currentUser = stateUser?.user;
   const toast = useToast();
-  const { activeConversationId, currentMessages, replyMessage } = useSelector(
+
+  const { isStarting, executeStartChat } = useStartAdminChat();
+
+  const { activeConversationId, currentMessages, replyMessage, ConversationList, miniChat } = useSelector(
     (state) => state.chat,
   );
 
   const targetConversationId = conversationIdProp || activeConversationId;
+
+  const activeConversation = ConversationList.find(c => String(c._id) === String(targetConversationId));
+
+  const isClosedAdminChat = activeConversation?.type === "admin_direct" && activeConversation?.status === "closed" && currentUser?.role !== "admin";
 
   const handleFocus = async () => {
     if (
@@ -65,13 +74,15 @@ function MessageInput({ receiverId, conversationIdProp }) {
 
   const blockStatus = useSelector((state) => state.chat.blockStatus) || {};
   const { isBlockedByMe, isBlockedByThem } = blockStatus;
-  const isChatDisabled = isBlockedByMe || isBlockedByThem;
+  const isChatDisabled = isBlockedByMe || isBlockedByThem || isClosedAdminChat;
 
   let placeholderText = "Nhập tin nhắn...";
   if (isBlockedByMe) {
     placeholderText = "Bạn đã chặn đối phương.";
   } else if (isBlockedByThem) {
     placeholderText = "Bạn đã bị chặn bởi đối phương.";
+  } else if (isClosedAdminChat) {
+    placeholderText = "Quản trị viên đã kết thúc cuộc trò chuyện này. Bạn không thể trả lời.";
   }
 
   const handleSend = async (e) => {
@@ -95,6 +106,29 @@ function MessageInput({ receiverId, conversationIdProp }) {
         }
       }
 
+      let currentConvId = targetConversationId;
+
+      if (currentUser?.role === "admin") {
+        if (!activeConversation || activeConversation.status === "closed") {
+          const startRes = await executeStartChat(receiverId);
+          if (startRes?.success) {
+            currentConvId = startRes.conversation._id;
+            // Update conversationId in MiniChat if it was missing
+            const miniChatObj = miniChat?.find(c => String(c.receiver._id) === String(receiverId));
+            dispatch(setMiniChatMessages({
+                receiverId,
+                messages: miniChatObj ? miniChatObj.message : [],
+                conversationId: currentConvId
+            }));
+            
+          } else {
+            toast.error(startRes.message || "Không thể khởi tạo cuộc trò chuyện");
+            setIsUploading(false);
+            return;
+          }
+        }
+      }
+
       const payload = {
         receiverId,
         text: textToSend,
@@ -106,24 +140,27 @@ function MessageInput({ receiverId, conversationIdProp }) {
       const res = await sendMessage(payload);
       if (res?.success) {
         const newMessage = res.message;
+        const actualConvId = newMessage.conversationId?._id || newMessage.conversationId || currentConvId;
+        
         dispatch(
           addMessage({
-            conversationId: targetConversationId,
+            conversationId: actualConvId,
             message: newMessage,
           }),
         );
         dispatch(
           updateLastMessage({
-            conversationId: activeConversationId,
+            conversationId: actualConvId,
             message: newMessage,
           }),
         );
         dispatch(
           updateChatInFilteredFriends({
             friendId: receiverId,
-            conversationId: activeConversationId,
+            conversationId: actualConvId,
           }),
         );
+        
 
         clearEditor();
         setSelectedImage(null);
@@ -196,6 +233,7 @@ function MessageInput({ receiverId, conversationIdProp }) {
     // Sau khi dọn rác xong, vẫn gọi hàm handleTyping cũ của bạn để báo đang gõ
     handleTyping();
   };
+
   return (
     <div
       className={cx("messageInputContainer")}
@@ -301,7 +339,7 @@ function MessageInput({ receiverId, conversationIdProp }) {
         <button
           type="submit"
           className={cx("sendBtn")}
-          disabled={isUploading || isChatDisabled}
+          disabled={isUploading || isChatDisabled || isStarting}
         >
           {isChatDisabled ? (
             <Ban size={22} color="#bcc0c4" />

@@ -14,6 +14,8 @@ export const sendMessage = async (payload) => {
       body: JSON.stringify(payload),
     });
 
+
+
     const data = await res.json();
 
     if (!res.ok) {

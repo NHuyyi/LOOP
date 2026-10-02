@@ -11,7 +11,7 @@ const notificationSlice = createSlice({
             state.items = action.payload;
             state.unreadCount = action.payload.filter(n => !n.isRead).length;
 
-            console.log("dữ liệu nhận được", state.items);
+           
         },
         addNotification: (state, action) => {
             state.items.unshift(action.payload);

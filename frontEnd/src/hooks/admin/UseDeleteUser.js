@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useToast } from "../../context/ToastContext";
 // Import service bạn vừa tạo (Nhớ trỏ đúng đường dẫn thư mục)
 import { hardDeleteUser } from "../../services/admin/deleteUser";
@@ -31,7 +31,6 @@ export const useDeleteUser = (onSuccessRefresh) => {
         try {
             // Gọi hàm từ Service thay vì viết fetch trực tiếp
             const data = await hardDeleteUser(modalState.user.id, confirmEmail.trim());
-            console.log("data", data)
             if (data?.success) {
                 toast.success(data.message);
                 closeDeleteModal();

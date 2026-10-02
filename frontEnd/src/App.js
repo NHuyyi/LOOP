@@ -14,10 +14,12 @@ import { useNotificationLoader } from "./hooks/useNotificationLoader";
 const cx = classNames.bind(styles);
 
 function App() {
+  const currentUser = useSelector((state) => state.user.user);
+
   usePersistedUser();
   useFriendLoader(); // 🚀 Đảm bảo friends luôn có trong Redux, dù ở bất kỳ trang nào
   useNotificationLoader();
-  const currentUser = useSelector((state) => state.user.user);
+
   return (
     <div className={cx("App")}>
       <Router>
