@@ -15,11 +15,11 @@ const toggleMuteConversation = require("../controller/chat/conversation/toggleMu
 const getRestrictedConversations = require("../controller/chat/conversation/getRestrictedConversations");
 const toggleRestrictConversation = require("../controller/chat/conversation/toggleRestrictConversation");
 
-router.post("/send", Authorization, authorize("user"), sendMessage.sendMessage);
-router.get("/conversations", Authorization, authorize("user"), getConversations.getConversations);
-router.get("/messages/:conversationId", Authorization, authorize("user"), getMessages.getMessages);
-router.put("/mark-read/:conversationId", Authorization, authorize("user"), markAsRead.markAsRead);
-router.post("/react", Authorization, authorize("user"), reactMessage.reactMessage);
+router.post("/send", Authorization, authorize("user", "admin"), sendMessage.sendMessage);
+router.get("/conversations", Authorization, authorize("user", "admin"), getConversations.getConversations);
+router.get("/messages/:conversationId", Authorization, authorize("user", "admin"), getMessages.getMessages);
+router.put("/mark-read/:conversationId", Authorization, authorize("user", "admin"), markAsRead.markAsRead);
+router.post("/react", Authorization, authorize("user", "admin"), reactMessage.reactMessage);
 router.put(
   "/delete-message/:messageId",
   Authorization, authorize("user"),

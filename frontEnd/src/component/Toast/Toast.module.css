@@ -19,6 +19,12 @@
     animation: slideDown 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+.toast-message span {
+    white-space: pre-line;
+    text-align: left;
+    line-height: 1.6;
+}
+
 .success {
     background-color: #e0ffe6;
     color: #2b8a3e;

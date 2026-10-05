@@ -228,3 +228,15 @@
 .offlineDot {
   background-color: #90949c;
 }
+
+.BtnAdminClose {
+  color: #fff;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.BtnAdminClose:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+  transform: scale(1.1);
+}
+

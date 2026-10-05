@@ -6,7 +6,7 @@ const NotificationSchema = new mongoose.Schema(
         sender: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
         type: {
             type: String,
-            enum: ["comment", "reaction", "friend_request", "friend_accept"],
+            enum: ["comment", "reaction", "friend_request", "friend_accept", "report_rejected", "report_processed"],
             required: true
         },
         post: { type: mongoose.Schema.Types.ObjectId, ref: "Post" }, // Chỉ dùng cho comment/reaction

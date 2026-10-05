@@ -4,7 +4,7 @@ const Block = require("../../model/Block.Model");
 const { getIO, getOnlineUsers } = require("../../config/socker");
 const { completeTaskForUser } = require("../../utils/streakHelper");
 const sendPushNotification = require("../../utils/sendPushNotification");
-
+const { validateAdminChatPermission } = require("../../utils/AdminChat/adminChatValidation");
 // ── Tính streak nhắn tin cho 1 conversation ──────────────────
 const updateConversationStreak = async (conversation, senderId) => {
   const now = new Date();
@@ -79,6 +79,11 @@ exports.sendMessage = async (req, res) => {
     let conversation = await Conversation.findOne({
       participants: { $all: [senderId, receiverId] },
     });
+
+    const permission = validateAdminChatPermission(conversation, req.user.role);
+    if (!permission.isAllowed) {
+      return res.status(403).json({ success: false, message: permission.message });
+    }
     // kiểm tra xem cuộc trò chuyện có bị chặn không
     const blockRelation = await Block.findOne({
       $or: [

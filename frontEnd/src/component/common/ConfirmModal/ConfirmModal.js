@@ -14,17 +14,22 @@ const ConfirmModal = ({
   title,
   message,
   isProcessing,
+  disableConfirm, // Bổ sung cờ khóa nút
+  children        // Bổ sung khe cắm form HTML
 }) => {
 
   if (!isOpen) return null;
 
-
   return createPortal(
     <div className={cx("modalOverlay")} data-confirm-modal onClick={onClose}>
-      {/* Dừng sự kiện click để không bị đóng khi click vào trong box */}
       <div className={cx("modalContent")} onClick={(e) => e.stopPropagation()}>
         <h3 className={cx("title")}>{title}</h3>
-        <p className={cx("message")}>{message}</p>
+
+        {/* Vẫn giữ nguyên hiển thị message cũ (nếu có) */}
+        {message && <p className={cx("message")}>{message}</p>}
+
+        {/* Hiển thị form nhập Email */}
+        {children}
 
         <div className={cx("actions")}>
           <button
@@ -37,7 +42,8 @@ const ConfirmModal = ({
           <button
             className={cx("btn", "confirmBtn")}
             onClick={onConfirm}
-            disabled={isProcessing}
+            // Khóa nút nếu đang tải HOẶC khi email chưa khớp
+            disabled={isProcessing || disableConfirm}
           >
             {isProcessing ? <Loading size="small" /> : "Xác nhận"}
           </button>

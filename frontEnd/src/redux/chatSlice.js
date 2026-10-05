@@ -466,8 +466,35 @@ const chatSlice = createSlice({
       );
       if (!exists) state.ConversationList.unshift(conversation);
     },
+  updateConversationStatus: (state, action) => {
+      const { conversationId, status } = action.payload;
+
+      // 1. Cập nhật trong danh sách hội thoại thường
+      const normalConv = state.ConversationList.find(
+        (c) => String(c._id) === String(conversationId)
+      );
+      if (normalConv) {
+        normalConv.status = status;
+      }
+
+      // 2. Cập nhật trong danh sách hạn chế (nếu có)
+      const restrictedConv = state.RestrictedConversationList.find(
+        (c) => String(c._id) === String(conversationId)
+      );
+      if (restrictedConv) {
+        restrictedConv.status = status;
+      }
+
+      // 3. Cập nhật trong MiniChat (nếu đang mở popup chat nhỏ)
+      const miniChatConv = state.miniChat.find(
+        (c) => String(c.conversationId) === String(conversationId)
+      );
+      if (miniChatConv) {
+        miniChatConv.status = status;
+      }
+    },
   },
-});
+})
 
 export const {
   setConversations,
@@ -496,6 +523,7 @@ export const {
   removeConversationFromBlocked,
   setBlockedConversations,
   ToggleMiniChatWindow,
+  updateConversationStatus,
 } = chatSlice.actions;
 
 export default chatSlice.reducer;

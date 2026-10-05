@@ -10,15 +10,15 @@ import getFriendList from "../services/Friends/getFriendList";
 export function useFriendLoader() {
   const dispatch = useDispatch();
   const currentUser = useSelector((state) => state.user.user);
+  const isAdmin = currentUser?.role === "admin";
 
   useEffect(() => {
     const fetchFriends = async () => {
-      if (currentUser?._id) {
+      if (currentUser?._id && !isAdmin) {
         try {
           const res = await getFriendList(currentUser._id);
           if (res?.success) {
             dispatch(setFriendData(res));
-            console.log("useFriendLoader: Đã tải danh sách bạn bè vào Redux thành công!", res.friend?.length, "người bạn");
           }
         } catch (error) {
           console.error("useFriendLoader: Lỗi khi tải danh sách bạn bè:", error);
@@ -26,5 +26,6 @@ export function useFriendLoader() {
       }
     };
     fetchFriends();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentUser?._id, dispatch]);
 }

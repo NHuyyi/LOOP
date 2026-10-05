@@ -26,7 +26,7 @@ const { changePostVisibility } = require("../controller/posts/postvisibility");
 const authorize = require("../middleware/authorize");
 const Authorization = require("../middleware/Authorization");
 
-router.post("/uploadImage",Authorization, authorize("user"), upload.single("image"), uploadImage);
+router.post("/uploadImage",Authorization, authorize("user", "admin"), upload.single("image"), uploadImage);
 router.post("/newpost",Authorization, authorize("user"), NewPost);
 router.post("/getNewsFeed",Authorization, authorize("user"), getNewsFeed);
 router.post("/addReaction",Authorization, authorize("user"), addReaction);

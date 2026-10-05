@@ -8,7 +8,7 @@ import {
   markConversationAsRead,
 } from "../../../redux/chatSlice";
 import { getMessages } from "../../../services/chat/getMessages";
-import { X, Minus } from "lucide-react";
+import { X, Minus, XCircle } from "lucide-react";
 import MessageInput from "../MessageInput/MessageInput";
 import { useEmojiParser } from "../../../hooks/useEmojiParser";
 import styles from "./MiniChat.module.css";
@@ -17,6 +17,7 @@ import TimeSeparator from "../MessageList/TimeSeparator";
 import { markAsRead } from "../../../services/chat/markAsRead";
 import classNames from "classnames/bind";
 import TypingIndicator from "../MessageList/TypingIndicator";
+import { useCloseAdminChat } from "../../../hooks/admin/Chat/useCloseAdminChat"
 
 const cx = classNames.bind(styles);
 
@@ -29,6 +30,7 @@ export default function MiniChatNode({ chatData, windowIndex, bubbleIndex }) {
   const scrollRef = useRef(null);
 
   const currentUser = useSelector((state) => state.user.user);
+  const isAdmin = currentUser?.role === "admin";
   // 1. Check trạng thái Online/Offline
   const onlineUsers = useSelector((state) => state.online);
   const isOnline = onlineUsers.includes(receiverId);
@@ -139,10 +141,17 @@ export default function MiniChatNode({ chatData, windowIndex, bubbleIndex }) {
     });
   };
 
+  const { executeCloseChat } = useCloseAdminChat();
+
   const handleClose = (e) => {
     e.stopPropagation();
     dispatch(CloseMiniChat({ receiverId }));
   };
+
+  const handleCloseAdmin = (e) => {
+    handleClose(e);
+    executeCloseChat(conversationId);
+  }
 
   const toggleWindow = async (e) => {
     e.stopPropagation();
@@ -244,6 +253,15 @@ export default function MiniChatNode({ chatData, windowIndex, bubbleIndex }) {
               >
                 <X size={18} />
               </button>
+              {isAdmin && (
+                <button
+                  className={cx("iconBtn", "BtnAdminClose")}
+                  onClick={handleCloseAdmin}
+                  title="Kết thúc cuộc trò chuyện"
+                >
+                  <XCircle size={18} />
+                </button>
+              )}
             </div>
           </div>
 

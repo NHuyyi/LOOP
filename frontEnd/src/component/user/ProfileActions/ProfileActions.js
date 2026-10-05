@@ -17,6 +17,8 @@ import {
   Edit3,
   Settings,
 } from "lucide-react";
+import { useSubmitReport } from "../../../hooks/useSubmitReport";
+import ReportUserModal from "../../../component/user/ReportUserModal/ReportUserModal";
 
 // Import các component chức năng
 import Removefriend from "../../../component/friends/removefriend/removefriend";
@@ -50,6 +52,12 @@ function ProfileActions({ friendData, currentUser, onModalClose }) {
 
   const conversationId = existingConv ? existingConv._id : null;
   const isMuted = existingConv?.mutedBy?.includes(currentUser._id);
+
+  const {
+    modalState, reasonLabel, setReasonLabel, description, setDescription,
+    imagePreview, handleImageChange, // Thêm 2 trường này vào đây
+    isSubmitting, openReportModal, closeReportModal, handleReport
+  } = useSubmitReport();
 
   useEffect(() => {
     if (friendData?._id && !isMe) {
@@ -104,6 +112,27 @@ function ProfileActions({ friendData, currentUser, onModalClose }) {
     };
   }, [showMenu]);
 
+  const [isDropUp, setIsDropUp] = useState(false);
+
+  useEffect(() => {
+    // Chỉ tính toán khi menu được bấm mở (showMenu = true)
+    if (showMenu && menuRef.current) {
+      // Lấy tọa độ của menu-wrapper (nút More) so với màn hình
+      const rect = menuRef.current.getBoundingClientRect();
+
+      // Tính khoảng trống từ cạnh dưới của nút đến đáy màn hình
+      const spaceBelow = window.innerHeight - rect.bottom;
+
+      // Nếu không đủ 200px (khoảng chiều cao của menu) -> Hất lên trên
+      if (spaceBelow < 200) {
+        setIsDropUp(true);
+      } else {
+        setIsDropUp(false);
+      }
+    }
+  }, [showMenu]);
+
+
   if (isMe) {
     return (
       <div className={cx("actions-section")}>
@@ -143,7 +172,13 @@ function ProfileActions({ friendData, currentUser, onModalClose }) {
         </button>
 
         {showMenu && (
-          <div className={cx("dropdown-menu")}>
+          <div className={cx("dropdown-menu")} style={{
+            // Logic đổi chiều dựa trên isDropUp
+            top: isDropUp ? "auto" : "100%",
+            bottom: isDropUp ? "100%" : "auto",
+            marginTop: isDropUp ? "0" : "8px",
+            marginBottom: isDropUp ? "8px" : "0",
+          }}>
             {/* Chức năng: XÓA BẠN */}
             <button
               className={cx("menu-item")}
@@ -164,13 +199,24 @@ function ProfileActions({ friendData, currentUser, onModalClose }) {
             {/* Chức năng: BÁO CÁO */}
             <button
               className={cx("menu-item", "text-danger")}
-              onClick={() => {
-                setShowMenu(false);
-              }}
+              onClick={() => openReportModal(friendData)}
             >
               <Flag size={16} />
               <span>Báo cáo trang cá nhân</span>
             </button>
+            <ReportUserModal
+              isOpen={modalState.isOpen}
+              onClose={closeReportModal}
+              onConfirm={handleReport}
+              isSubmitting={isSubmitting}
+              targetUser={modalState.targetUser}
+              reasonLabel={reasonLabel}
+              setReasonLabel={setReasonLabel}
+              description={description}
+              setDescription={setDescription}
+              imagePreview={imagePreview}          // Bổ sung dòng này
+              handleImageChange={handleImageChange}  // Bổ sung dòng này
+            />
           </div>
         )}
       </div>

@@ -83,6 +83,26 @@ const ForwardModal = ({ message, onClose, activeReceiver }) => {
     }
   };
 
+  const isAllSelected =
+    filteredUsers.length > 0 &&
+    filteredUsers.every((user) => selectedUsers.includes(user._id));
+
+  // Hàm xử lý khi click "Chọn tất cả"
+  const handleSelectAll = () => {
+    if (isAllSelected) {
+      // Bỏ chọn tất cả user đang hiển thị
+      const filteredIds = filteredUsers.map((user) => user._id);
+      setSelectedUsers(
+        selectedUsers.filter((id) => !filteredIds.includes(id))
+      );
+    } else {
+      // Chọn tất cả user đang hiển thị
+      const newSelectedUsers = new Set(selectedUsers);
+      filteredUsers.forEach((user) => newSelectedUsers.add(user._id));
+      setSelectedUsers(Array.from(newSelectedUsers));
+    }
+  };
+
   return (
     <div className={cx("modal-overlay")}>
       <div className={cx("modal-content")}>
@@ -107,6 +127,22 @@ const ForwardModal = ({ message, onClose, activeReceiver }) => {
             onChange={(e) => setSearchText(e.target.value)}
           />
         </div>
+
+        {!isLoadingFriends && filteredUsers.length > 0 && (
+          <div className={cx("select-all-item")} onClick={handleSelectAll}>
+            <span className={cx("user-name")} style={{ fontWeight: 'bold' }}>
+              Chọn tất cả
+            </span>
+            <div className={cx("checkbox-container")}>
+              <input
+                type="checkbox"
+                checked={isAllSelected}
+                onChange={handleSelectAll}
+                onClick={(e) => e.stopPropagation()} // Tránh click đúp sự kiện
+              />
+            </div>
+          </div>
+        )}
 
         {/* Danh sách người dùng */}
         <div className={cx("user-list")}>

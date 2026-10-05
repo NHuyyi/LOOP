@@ -18,7 +18,7 @@ export const getConversations = async () => {
     if (!res.ok) {
       return {
         success: false,
-        message: data.message || ":ỗi lấy danh sách cuộc trò chuyện",
+        message: data.message || "lỗi lấy danh sách cuộc trò chuyện",
       };
     }
     return data;

@@ -10,7 +10,7 @@ function StatusPieChart({ cx, data }) {
         <>
             <ResponsiveContainer width="100%" height={220}>
                 <PieChart>
-                    <Pie data={data} innerRadius={60} outerRadius={80} paddingAngle={5} dataKey="value" stroke="none">
+                    <Pie data={data} innerRadius={60} outerRadius={80} paddingAngle={1} dataKey="value" stroke="none">
                         {data.map((entry, index) => (
                             <Cell key={`cell-${index}`} fill={entry.color} />
                         ))}
