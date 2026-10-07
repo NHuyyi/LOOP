@@ -62,6 +62,7 @@ const completeTaskForUser = async (userId, taskId) => {
 
   streak[field].push(taskId);
   streak.totalPoints += task.points;
+  streak.monthlyPoints += task.points;
   await streak.save();
   return true;
 };

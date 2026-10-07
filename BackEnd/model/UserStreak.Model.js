@@ -25,6 +25,8 @@ const UserStreakSchema = new mongoose.Schema(
 
     // ── Đăng nhập ─────────────────────────────
     lastLoginDate: { type: Date, default: null },         // cho Task 4 (đăng nhập hôm nay)
+
+    monthlyPoints: { type: Number, default: 0 }, // Điểm sẽ bị reset mỗi tháng
   },
   { timestamps: true }
 );

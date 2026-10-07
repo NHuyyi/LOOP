@@ -20,10 +20,12 @@ const StreakRoute = require("./routes/Streak.Routes");
 const SessionRoute = require("./routes/Session.Routes");
 const NotificationRoute = require("./routes/Notification.Routes");
 const AdminRoute = require("./routes/Admin.Routes");
+const ShopRoute = require("./routes/Shop.Routes");
 const http = require("http"); // thêm http
 const { initSocket } = require("./config/socker"); // sửa đường dẫn nếu cần
 const { getIO, getOnlineUsers } = require("./config/socker");
 const app = express();
+const startMonthlyCron = require("./utils/monthlyCron");
 
 // Middleware
 app.use(cors());
@@ -46,6 +48,9 @@ connect_DB();
 // kết nối cloudinary
 connectCloudinary();
 
+// Bắt đầu cronjob
+startMonthlyCron();
+
 // Gắn các route vào server
 app.use("/api/users", UserRoute);
 app.use("/api/posts", PostRoute);
@@ -55,5 +60,6 @@ app.use("/api/streak", StreakRoute);
 app.use("/api/session", SessionRoute);
 app.use("/api/notification", NotificationRoute);
 app.use("/api/admin", AdminRoute);
+app.use("/api/shop", ShopRoute);
 // Xuất io & onlineUsers để các controller (removeFriend, sendRequest, …) dùng
 module.exports = { getIO, getOnlineUsers };

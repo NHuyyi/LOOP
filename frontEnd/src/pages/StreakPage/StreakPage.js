@@ -4,6 +4,7 @@ import classNames from "classnames/bind";
 import StatCard from "../../component/streak/StatCard/StatCard";
 import TaskTab from "./TaskTab/TaskTab";
 import LeaderboardSection from "./LeaderboardSection/LeaderboardSection";
+import ShopTab from "./ShopTab/ShopTab";
 import { getMyStats } from "../../services/streak/streakServices";
 
 const cx = classNames.bind(styles);
@@ -12,6 +13,8 @@ function StreakPage() {
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
   const [errorMsg, setErrorMsg] = useState(null);
+
+  const [activeTab, setActiveTab] = useState("task");
 
   useEffect(() => {
     const fetchStats = async () => {
@@ -58,19 +61,49 @@ function StreakPage() {
             label="Tổng điểm"
             variant="points"
           />
+
+          <StatCard
+            icon="🪙"
+            value={stats?.coins?.toLocaleString() || 0}
+            label="Ngân khố"
+            variant="coins"
+          />
+
           <StatCard
             icon="🏅"
             value={`#${stats?.rank || "--"}`}
             label="Xếp hạng"
             variant="rank"
           />
+
+
         </div>
 
         {/* ── Bảng nhiệm vụ ── */}
-        <TaskTab
-          dailyTasks={stats?.dailyTasks || []}
-          weeklyTasks={stats?.weeklyTasks || []}
-        />
+        <div style={{ display: 'flex', gap: '10px', marginTop: '24px' }}>
+          <button
+            onClick={() => setActiveTab('task')}
+            style={{ padding: '8px 16px', borderRadius: '8px', cursor: 'pointer', background: activeTab === 'task' ? '#8a64ff' : 'rgba(255,255,255,0.1)', color: 'white', border: 'none' }}>
+            Nhiệm vụ
+          </button>
+          <button
+            onClick={() => setActiveTab('shop')}
+            style={{ padding: '8px 16px', borderRadius: '8px', cursor: 'pointer', background: activeTab === 'shop' ? '#8a64ff' : 'rgba(255,255,255,0.1)', color: 'white', border: 'none' }}>
+            Cửa hàng
+          </button>
+        </div>
+
+        {/* --- HIỂN THỊ NỘI DUNG THEO TAB --- */}
+        {activeTab === "task" && (
+          <TaskTab
+            dailyTasks={stats?.dailyTasks || []}
+            weeklyTasks={stats?.weeklyTasks || []}
+          />
+        )}
+
+        {activeTab === "shop" && (
+          <ShopTab />
+        )}
 
         {/* ── Bảng xếp hạng ── */}
         <LeaderboardSection />

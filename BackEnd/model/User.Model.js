@@ -84,6 +84,8 @@ const User = mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    coins: { type: Number, default: 0 }, // Đây là "Ngân khố"
+    ownedStickers: [{ type: String }], // Mảng lưu ID hoặc Tên của các sticker đã mua
   },
 
 
